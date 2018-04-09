@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="Restaurant-master/src"/>
+	<classpathentry kind="lib" path="Restaurant-master/jgoodies-forms-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="Restaurant-master/jgoodies-forms-1.8.0.jar"/>
+	<classpathentry kind="lib" path="Restaurant-master/miglayout15-swing.jar"/>
+	<classpathentry kind="lib" path="E:/A. Code/Z.Java/jdbc lib/mysql-connector-java-5.1.43/mysql-connector-java-5.1.43/mysql-connector-java-5.1.43-bin.jar"/>
+	<classpathentry kind="output" path="Restaurant-master/bin"/>
+</classpath>
