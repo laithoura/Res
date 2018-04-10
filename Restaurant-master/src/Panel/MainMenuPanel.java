@@ -1,4 +1,4 @@
-package Panel;
+package panel;
 
 import javax.swing.JPanel;
 import java.awt.GridLayout;
@@ -10,8 +10,8 @@ import java.awt.BorderLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 
-import ControlClasses.ColorModel;
-import Interfaces.CallBackListenter;
+import control_classes.ColorModel;
+import interfaces.CallBackListenter;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

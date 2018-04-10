@@ -1,4 +1,4 @@
-package Dialog;
+package dialog;
 
 import java.awt.BorderLayout;
 import java.net.InetAddress;
@@ -13,9 +13,9 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Connection.DbConnection;
-import ControlClasses.ColorModel;
-import Form.MainForm;
+import connection.DbConnection;
+import control_classes.ColorModel;
+import form.MainForm;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;

@@ -1,4 +1,4 @@
-package Form;
+package form;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -17,9 +17,9 @@ import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import ControlClasses.ColorModel;
-import Interfaces.CallBackListenter;
-import Panel.MainMenuPanel;
+import control_classes.ColorModel;
+import interfaces.CallBackListenter;
+import panel.MainMenuPanel;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;

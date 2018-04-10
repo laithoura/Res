@@ -1,4 +1,4 @@
-package Panel;
+package panel;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import DataTableModel.BookingDataModel;
-import InstanceClasses.Booking;
-import InstanceClasses.BookingDetail;
+import control_classes.TableSetting;
+import data_table_model.BookingDataModel;
+import instance_classes.Booking;
+import instance_classes.BookingDetail;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -23,9 +25,6 @@ import java.awt.Dimension;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import ControlClasses.TableSetting;
-
 import javax.swing.ImageIcon;
 
 public class BookingPanel extends JPanel {
@@ -102,15 +101,7 @@ public class BookingPanel extends JPanel {
 		panelContainer.setBorder(new EmptyBorder(1, 10, 0, 10));
 		add(panelContainer, BorderLayout.CENTER);
 		panelContainer.setLayout(new BorderLayout(0, 0));
-		
-		JScrollPane scrollPaneBooking = new JScrollPane();
-		panelContainer.add(scrollPaneBooking, BorderLayout.CENTER);
-		
-		tableBooking = new JTable();
-		scrollPaneBooking.setViewportView(tableBooking);				
-		
-		TableSetting.TableControl(tableBooking);
-		
+				
 		JPanel panelFooter = new JPanel();
 		add(panelFooter, BorderLayout.SOUTH);
 		GroupLayout gl_panelFooter = new GroupLayout(panelFooter);
@@ -123,7 +114,15 @@ public class BookingPanel extends JPanel {
 				.addGap(0, 10, Short.MAX_VALUE)
 		);
 		panelFooter.setLayout(gl_panelFooter);
-				
+		
+		JScrollPane scrollPaneBooking = new JScrollPane();
+		panelContainer.add(scrollPaneBooking, BorderLayout.CENTER);
+		
+		tableBooking = new JTable();
+		scrollPaneBooking.setViewportView(tableBooking);				
+		
+		TableSetting.TableControl(tableBooking);
+		
 		bookingList = new ArrayList<>();
 		
 		ArrayList<BookingDetail> bookingDTList = new ArrayList<>();
@@ -138,7 +137,7 @@ public class BookingPanel extends JPanel {
 		bookingModel = new BookingDataModel();
 		bookingModel.setBookingList(bookingList);
 		
-		/*Error this line*/
+		/*Error this line*/		
 		
 		tableBooking.setModel(bookingModel);
 		bookingModel.updateTable();
@@ -152,6 +151,6 @@ public class BookingPanel extends JPanel {
 			if(e.getValueIsAdjusting()) return;
 			int selectedInex = tableBooking.getSelectedRow();
 			JOptionPane.showMessageDialog(null, "Selected Index : "+selectedInex);
-		}		
+		}
 	}
 }
