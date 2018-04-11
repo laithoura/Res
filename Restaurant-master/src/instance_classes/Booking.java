@@ -1,15 +1,14 @@
 package instance_classes;
-
-import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Date;
+import java.sql.Time;
 
 public class Booking {
 	
 	private int id;
 	private String customerName;
 	private String customerPhone;
-	private Time time;
+	private Date time;
 	private Date bookingDate;
 	private Date checkInDate;
 	private int totalTable;
@@ -32,10 +31,10 @@ public class Booking {
 	public void setCustomerPhone(String customerPhone) {
 		this.customerPhone = customerPhone;
 	}
-	public Time getTime() {
+	public Date getTime() {
 		return time;
 	}
-	public void setTime(Time time) {
+	public void setTime(Date time) {
 		this.time = time;
 	}
 	public Date getBookingDate() {
@@ -67,7 +66,7 @@ public class Booking {
 		
 	}
 	
-	public Booking(int id, String customerName, String customerPhone, Date bookingDate, Date checkInDate, Time time,int totalTable, ArrayList<BookingDetail> tableBookingList) {
+	public Booking(int id, String customerName, String customerPhone, Date bookingDate, Date checkInDate, Date time,int totalTable, ArrayList<BookingDetail> tableBookingList) {
 		this.id = id;
 		this.customerName = customerName;
 		this.customerPhone = customerPhone;

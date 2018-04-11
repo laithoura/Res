@@ -3,7 +3,7 @@ package instance_classes;
 public class Type {
 	private int id;
 	private String name;
-	private String description;
+	private String category;
 	
 	public int getId() {
 		return id;
@@ -17,22 +17,23 @@ public class Type {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getDescription() {
-		return description;
+	
+	public String getCategory() {
+		return category;
 	}
-	public void setDescription(String description) {
-		this.description = description;
+	public void setCategory(String description) {
+		this.category = description;
 	}
 	
 	public Type() {
 		
 	}
 	
-	public Type(int id, String name, String description) {
+	public Type(int id, String name, String category) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.description = description;
+		this.category = category;
 	}
 	
 	

@@ -4,8 +4,7 @@ public class Table {
 	private int id;
 	private String name;
 	private Type type;
-	private int tableCount;
-	private String description;
+	private boolean status;
 	
 	public int getId() {
 		return id;
@@ -26,31 +25,24 @@ public class Table {
 	
 	public void setType(Type type) {
 		this.type = type;
+	}	
+		
+	public boolean isStatus() {
+		return status;
 	}
-	
-	public int getTableCount() {
-		return tableCount;
+	public void setStatus(boolean status) {
+		this.status = status;
 	}
-	public void setTableCount(int tableCount) {
-		this.tableCount = tableCount;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
 	public Table() {
 		
 	}
 	
-	public Table(int id, String name, Type type, int tableCount, String description) {		
+	public Table(int id, String name, instance_classes.Type type2, boolean status) {
+		super();
 		this.id = id;
 		this.name = name;
-		this.type = type;
-		this.tableCount = tableCount;
-		this.description = description;
+		this.type = type2;
+		this.status = status;
 	}
-		
+	
 }

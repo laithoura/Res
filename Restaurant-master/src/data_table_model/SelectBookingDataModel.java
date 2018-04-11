@@ -2,16 +2,17 @@ package data_table_model;
 
 import java.util.ArrayList;
 
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.table.AbstractTableModel;
 
 import instance_classes.Table;
 
-public class TableDataModel extends AbstractTableModel{
-
-	private final String COLUMNS[]= {"Table ID","Table Name","Type Name","Status"};	
-	private ArrayList<Table> tableList;
+public class SelectBookingDataModel extends AbstractTableModel {	
 	
+	private final String COLUMNS[]= {"Table Name","Type Name","Booking"};	
+	private ArrayList<Table> tableList;
+		
 	@Override
 	public String getColumnName(int colIndex) {
 		return COLUMNS[colIndex];
@@ -30,11 +31,11 @@ public class TableDataModel extends AbstractTableModel{
 	@Override
 	public Object getValueAt(int rowIndex, int colIndex) {
 		Table table = tableList.get(rowIndex);
-		switch (colIndex) {
-		case 0: return table.getId();
-		case 1: return table.getName();
-		case 2: return table.getType().getCategory();
-		case 3: return (table.isStatus())?"Available":"Unavailable";		
+		
+		switch (colIndex) {		
+		case 0: return table.getName();
+		case 1: return table.getType().getCategory();
+		case 2: return "Testing";
 		default: return null;
 		}
 	}
@@ -44,10 +45,9 @@ public class TableDataModel extends AbstractTableModel{
 	}
 	
 	public void setTableModel(ArrayList<Table> tableList) {
-		if(tableList != null) {
+		if(tableList == null) {
 			tableList = new ArrayList<>();
 		}			
 		this.tableList = tableList;
-	}
-
+	}	
 }
