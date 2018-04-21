@@ -9,7 +9,7 @@ import instance_classes.BookingDetail;
 public class BookingDataModel extends AbstractTableModel{
 
 	private ArrayList<Booking> bookingList;
-	private final String COLUMNS[] = {"Booking ID","Customer's Name","Customer's Phone","Booking Date","Check-in Date","Time","Total Table","Table Names"};
+	private final String COLUMNS[] = {"Booking ID","Customer's Name","Customer's Phone","Booking Date","Check-in Date","Time","Total Table"};
 		
 	@Override
 	public String getColumnName(int colIndex) {		
@@ -28,12 +28,7 @@ public class BookingDataModel extends AbstractTableModel{
 
 	@Override
 	public Object getValueAt(int rowIndex, int colIndex) {
-		Booking booking = bookingList.get(rowIndex);	
-		String tableNames = "";
-		for (BookingDetail bookingDetail: booking.getTableBookingList()) {
-			tableNames += " "+ bookingDetail.getTableName();
-		}
-		
+		Booking booking = bookingList.get(rowIndex);			
 		switch (colIndex) {
 		case 0: return booking.getId();
 		case 1: return booking.getCustomerName();
@@ -41,8 +36,7 @@ public class BookingDataModel extends AbstractTableModel{
 		case 3: return DateFormat.dateFormat(booking.getBookingDate());
 		case 4: return DateFormat.dateFormat(booking.getCheckInDate());
 		case 5: return DateFormat.timeFormat(booking.getTime());
-		case 6: return booking.getTotalTable();
-		case 7: return tableNames;
+		case 6: return booking.getTotalTable();		
 		default: return null;		
 		}
 	}

@@ -13,6 +13,7 @@ import javax.swing.JTable;
 
 import control_classes.Exporter;
 import control_classes.TableSetting;
+import controller.BookingDao;
 import data_table_model.BookingDataModel;
 import dialog.InsertBookingDialog;
 import dialog.UpdateBookingDialog;
@@ -47,6 +48,7 @@ public class BookingPanel extends JPanel implements ActionListener{
 	private JButton btnDetail;
 	
 	private int selectedIndex = -1;
+	private BookingDao daoBooking = new BookingDao();
 	/**
 	 * Create the panel.
 	 */
@@ -138,17 +140,8 @@ public class BookingPanel extends JPanel implements ActionListener{
 		
 		TableSetting.TableControl(tableBooking);
 	
-		bookingModel = new BookingDataModel();
-		
-		bookingList = new ArrayList<>();
-		
-		ArrayList<BookingDetail> bookingDTList = new ArrayList<>();
-		bookingDTList.add(new BookingDetail(1,2,4,"T002","VIP"));
-				
-		Date date = new Date();		
-		Booking booking = new Booking(1,"Thoura","012403032",date,date,date,10,bookingDTList);		
-		bookingList.add(booking);
-		
+		bookingModel = new BookingDataModel();		
+		bookingList = daoBooking.getBookingLists(true);		
 		bookingModel.setBookingList(bookingList);
 		
 		/*Error this line*/		
@@ -185,36 +178,46 @@ public class BookingPanel extends JPanel implements ActionListener{
 			insertBooking.setCallBackListener(new CallBackListenter() {				
 				@Override
 				public void CallBack(Object sender) {
-					bookingList.add((Booking)sender);
-					bookingModel.updateTable();
-					
-					System.out.println("Inserted");
+					Booking booking = (Booking)sender;
+					bookingList.add(booking);
+					bookingModel.updateTable();															
 				}
 			});
 			insertBooking.setVisible(true);
 		}else if(e.getSource() == btnUpdate) {	
-			
+			if(selectedIndex == -1) return;
 			Booking bookingUpdate = bookingList.get(selectedIndex);
 			UpdateBookingDialog updateBooking = new UpdateBookingDialog(bookingUpdate);
+			
 			updateBooking.setCallBackListener(new CallBackListenter() {				
 				@Override
-				public void CallBack(Object sender) {					
-					bookingList.set(selectedIndex, (Booking)sender);					
-					bookingModel.updateTable();
-					System.out.println("Updated");
-					selectedIndex = -1;
+				public void CallBack(Object sender) {
+					Booking booking = (Booking)sender;
+					if(daoBooking.updateBooking(booking)) {
+						bookingList.set(selectedIndex, booking);			
+						bookingModel.updateTable();
+						System.out.println("Updated");
+					}
+					selectedIndex = -1;					
 				}
 			});
 			updateBooking.setVisible(true);
 			
 		}else if(e.getSource() == btnDetail) {
+			if(selectedIndex == -1) return;
 			
 		}else if(e.getSource() == btnDelete) {
-			bookingList.remove(selectedIndex);
-			selectedIndex = -1;
-			bookingModel.updateTable();
-			
-			System.out.println("Delected");
+			if(selectedIndex == -1) return;
+			int bookingId = bookingList.get(selectedIndex).getId();
+			if(daoBooking.deleteBooking(bookingId)) {
+				bookingList.remove(selectedIndex);			
+				bookingModel.updateTable();
+				selectedIndex = -1;
+				System.out.println("Delected");
+				
+			}else{
+				System.out.println("Not Delected");	
+			}
 		}else if(e.getSource() == btnExport) {	
 			Exporter.jtableToExcel(tableBooking);
 		}

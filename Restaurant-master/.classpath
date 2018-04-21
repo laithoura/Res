@@ -6,5 +6,9 @@
 	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
 	<classpathentry kind="lib" path="lib/jcalendar-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.43-bin.jar"/>
+	<classpathentry kind="lib" path="lib/gwt-timepicker-0.2.jar"/>
+	<classpathentry kind="lib" path="lib/ng2-date-time-picker-1.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/JTimeChooser_0.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/joda-time-2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,6 +1,5 @@
-/connection/
 /dialog/
-/form/
-/interfaces/
+/data_table_model/
 /panel/
-/resources/
+/controller/
+/instance_classes/

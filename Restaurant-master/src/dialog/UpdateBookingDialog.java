@@ -193,18 +193,17 @@ public class UpdateBookingDialog extends JDialog implements ActionListener {
 		tableList.add(new Table(1,"T001",type,true));
 		tableList.add(new Table(1,"T001",type,true));
 		tableList.add(new Table(1,"T001",type,true));
-		
-		
+				
 		selectBookingModel = new SelectBookingDataModel();
 		selectBookingModel.setTableModel(tableList);
 		
 		tableSelectBooking.setModel(selectBookingModel);
 		selectBookingModel.updateTableModel();
 		
-		registerEvet();
+		registerEvent();
 	}
 
-	private void registerEvet() {
+	private void registerEvent() {
 		btnUpdate.addActionListener(this);
 		btnCancel.addActionListener(this);		
 	}
@@ -212,7 +211,7 @@ public class UpdateBookingDialog extends JDialog implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnUpdate) {
-			
+			bookingUpdate.setCustomerName("Girls");
 			backListener.CallBack(bookingUpdate);
 		}else if(e.getSource() == btnCancel) {
 			
