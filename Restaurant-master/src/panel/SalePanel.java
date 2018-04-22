@@ -1,24 +1,34 @@
 package panel;
 
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import java.awt.Font;
+import instance_classes.ComboBoxItem;
+import instance_classes.ItemRenderer;
+import java.util.Vector;
+
+import javax.swing.ComboBoxModel;
+import javax.swing.JComboBox;
 
 public class SalePanel extends JPanel {
-
+	
+	
 	/**
 	 * Create the panel.
 	 */
+	@SuppressWarnings("unchecked")
 	public SalePanel() {
-		setLayout(new BorderLayout(0, 0));
+		setLayout(null);
 		
-		JLabel label = new JLabel("Sale / Order");
-		label.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		add(label, BorderLayout.CENTER);
+		Vector<ComboBoxItem> comboBoxModel = new Vector<>();
+		comboBoxModel.addElement(new ComboBoxItem(0, "Select here"));		
+		comboBoxModel.addElement(new ComboBoxItem(1, "A"));
+		comboBoxModel.addElement(new ComboBoxItem(2, "B"));
+		comboBoxModel.addElement(new ComboBoxItem(3, "C"));
+		comboBoxModel.addElement(new ComboBoxItem(4, "D"));
 		
+		JComboBox<ComboBoxItem> comboBox = new JComboBox<ComboBoxItem>(comboBoxModel);				
+		comboBox.setRenderer(new ItemRenderer());
+		
+		comboBox.setBounds(146, 106, 216, 32);
+		add(comboBox);						
 	}
-
 }

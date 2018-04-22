@@ -6,13 +6,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
-import javax.swing.table.TableModel;
 
-import com.summatech.gwt.client.HourMinutePicker;
 import com.toedter.calendar.JDateChooser;
 import control_classes.ColorModel;
 import control_classes.MessageShow;
@@ -22,17 +16,12 @@ import data_table_model.SelectBookingDataModel;
 import instance_classes.Booking;
 import instance_classes.Table;
 import interfaces.CallBackListenter;
-import lu.tudor.santec.jtimechooser.JTimeChooser;
-import lu.tudor.santec.jtimechooser.TimeChooserModel;
-import lu.tudor.santec.jtimechooser.demo.JTimeChooserDemo;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.nio.channels.SeekableByteChannel;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -48,9 +37,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JSpinner;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
-import javax.swing.JEditorPane;
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -194,9 +181,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		btnClear.setMaximumSize(new Dimension(65, 23));
 		btnClear.setBounds(173, 391, 91, 32);
 		contentPanel.add(btnClear);
-		
-		
-		
+					
 		JDateChooser datePickerCheckInDate = new JDateChooser();
 		datePickerCheckInDate.setDateFormatString("dd/MM/yyyy");
 		datePickerCheckInDate.setBounds(146, 87, 203, 24);
@@ -248,7 +233,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		selectBookingModel = new SelectBookingDataModel();
 		selectBookingModel.setTableModel(tableList);
 		
-		tableSelectBooking.setModel(selectBookingModel);
+		//tableSelectBooking.setModel(selectBookingModel);
 		selectBookingModel.updateTableModel();
 		
 		registerEvent();

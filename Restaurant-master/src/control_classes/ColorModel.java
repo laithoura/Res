@@ -4,7 +4,8 @@ import java.awt.Color;
 
 public class ColorModel {
 	public Color getBackColor() {
-		return Color.decode("#3e2723");
+		return Color.decode("#000");
+		//return Color.decode("#3e2723");
 	}
 	
 	public Color getForeColor() {
