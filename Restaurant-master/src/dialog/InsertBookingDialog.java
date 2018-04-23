@@ -65,7 +65,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 			InsertBookingDialog dialog = new InsertBookingDialog();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
-		} catch (Exception e) {
+		}catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

@@ -145,7 +145,7 @@ public class BookingPanel extends JPanel implements ActionListener{
 		bookingModel.setBookingList(bookingList);
 		
 		/*Error this line*/		
-		tableBooking.setModel(bookingModel);
+		//tableBooking.setModel(bookingModel);
 		bookingModel.updateTable();
 		
 		tableBooking.getSelectionModel().addListSelectionListener(new RowListener());
