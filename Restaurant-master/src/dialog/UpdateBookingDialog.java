@@ -188,7 +188,7 @@ public class UpdateBookingDialog extends JDialog implements ActionListener {
 		TableSetting.TableControl(tableSelectBooking);
 		
 		tableList = new ArrayList<>();
-		instance_classes.Type type = new instance_classes.Type(1,"Table","VIP");
+		instance_classes.Type type = new instance_classes.Type(1,"Table","VIP",false);
 		tableList.add(new Table(1,"T001",type,true));
 		tableList.add(new Table(1,"T001",type,true));
 		tableList.add(new Table(1,"T001",type,true));
