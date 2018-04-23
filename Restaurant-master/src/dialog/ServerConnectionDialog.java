@@ -2,7 +2,6 @@ package dialog;
 
 import java.awt.BorderLayout;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -191,7 +190,7 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}			
+		}
 	}
 	
 	private void loadServerNameToComboBox() {

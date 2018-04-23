@@ -1,23 +1,11 @@
 package instance_classes;
 
-public class Product {
+public class RawMaterial {
 	private int id;
 	private String name;
 	private Type type;
-	private double unitPrice;
+	private String description;
 	private boolean status;
-	
-	public Product() {
-		
-	}
-	
-	public Product(int id, String name, Type type, double unitPrice, boolean status ) {
-		this.id = id;
-		this.name = name;
-		this.type = type;
-		this.unitPrice = unitPrice;
-		this.status = status;
-	}
 	
 	public int getId() {
 		return this.id;
@@ -39,23 +27,37 @@ public class Product {
 		return this.type;
 	}
 	
-	public void setType(Type type) {
+	public void setTpe(Type type) {
 		this.type = type;
 	}
 	
-	public double getUnitPrice() {
-		return this.unitPrice;
+	public String getDescriptioin() {
+		return this.description;
 	}
-
-	public void setPrice(double unitPrice) {
-		this.unitPrice = unitPrice;
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	
 	public boolean getStatus() {
-		return this.status;
+		return this.status;			
 	}
 	
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+	
+	public RawMaterial() {
+		
+	}
+	
+	public RawMaterial(int id, String name, Type type, String description, boolean status) {
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.type = type;
+		this.status = status;
+	}
+	
+
 }
