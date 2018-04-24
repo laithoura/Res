@@ -2,14 +2,13 @@ package data_table_model;
 
 import java.util.ArrayList;
 
-import javax.swing.JComboBox;
 import javax.swing.table.AbstractTableModel;
 
 import instance_classes.Table;
 
 public class TableDataModel extends AbstractTableModel{
 
-	private final String COLUMNS[]= {"Table ID","Table Name","Type Name","Status"};	
+	private final String COLUMNS[]= {"Table ID","Table Name","Type","Status"};
 	private ArrayList<Table> tableList;
 	
 	@Override
@@ -18,7 +17,7 @@ public class TableDataModel extends AbstractTableModel{
 	}
 	
 	@Override
-	public int getColumnCount() {	
+	public int getColumnCount() {
 		return COLUMNS.length;
 	}
 
@@ -28,13 +27,24 @@ public class TableDataModel extends AbstractTableModel{
 	}
 
 	@Override
+	public Class<?> getColumnClass(int columnIndex) {		
+		switch (columnIndex) {
+		case 0: return Integer.class;	
+		case 1: return String.class;
+		case 2: return String.class;
+		case 3: return Boolean.class;
+		default: return null;
+		}
+	}		
+	
+	@Override
 	public Object getValueAt(int rowIndex, int colIndex) {
 		Table table = tableList.get(rowIndex);
 		switch (colIndex) {
 		case 0: return table.getId();
 		case 1: return table.getName();
-		case 2: return table.getType().getCategory();
-		case 3: return (table.isStatus())?"Available":"Unavailable";		
+		case 2: return table.getType();
+		case 3: return table.isAvailable();
 		default: return null;
 		}
 	}
@@ -44,7 +54,7 @@ public class TableDataModel extends AbstractTableModel{
 	}
 	
 	public void setTableModel(ArrayList<Table> tableList) {
-		if(tableList != null) {
+		if(tableList == null) {
 			tableList = new ArrayList<>();
 		}			
 		this.tableList = tableList;

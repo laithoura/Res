@@ -1,13 +1,8 @@
 package data_table_model;
 
 import java.util.ArrayList;
-
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 import instance_classes.Table;
 
@@ -39,9 +34,9 @@ public class SelectBookingDataModel extends AbstractTableModel {
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {		
 		switch (columnIndex) {
+		case 0: return Boolean.class;	
 		case 1: return String.class;
-		case 2: return String.class;					
-		case 0: return Boolean.class;						
+		case 2: return String.class;											
 		default: return null;
 		}
 	}	
@@ -51,9 +46,9 @@ public class SelectBookingDataModel extends AbstractTableModel {
 		Table table = tableList.get(rowIndex);
 		
 		switch (colIndex) {
-		case 0: return table.isStatus();
+		case 0: return table.isAvailable();
 		case 1: return table.getName();		
-		case 2: return table.getType().getCategory();
+		case 2: return table.getType();
 		default: return null;
 		}
 	}

@@ -225,10 +225,10 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		
 		tableList = new ArrayList<>();
 		instance_classes.Type type = new instance_classes.Type(1,"Table","VIP", false);
-		tableList.add(new Table(1,"T001",type,true));
-		tableList.add(new Table(1,"T001",type,true));
-		tableList.add(new Table(1,"T001",type,true));
-		tableList.add(new Table(1,"T001",type,true));		
+		tableList.add(new Table(1,"T001","VIP",true,true));
+		tableList.add(new Table(1,"T001","VIP",true,true));
+		tableList.add(new Table(1,"T001","VIP",true,true));
+		tableList.add(new Table(1,"T001","VIP",true,true));
 		
 		selectBookingModel = new SelectBookingDataModel();
 		selectBookingModel.setTableModel(tableList);
