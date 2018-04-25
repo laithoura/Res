@@ -213,8 +213,8 @@ public class TablePanel extends JPanel implements ActionListener{
 				public void CallBack(Object sender) {		
 					Table table = (Table)sender;								
 					if(tableDao.insertTable(table)) {
-						table.setId(Help.GetLastAutoIncrement("restaurant_project", "tables"));
-						listTable.add(table);
+						table.setId(Help.getLastAutoIncrement("restaurant_project", "tables"));
+						listTable.add(0, table);
 						tableModel.setTableModel(listTable);
 						tableModel.updateTableModel();
 						

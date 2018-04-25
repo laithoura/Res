@@ -39,6 +39,8 @@ import javax.swing.SpinnerDateModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.Dimension;
+
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JSpinner;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
@@ -47,6 +49,7 @@ import javax.swing.JCheckBox;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import javax.swing.JRadioButton;
 
 public class InsertBookingDialog extends JDialog implements ActionListener{
 
@@ -67,6 +70,8 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 	private JSpinner spinnerTime;
 	private Booking booking;
 	
+	private JRadioButton radioButtonAll, radioButtonNormal, radioButtonVIP;
+	private ButtonGroup buttonGroupTableType;
 	private CallBackListenter backListener;
 	/**
 	 * Launch the application.
@@ -97,18 +102,28 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 	}
 	
 	private void LoadDataIntoControls() {
+		/*Load Data to Controll*/
 		textBoxCustomerName.setText(booking.getCustomerName());
 		textBoxCustomerPhone.setText(booking.getCustomerPhone());
 		datePickerCheckInDate.setDate(booking.getCheckInDate());
 		spinnerTime.setValue(booking.getTime());
-	
-		tableList = tableDao.getBookingListOnly(booking.getId());
 		
-		System.out.println(booking.getId()+ " ; " +tableList.size());
+		/*Get The Booking Table Only from TABLE BOOKING*/
+		tableList = tableDao.getBookingListOnly(booking.getId());	
 		
-		selectBookingModel.setTableModel(tableList);
-		tableSelectBooking.setModel(selectBookingModel);
-		selectBookingModel.updateTableModel();
+		/*Load Data to DataTableModel Object*/
+		refreshTableModel();
+		refreshBookedTable();
+		
+		/*Disable Button*/
+		btnCancel.setEnabled(false);
+		btnSubmit.setEnabled(false);
+		btnClear.setEnabled(false);
+		
+		/*Disable Radio button table type*/
+		radioButtonAll.setEnabled(false);
+		radioButtonNormal.setEnabled(false);
+		radioButtonVIP.setEnabled(false);
 	}
 
 	public InsertBookingDialog() {
@@ -118,26 +133,27 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		setLocationRelativeTo(null);
 		
 		JLabel lblCustomersName = new JLabel("Customer's Name");
 		lblCustomersName.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCustomersName.setForeground(Color.BLACK);
 		lblCustomersName.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblCustomersName.setBounds(37, 20, 116, 24);
+		lblCustomersName.setBounds(37, 20, 114, 24);
 		contentPanel.add(lblCustomersName);
 		
 		JLabel lblCustomersPhone = new JLabel("Customer's Phone");
 		lblCustomersPhone.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCustomersPhone.setForeground(Color.BLACK);
 		lblCustomersPhone.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblCustomersPhone.setBounds(37, 52, 116, 24);
+		lblCustomersPhone.setBounds(37, 52, 114, 24);
 		contentPanel.add(lblCustomersPhone);
 		
 		JLabel lblCheckinDate = new JLabel("Check-in Date");
 		lblCheckinDate.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCheckinDate.setForeground(Color.BLACK);
 		lblCheckinDate.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblCheckinDate.setBounds(37, 87, 116, 24);
+		lblCheckinDate.setBounds(37, 87, 114, 24);
 		contentPanel.add(lblCheckinDate);
 		
 		textBoxCustomerName = new JTextField();
@@ -151,7 +167,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		lblTableType.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTableType.setForeground(Color.BLACK);
 		lblTableType.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblTableType.setBounds(37, 156, 116, 24);
+		lblTableType.setBounds(37, 156, 114, 24);
 		contentPanel.add(lblTableType);
 		
 		textBoxCustomerPhone = new JTextField();
@@ -187,19 +203,9 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 						selectBookingModel.setTableModel(tableList);
 						selectBookingModel.updateTableModel();
 						
-						RefreshBookedTable();
+						refreshBookedTable();
 				}
-			}
-
-			private void RefreshBookedTable() {	
-				String bookedItems = "Booked Table : ";
-				for(Table table:tableList) {
-					if(!table.isAvailable()) {
-						bookedItems += table.getName() +" ; ";
-					}
-				}
-				labelBookingItem.setText(bookedItems);
-			}
+			}			
 			
 		});
 		scrollPaneSelectBooking.setViewportView(tableSelectBooking);
@@ -224,12 +230,13 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		btnClear.setMaximumSize(new Dimension(65, 23));
 		btnClear.setBounds(175, 418, 91, 32);
 		contentPanel.add(btnClear);
-					
+		
 		datePickerCheckInDate = new JDateChooser();
 		datePickerCheckInDate.setDateFormatString("dd/MM/yyyy");
 		datePickerCheckInDate.setBounds(146, 87, 203, 24);
 		contentPanel.add(datePickerCheckInDate);		
-	
+		datePickerCheckInDate.setDate(new Date());
+		
 		Date date = new Date();
 		SpinnerDateModel sm = new SpinnerDateModel(date, null, null, Calendar.HOUR_OF_DAY);
 		spinnerTime = new javax.swing.JSpinner(sm);
@@ -244,18 +251,8 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		label.setHorizontalAlignment(SwingConstants.LEFT);
 		label.setForeground(Color.BLACK);
 		label.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		label.setBounds(37, 123, 112, 24);
+		label.setBounds(37, 123, 114, 24);
 		contentPanel.add(label);
-		
-		JCheckBox checkBoxNormal = new JCheckBox("Normal");
-		checkBoxNormal.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		checkBoxNormal.setBounds(141, 157, 74, 23);
-		contentPanel.add(checkBoxNormal);
-		
-		JCheckBox checkBoxVIP = new JCheckBox("VIP");
-		checkBoxVIP.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		checkBoxVIP.setBounds(214, 157, 55, 23);
-		contentPanel.add(checkBoxVIP);
 		
 		labelBookingItem = new JLabel("Booked Table :");
 		labelBookingItem.setHorizontalAlignment(SwingConstants.LEFT);
@@ -268,7 +265,27 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		
 		TableSetting.TableControl(tableSelectBooking);
 		
-		LoadModelToTable();	
+		radioButtonVIP = new JRadioButton("VIP");
+		radioButtonVIP.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		radioButtonVIP.setBounds(143, 158, 57, 23);
+		contentPanel.add(radioButtonVIP);
+		
+		radioButtonNormal = new JRadioButton("Normal");
+		radioButtonNormal.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		radioButtonNormal.setBounds(203, 158, 74, 23);
+		contentPanel.add(radioButtonNormal);
+		
+		radioButtonAll = new JRadioButton("All");
+		radioButtonAll.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		radioButtonAll.setBounds(288, 158, 62, 23);
+		contentPanel.add(radioButtonAll);
+		
+		buttonGroupTableType = new ButtonGroup();
+		buttonGroupTableType.add(radioButtonVIP);
+		buttonGroupTableType.add(radioButtonNormal);
+		buttonGroupTableType.add(radioButtonAll);
+		
+		loadModelToTable();	
 		ControlTextBox();
 	}
 
@@ -277,17 +294,15 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		InputControl.inputInteger(textBoxCustomerPhone);
 	}
 
-	private void LoadModelToTable() {
+	private void loadModelToTable() {
 		tableList = new ArrayList<>();		
 		if(this.booking == null) {
 			tableList = tableDao.getTableLists(true, true);
-		}
+		}		
+		selectBookingModel = new SelectBookingDataModel();		
 		
-		selectBookingModel = new SelectBookingDataModel();
-		selectBookingModel.setTableModel(tableList);
-		
-		tableSelectBooking.setModel(selectBookingModel);
-		selectBookingModel.updateTableModel();	
+		/*After getting data to tableList object*/
+		refreshTableModel();		
 		
 		registerEvent();
 	}
@@ -295,99 +310,157 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 	private void registerEvent() {
 		btnClear.addActionListener(this);
 		btnSubmit.addActionListener(this);
-		btnCancel.addActionListener(this);				
+		btnCancel.addActionListener(this);	
+		
+		this.radioButtonAll.addActionListener(this);
+		this.radioButtonNormal.addActionListener(this);
+		this.radioButtonVIP.addActionListener(this);
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {		
+	public void actionPerformed(ActionEvent e) {	
 		if(e.getSource() == btnClear) {
 			
-			textBoxCustomerName.setText("");
-			textBoxCustomerPhone.setText("");
-			
-			Date date = new Date();
-			datePickerCheckInDate.setDate(date);
-			spinnerTime.setValue(date);
-			
-			LoadModelToTable();	
+			resetControls();
 			
 		}else if(e.getSource() == btnSubmit) {					
-			int autoID = 0;	
-			boolean success = false;			
-			int totalBooking = 0;
-						
-			if(textBoxCustomerName.getText().trim().equals("")) {
-				MessageShow.Error("Pleae valid Customer's Name", "Booking Table");
-				return;
-			}else if(textBoxCustomerPhone.getText().trim().equals("")) {
-				MessageShow.Error("Pleae valid Customer's Phone", "Booking Table");
-				return;
-			}else {
-				/*Count Selected Table to Booking for Customer*/
-				for(Table table:tableList) {
-					if(!table.isAvailable()) {
-						totalBooking ++;
-					}
-				}
-				
-				if(totalBooking == 0) {
-					MessageShow.Error("Please select any table to book", "Booking Table");
-					return;
-				}				
-			}
-						
-			/*After Validate All Required DATA*/
-			BookingDao daoBooking = new BookingDao();			
-			Date bookingDate = new Date();
-			Date checkInDate = datePickerCheckInDate.getDate();
-			Date checkInTime = (Date) spinnerTime.getValue();
-			
-			Booking booking = new Booking(0,textBoxCustomerName.getText().trim(),textBoxCustomerPhone.getText().trim(),bookingDate,checkInDate,checkInTime,totalBooking);				
-			/*Insert Into Table Booking*/
-			if(daoBooking.insertBooking(booking)) {
-				
-				/*Get Inserted booking ID*/
-				autoID = Help.GetLastAutoIncrement("restaurant_project","Booking");
-				booking.setId(autoID);
-				if(autoID == 0) {
-					System.out.println(autoID);
-				}
-				
-				PreparedStatement preparedStatement = null;
-				try {						
-					/*Insert into Booking Details*/
-					preparedStatement = (PreparedStatement) DbConnection.getConnection().prepareStatement("INSERT INTO Booking_Detail(table_id,booking_id,status) VALUES(?,?,?)");
-					
-					for(Table table : tableList) {
-						if(!table.isAvailable()) {
-							preparedStatement.setInt(1, table.getId());
-							preparedStatement.setInt(2, autoID);
-							preparedStatement.setBoolean(3, true);
-							if(preparedStatement.executeUpdate() > 0) {
-								tableDao.updateBookingTable(table.getId(),false);
-							}
-						}
-					}
-					success = true;
-				} catch (SQLException ex) {
-					success = false;				
-					ex.printStackTrace();
-				}finally {
-					try {
-						preparedStatement.close();
-					} catch (SQLException ex) {						
-						ex.printStackTrace();
-					}
-				}/*End Try-Catch*/
-				
-				if(success) {
-					backListener.CallBack((Booking)booking);		
-					MessageShow.success("Booking was saved successfully", "Booking Table");
-				}								
-			}/*End of Insertion*/	
-			
+			submitBooking();			
 		}else if(e.getSource() == btnCancel) {
 			this.dispose();
+		}else if(e.getSource() == radioButtonVIP) {			
+			
+			if(radioButtonVIP.isSelected()) {
+				/*Get Available VIP table*/
+				tableList = tableDao.getFilterTableType("VIP", true);				
+				refreshTableModel();				
+			}
+			
+		}else if(e.getSource() == radioButtonNormal) {
+			
+			if(radioButtonNormal.isSelected()) {
+				/*Get Available Normal table*/
+				tableList = tableDao.getFilterTableType("Normal", true);
+				refreshTableModel();		
+			}					
+		}else if(e.getSource() == radioButtonAll) {
+			
+			if(radioButtonAll.isSelected()) {
+				/*Get all Available table*/
+				tableList = tableDao.getTableLists(true, true);			
+				refreshTableModel();
+			}			
 		}
+	}	
+
+	private void resetControls() {
+		textBoxCustomerName.setText("");
+		textBoxCustomerPhone.setText("");
+		
+		Date date = new Date();
+		datePickerCheckInDate.setDate(date);
+		spinnerTime.setValue(date);
+		
+		loadModelToTable();	
 	}
+
+	private void submitBooking() {
+		
+		int bookingId = 0;	
+		boolean success = false;			
+		int totalBooking = 0;
+					
+		if(textBoxCustomerName.getText().trim().equals("")) {
+			MessageShow.Error("Pleae valid Customer's Name", "Booking Table");
+			return;
+		}else if(textBoxCustomerPhone.getText().trim().equals("")) {
+			MessageShow.Error("Please valid Customer's Phone", "Booking Table");
+			return;
+		}else {
+			/*Count Selected Table to Booking for Customer*/
+			for(Table table:tableList) {
+				if(!table.isAvailable()) {
+					totalBooking ++;
+				}
+			}
+			
+			if(totalBooking == 0) {
+				MessageShow.Error("Please select any table to book", "Booking Table");
+				return;
+			}				
+		}
+					
+		/*After Validate All Required DATA*/
+		BookingDao daoBooking = new BookingDao();			
+		Date bookingDate = new Date();
+		Date checkInDate = datePickerCheckInDate.getDate();
+		Date checkInTime = (Date) spinnerTime.getValue();
+		
+		Booking booking = new Booking(0,textBoxCustomerName.getText().trim(),textBoxCustomerPhone.getText().trim(),bookingDate,checkInDate,checkInTime,totalBooking);
+		
+		/*Insert Into Table Booking*/
+		if(daoBooking.insertBooking(booking)) {
+			
+			/*Get Inserted booking ID*/
+			bookingId = Help.getLastAutoIncrement("restaurant_project","Booking");
+			booking.setId(bookingId);
+			
+			if(insertTablesToBookingDetail(bookingId)) {
+				backListener.CallBack((Booking)booking);	
+				MessageShow.success("Booking was saved successfully", "Booking Table");
+				resetControls();
+			}			
+		}/*End of Insertion*/			
+	}
+	
+	private boolean insertTablesToBookingDetail(int bookingId) {
+		
+		boolean success = false;
+		PreparedStatement preparedStatement = null;
+		try {						
+			/*Insert into Booking Details*/
+			preparedStatement = (PreparedStatement) DbConnection.getConnection().prepareStatement("INSERT INTO Booking_Detail(table_id,booking_id,status) VALUES(?,?,?)");
+			
+			for(Table table : tableList) {
+				if(!table.isAvailable()) {
+					preparedStatement.setInt(1, table.getId());
+					preparedStatement.setInt(2, bookingId);
+					preparedStatement.setBoolean(3, true);
+					if(preparedStatement.executeUpdate() > 0) {
+						tableDao.updateBookingTable(table.getId(),false);
+					}
+				}
+			}
+			success = true;
+		} catch (SQLException ex) {
+			success = false;				
+			ex.printStackTrace();
+		}finally {
+			try {
+				preparedStatement.close();
+			} catch (SQLException ex) {						
+				ex.printStackTrace();
+			}
+		}/*End Try-Catch*/
+		return success;
+	}
+	
+
+	private void refreshBookedTable() {	
+		String bookedItems = "Booked Table : ";
+		for(Table table:tableList) {
+			if(!table.isAvailable()) {
+				bookedItems += table.getName() +" ; ";
+			}
+		}
+		labelBookingItem.setText(bookedItems);
+	}
+	
+	private void refreshTableModel() {
+		selectBookingModel = new SelectBookingDataModel();	
+		selectBookingModel.setTableModel(tableList);			
+		
+		tableSelectBooking.setModel(selectBookingModel);
+		selectBookingModel.updateTableModel();	
+	}
+	
 }

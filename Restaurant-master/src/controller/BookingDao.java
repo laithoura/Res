@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import com.mysql.jdbc.PreparedStatement;
 import connection.DbConnection;
 import instance_classes.Booking;
+import instance_classes.Table;
 
 public class BookingDao {	
 	private PreparedStatement prepareStatement;
@@ -67,11 +68,35 @@ public class BookingDao {
 		return success;
 	}
 	
-	public boolean deleteBooking(int bookingId) {		
+	public boolean deleteBooking(int bookingId) {
 		boolean success = false;
-		try {			
+		try {
 			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("UPDATE Booking SET status = ? WHERE id = ?");			
 			prepareStatement.setBoolean(1, false);
+			prepareStatement.setInt(2, bookingId);			
+			if(prepareStatement.executeUpdate() > 0) {
+				if(updateBookingTablesToAvailable(bookingId)) {
+					success = true;
+				}
+			}
+		} catch (SQLException e) {		
+			e.printStackTrace();
+			success = false;
+		}finally {
+			try {
+				prepareStatement.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}
+		}
+		return success;
+	}
+	
+	private boolean updateBookingTablesToAvailable(int bookingId) {
+		boolean success = false;
+		try {
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("UPDATE tables AS T JOIN Booking_Detail AS BD ON T.id = BD.table_id SET T.available = ? WHERE booking_id = ? ");			
+			prepareStatement.setBoolean(1, true);
 			prepareStatement.setInt(2, bookingId);			
 			if(prepareStatement.executeUpdate() > 0) {
 				success = true;
@@ -117,4 +142,66 @@ public class BookingDao {
 		}
 		return bookingList;
 	}
+	
+	public boolean deleteAllTablesInBookingDetails(int bookingId) {
+		boolean success = false;
+		PreparedStatement preparedStatement = null;
+		try {			
+			preparedStatement = (PreparedStatement) DbConnection.getConnection().prepareStatement("DELETE FROM Booking_Detail WHERE booking_id = ?");
+			preparedStatement.setInt(1, bookingId);
+			if(preparedStatement.executeUpdate() > 0) {
+				success = true;
+			}		
+			
+		} catch (SQLException ex) {
+			success = false;
+			ex.printStackTrace();
+		}finally {
+			try {
+				preparedStatement.close();
+			} catch (SQLException ex) {						
+				ex.printStackTrace();
+			}
+		}/*End Try-Catch*/
+		return success;
+	}
+
+	public boolean reInsertIntoBookingDetails(int bookingId,ArrayList<Table> tableList) {
+		
+		boolean success = false;
+		TableDao tableDao = new TableDao();
+		PreparedStatement preparedStatement = null;
+		
+		try {
+			preparedStatement = (PreparedStatement) DbConnection.getConnection().prepareStatement("INSERT INTO Booking_Detail(table_id,booking_id,status) VALUES(?,?,?)");
+			for(Table table : tableList) {
+				if(!table.isAvailable()) {
+					
+					preparedStatement.setInt(1, table.getId());
+					preparedStatement.setInt(2, bookingId);
+					preparedStatement.setBoolean(3, true);
+					
+					if(preparedStatement.executeUpdate() > 0) {
+						/*Update table to Unavailable*/
+						tableDao.updateBookingTable(table.getId(),false);									
+					}
+				}else {
+					/*Re-Update table to Available*/
+					tableDao.updateBookingTable(table.getId(),true);
+				}
+			}
+			success = true;
+		} catch (SQLException e) {
+			success = false;
+			e.printStackTrace();			
+		}finally {
+			try {
+				preparedStatement.close();
+			} catch (SQLException ex) {						
+				ex.printStackTrace();
+			}
+		}/*End Try-Catch*/		
+		return success;
+	}
+	
 }

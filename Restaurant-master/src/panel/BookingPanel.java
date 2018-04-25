@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import control_classes.Exporter;
+import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.BookingDao;
 import data_table_model.BookingDataModel;
@@ -177,16 +178,14 @@ public class BookingPanel extends JPanel implements ActionListener{
 		this.btnUpdate.addActionListener(this);
 		this.btnDetail.addActionListener(this);
 		this.btnDelete.addActionListener(this);
-		this.btnExport.addActionListener(this);		
+		this.btnExport.addActionListener(this);			
 	}
 
 	class RowListener implements ListSelectionListener{
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if(e.getValueIsAdjusting()) return;
-			selectedIndex = tableBooking.getSelectedRow();
-			
-			//JOptionPane.showMessageDialog(null, "Selected Index : "+selectedIndex+" : "+bookingList.get(selectedIndex).toString());			
+			selectedIndex = tableBooking.getSelectedRow();			
 		}
 	}
 
@@ -203,8 +202,11 @@ public class BookingPanel extends JPanel implements ActionListener{
 				}
 			});
 			insertBooking.setVisible(true);
-		}else if(e.getSource() == btnUpdate) {	
-			if(selectedIndex == -1) return;
+		}else if(e.getSource() == btnUpdate) {
+			if(selectedIndex == -1) {
+				MessageShow.Error("Please select record of table.", "Booking");
+				return;
+			}
 			Booking bookingUpdate = bookingList.get(selectedIndex);
 			UpdateBookingDialog updateBooking = new UpdateBookingDialog(bookingUpdate);
 			
@@ -213,30 +215,52 @@ public class BookingPanel extends JPanel implements ActionListener{
 				public void CallBack(Object sender) {
 					Booking booking = (Booking)sender;
 					if(daoBooking.updateBooking(booking)) {
-						bookingList.set(selectedIndex, booking);	
+						bookingList.set(selectedIndex, booking);
 						bookingModel.updateTable();
-						System.out.println("Updated");
+						
+						/*After Updated successfully we close the Dialog*/
+						updateBooking.dispose();
+						selectedIndex = -1;
 					}
-					selectedIndex = -1;					
 				}
 			});
 			updateBooking.setVisible(true);
 			
 		}else if(e.getSource() == btnDetail) {
-			if(selectedIndex == -1) return;
+			
+			if(selectedIndex == -1) {
+				MessageShow.Error("Please select record of table.", "Booking");
+				return;
+			}
+			
+			InsertBookingDialog insertBooking = new InsertBookingDialog(bookingList.get(selectedIndex));			
+			insertBooking.setVisible(true);
+			selectedIndex = -1;
 			
 		}else if(e.getSource() == btnDelete) {
-			if(selectedIndex == -1) return;
-			int bookingId = bookingList.get(selectedIndex).getId();
-			if(daoBooking.deleteBooking(bookingId)) {
-				bookingList.remove(selectedIndex);			
-				bookingModel.updateTable();
-				selectedIndex = -1;
-				System.out.println("Delected");
-				
-			}else{
-				System.out.println("Not Delected");	
+			
+			if(selectedIndex == -1) {
+				MessageShow.Error("Please select record of table.", "Booking");
+				return;
 			}
+			
+			int choose = MessageShow.deleteVerification("Do you want to cancel it?","Cancel Booking");
+			
+			if(choose == 0) {
+				int bookingId = bookingList.get(selectedIndex).getId();
+				
+				if(daoBooking.deleteBooking(bookingId)) {
+					
+					bookingList.remove(selectedIndex);
+					bookingModel.updateTable();
+					selectedIndex = -1;
+					MessageShow.success("Booking was canceled successfully.","Cancel Booking");
+					
+				}else{
+					MessageShow.Error("Booking was canceled unsuccessfully.","Cancel Booking");
+				}				
+			}
+			
 		}else if(e.getSource() == btnExport) {	
 			Exporter.jtableToExcel(tableBooking);
 		}

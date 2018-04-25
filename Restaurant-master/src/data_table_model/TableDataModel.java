@@ -8,7 +8,7 @@ import instance_classes.Table;
 
 public class TableDataModel extends AbstractTableModel{
 
-	private final String COLUMNS[]= {"Table ID","Table Name","Type","Status"};
+	private final String COLUMNS[]= {"Table ID","Table Name","Type","Available"};
 	private ArrayList<Table> tableList;
 	
 	@Override

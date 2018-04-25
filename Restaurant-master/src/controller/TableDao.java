@@ -133,6 +133,30 @@ public class TableDao {
 		return tableList;
 	}
 	
+	public ArrayList<Table> getFilterTableType(String tableType,boolean isAvailable){
+		ArrayList<Table> tableList = new ArrayList<>();
+		try {			
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE type = ? and available = ?");						
+			prepareStatement.setString(1, tableType);
+			prepareStatement.setBoolean(2, isAvailable);
+			resultSet = prepareStatement.executeQuery();
+			
+			while(resultSet.next()) {	
+				tableList.add(new Table(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getBoolean(4),resultSet.getBoolean(5)));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				prepareStatement.close();
+				resultSet.close();
+			} catch (Exception e) {		
+				e.printStackTrace();
+			}
+		}
+		return tableList;
+	}
+	
 	public ArrayList<Table> getTableLists(boolean available,boolean status){
 		ArrayList<Table> tableList = new ArrayList<>();
 		try {			
@@ -141,7 +165,7 @@ public class TableDao {
 			prepareStatement.setBoolean(2, available);
 			resultSet = prepareStatement.executeQuery();
 			
-			while(resultSet.next()) {			
+			while(resultSet.next()) {	
 				tableList.add(new Table(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getBoolean(4),resultSet.getBoolean(5)));
 			}
 		} catch (SQLException e) {
@@ -159,7 +183,7 @@ public class TableDao {
 	
 	public ArrayList<Table> getAllTableLists(boolean status){
 		ArrayList<Table> tableList = new ArrayList<>();
-		try {			
+		try {
 			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE status = ?");						
 			prepareStatement.setBoolean(1, status);			
 			resultSet = prepareStatement.executeQuery();
