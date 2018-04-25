@@ -10,6 +10,7 @@ public class BookingDetail {
 	public BookingDetail() {
 		
 	}
+	
 	public BookingDetail(int id, int bookingID, int tableID, String tableName, String tableType) {		
 		this.id = id;
 		this.bookingID = bookingID;

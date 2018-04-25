@@ -7,11 +7,17 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import com.mysql.jdbc.PreparedStatement;
 import com.toedter.calendar.JDateChooser;
+
+import connection.DbConnection;
 import control_classes.ColorModel;
+import control_classes.Help;
+import control_classes.InputControl;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.BookingDao;
+import controller.TableDao;
 import data_table_model.SelectBookingDataModel;
 import instance_classes.Booking;
 import instance_classes.Table;
@@ -40,6 +46,7 @@ import java.awt.Component;
 import javax.swing.JCheckBox;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 
 public class InsertBookingDialog extends JDialog implements ActionListener{
 
@@ -50,10 +57,15 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 	private ArrayList<Table> tableList;
 	private SelectBookingDataModel selectBookingModel;
 	
+	private TableDao tableDao = new TableDao();
 	private JButton btnClear;
 	private JButton btnSubmit;
 	private JButton btnCancel;
-
+	
+	private JLabel labelBookingItem;
+	private JDateChooser datePickerCheckInDate;
+	private JSpinner spinnerTime;
+	private Booking booking;
 	
 	private CallBackListenter backListener;
 	/**
@@ -78,9 +90,30 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		this.backListener = backListener;
 	}
 	
+	public InsertBookingDialog(Booking booking){
+		this();
+		this.booking = booking;
+		LoadDataIntoControls();
+	}
+	
+	private void LoadDataIntoControls() {
+		textBoxCustomerName.setText(booking.getCustomerName());
+		textBoxCustomerPhone.setText(booking.getCustomerPhone());
+		datePickerCheckInDate.setDate(booking.getCheckInDate());
+		spinnerTime.setValue(booking.getTime());
+	
+		tableList = tableDao.getBookingListOnly(booking.getId());
+		
+		System.out.println(booking.getId()+ " ; " +tableList.size());
+		
+		selectBookingModel.setTableModel(tableList);
+		tableSelectBooking.setModel(selectBookingModel);
+		selectBookingModel.updateTableModel();
+	}
+
 	public InsertBookingDialog() {
 		setTitle("Booking Table");
-		setBounds(100, 100, 506, 473);
+		setBounds(100, 100, 499, 500);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -118,7 +151,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		lblTableType.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTableType.setForeground(Color.BLACK);
 		lblTableType.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		lblTableType.setBounds(34, 156, 116, 24);
+		lblTableType.setBounds(37, 156, 116, 24);
 		contentPanel.add(lblTableType);
 		
 		textBoxCustomerPhone = new JTextField();
@@ -129,7 +162,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		contentPanel.add(textBoxCustomerPhone);
 		
 		JPanel panelSelectBooking = new JPanel();
-		panelSelectBooking.setBounds(34, 195, 430, 185);
+		panelSelectBooking.setBounds(34, 222, 430, 185);
 		contentPanel.add(panelSelectBooking);
 		panelSelectBooking.setLayout(new BorderLayout(0, 0));
 		
@@ -143,21 +176,31 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					
-				      int index = ((JTable) e.getSource()).getSelectedRow();			
-				      System.out.println(index);
+				      int index = ((JTable) e.getSource()).getSelectedRow();							    
 				      
 						if((boolean)selectBookingModel.getValueAt(index, 0)) {
-							tableList.get(index).setStatus(false);
-							System.out.println("True to False");
+							tableList.get(index).setAvailable(true);						
 						}else {
-							tableList.get(index).setStatus(true);
-							System.out.println("False to True");
+							tableList.get(index).setAvailable(false);
 						}
 						tableSelectBooking.clearSelection();
 						selectBookingModel.setTableModel(tableList);
 						selectBookingModel.updateTableModel();
+						
+						RefreshBookedTable();
 				}
 			}
+
+			private void RefreshBookedTable() {	
+				String bookedItems = "Booked Table : ";
+				for(Table table:tableList) {
+					if(!table.isAvailable()) {
+						bookedItems += table.getName() +" ; ";
+					}
+				}
+				labelBookingItem.setText(bookedItems);
+			}
+			
 		});
 		scrollPaneSelectBooking.setViewportView(tableSelectBooking);
 		
@@ -165,37 +208,37 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		btnSubmit.setIcon(new ImageIcon(InsertBookingDialog.class.getResource("/resources/Submit_20.png")));
 		btnSubmit.setMinimumSize(new Dimension(65, 23));
 		btnSubmit.setMaximumSize(new Dimension(65, 23));
-		btnSubmit.setBounds(274, 391, 91, 32);
+		btnSubmit.setBounds(276, 418, 91, 32);
 		contentPanel.add(btnSubmit);
 		
 		btnCancel = new JButton("Cancel");
 		btnCancel.setIcon(new ImageIcon(InsertBookingDialog.class.getResource("/resources/Cancel_20.png")));
 		btnCancel.setMinimumSize(new Dimension(65, 23));
 		btnCancel.setMaximumSize(new Dimension(65, 23));
-		btnCancel.setBounds(371, 391, 91, 32);
+		btnCancel.setBounds(373, 418, 91, 32);
 		contentPanel.add(btnCancel);
 		
 		btnClear = new JButton("Clear");
 		btnClear.setIcon(new ImageIcon(InsertBookingDialog.class.getResource("/resources/Clear_20.png")));
 		btnClear.setMinimumSize(new Dimension(65, 23));
 		btnClear.setMaximumSize(new Dimension(65, 23));
-		btnClear.setBounds(173, 391, 91, 32);
+		btnClear.setBounds(175, 418, 91, 32);
 		contentPanel.add(btnClear);
 					
-		JDateChooser datePickerCheckInDate = new JDateChooser();
+		datePickerCheckInDate = new JDateChooser();
 		datePickerCheckInDate.setDateFormatString("dd/MM/yyyy");
 		datePickerCheckInDate.setBounds(146, 87, 203, 24);
 		contentPanel.add(datePickerCheckInDate);		
 	
 		Date date = new Date();
 		SpinnerDateModel sm = new SpinnerDateModel(date, null, null, Calendar.HOUR_OF_DAY);
-		JSpinner spinner = new javax.swing.JSpinner(sm);
-		JSpinner.DateEditor de = new JSpinner.DateEditor(spinner, "HH:mm a");
-		spinner.setEditor(de);
+		spinnerTime = new javax.swing.JSpinner(sm);
+		JSpinner.DateEditor de = new JSpinner.DateEditor(spinnerTime, "HH:mm a");
+		spinnerTime.setEditor(de);
 		
-		spinner.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		spinner.setBounds(146, 122, 204, 24);
-		contentPanel.add(spinner);
+		spinnerTime.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		spinnerTime.setBounds(146, 122, 204, 24);
+		contentPanel.add(spinnerTime);
 					
 		JLabel label = new JLabel("Time");
 		label.setHorizontalAlignment(SwingConstants.LEFT);
@@ -213,28 +256,38 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		checkBoxVIP.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		checkBoxVIP.setBounds(214, 157, 55, 23);
 		contentPanel.add(checkBoxVIP);
+		
+		labelBookingItem = new JLabel("Booked Table :");
+		labelBookingItem.setHorizontalAlignment(SwingConstants.LEFT);
+		labelBookingItem.setForeground(Color.BLACK);
+		labelBookingItem.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		labelBookingItem.setBounds(37, 187, 427, 24);
+		contentPanel.add(labelBookingItem);
 		contentPanel.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblCustomersName, lblCustomersPhone, lblCheckinDate, lblTableType, panelSelectBooking, tableSelectBooking}));
 		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{getContentPane(), lblCustomersName, lblCustomersPhone, lblCheckinDate, textBoxCustomerName, lblTableType, textBoxCustomerPhone, panelSelectBooking, scrollPaneSelectBooking, tableSelectBooking, btnSubmit, btnCancel, btnClear, datePickerCheckInDate, datePickerCheckInDate.getCalendarButton()}));
 		
-		LoadModelToTable();		
+		TableSetting.TableControl(tableSelectBooking);
+		
+		LoadModelToTable();	
+		ControlTextBox();
+	}
+
+	private void ControlTextBox() {		
+		InputControl.inputLetter(textBoxCustomerName);
+		InputControl.inputInteger(textBoxCustomerPhone);
 	}
 
 	private void LoadModelToTable() {
-		
-		TableSetting.TableControl(tableSelectBooking);
-		
-		tableList = new ArrayList<>();
-		instance_classes.Type type = new instance_classes.Type(1,"Table","VIP", false);
-		tableList.add(new Table(1,"T001","VIP",true,true));
-		tableList.add(new Table(1,"T001","VIP",true,true));
-		tableList.add(new Table(1,"T001","VIP",true,true));
-		tableList.add(new Table(1,"T001","VIP",true,true));
+		tableList = new ArrayList<>();		
+		if(this.booking == null) {
+			tableList = tableDao.getTableLists(true, true);
+		}
 		
 		selectBookingModel = new SelectBookingDataModel();
 		selectBookingModel.setTableModel(tableList);
 		
-		//tableSelectBooking.setModel(selectBookingModel);
-		selectBookingModel.updateTableModel();
+		tableSelectBooking.setModel(selectBookingModel);
+		selectBookingModel.updateTableModel();	
 		
 		registerEvent();
 	}
@@ -249,19 +302,92 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {		
 		if(e.getSource() == btnClear) {
 			
-		}else if(e.getSource() == btnSubmit) {		
-			BookingDao daoBooking = new BookingDao();
+			textBoxCustomerName.setText("");
+			textBoxCustomerPhone.setText("");
 			
 			Date date = new Date();
-			Booking booking = new Booking(1,"Thoura","012403032",date,date,date,10);	
+			datePickerCheckInDate.setDate(date);
+			spinnerTime.setValue(date);
 			
+			LoadModelToTable();	
+			
+		}else if(e.getSource() == btnSubmit) {					
+			int autoID = 0;	
+			boolean success = false;			
+			int totalBooking = 0;
+						
+			if(textBoxCustomerName.getText().trim().equals("")) {
+				MessageShow.Error("Pleae valid Customer's Name", "Booking Table");
+				return;
+			}else if(textBoxCustomerPhone.getText().trim().equals("")) {
+				MessageShow.Error("Pleae valid Customer's Phone", "Booking Table");
+				return;
+			}else {
+				/*Count Selected Table to Booking for Customer*/
+				for(Table table:tableList) {
+					if(!table.isAvailable()) {
+						totalBooking ++;
+					}
+				}
+				
+				if(totalBooking == 0) {
+					MessageShow.Error("Please select any table to book", "Booking Table");
+					return;
+				}				
+			}
+						
+			/*After Validate All Required DATA*/
+			BookingDao daoBooking = new BookingDao();			
+			Date bookingDate = new Date();
+			Date checkInDate = datePickerCheckInDate.getDate();
+			Date checkInTime = (Date) spinnerTime.getValue();
+			
+			Booking booking = new Booking(0,textBoxCustomerName.getText().trim(),textBoxCustomerPhone.getText().trim(),bookingDate,checkInDate,checkInTime,totalBooking);				
+			/*Insert Into Table Booking*/
 			if(daoBooking.insertBooking(booking)) {
-				backListener.CallBack((Booking)booking);
-				//System.out.println("Inserted");
-				MessageShow.success("Booking was saved successfully", "Booking Table");
-			}				
-		}else if(e.getSource() == btnCancel) {
+				
+				/*Get Inserted booking ID*/
+				autoID = Help.GetLastAutoIncrement("restaurant_project","Booking");
+				booking.setId(autoID);
+				if(autoID == 0) {
+					System.out.println(autoID);
+				}
+				
+				PreparedStatement preparedStatement = null;
+				try {						
+					/*Insert into Booking Details*/
+					preparedStatement = (PreparedStatement) DbConnection.getConnection().prepareStatement("INSERT INTO Booking_Detail(table_id,booking_id,status) VALUES(?,?,?)");
+					
+					for(Table table : tableList) {
+						if(!table.isAvailable()) {
+							preparedStatement.setInt(1, table.getId());
+							preparedStatement.setInt(2, autoID);
+							preparedStatement.setBoolean(3, true);
+							if(preparedStatement.executeUpdate() > 0) {
+								tableDao.updateBookingTable(table.getId(),false);
+							}
+						}
+					}
+					success = true;
+				} catch (SQLException ex) {
+					success = false;				
+					ex.printStackTrace();
+				}finally {
+					try {
+						preparedStatement.close();
+					} catch (SQLException ex) {						
+						ex.printStackTrace();
+					}
+				}/*End Try-Catch*/
+				
+				if(success) {
+					backListener.CallBack((Booking)booking);		
+					MessageShow.success("Booking was saved successfully", "Booking Table");
+				}								
+			}/*End of Insertion*/	
 			
+		}else if(e.getSource() == btnCancel) {
+			this.dispose();
 		}
 	}
 }

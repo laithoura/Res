@@ -87,7 +87,7 @@ public class TableDao {
 		return success;
 	}
 	
-	public boolean deleteTable(int tableID) {		
+	public boolean deleteTable(int tableID) {
 		boolean success = false;
 		try {			
 			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("UPDATE tables SET status = ? WHERE id = ?");			
@@ -107,6 +107,30 @@ public class TableDao {
 			}
 		}
 		return success;
+	}
+	
+	public ArrayList<Table> getBookingListOnly(int bookingID){
+		ArrayList<Table> tableList = new ArrayList<>();
+		try {			
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT TS.id, TS.name, TS.type, TS.available, TS.status FROM booking_detail AS BD INNER JOIN tables AS TS ON BD.table_id = TS.id WHERE booking_id = ?");
+			prepareStatement.setInt(1, bookingID);	
+			resultSet = prepareStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				
+				tableList.add(new Table(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getBoolean(4),resultSet.getBoolean(5)));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				prepareStatement.close();
+				resultSet.close();
+			} catch (Exception e) {		
+				e.printStackTrace();
+			}
+		}
+		return tableList;
 	}
 	
 	public ArrayList<Table> getTableLists(boolean available,boolean status){
@@ -156,14 +180,14 @@ public class TableDao {
 		return tableList;
 	}
 	
-	public boolean checkExistTableName(String name) {		
+	public boolean checkExistTableName(String name) {				
 		boolean exist = false;
 		try {
 			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT name FROM tables WHERE name = ?");
 			prepareStatement.setString(1, name);
 			resultSet = prepareStatement.executeQuery();
 			while(resultSet.next()) {
-				if(name == resultSet.getString(1)) {
+				if(name.equals(resultSet.getString(1))) {
 					exist = true;
 				}
 			}
@@ -178,5 +202,31 @@ public class TableDao {
 			}
 		}
 		return exist;
-	}	
+	}
+	
+	public ArrayList<Table> searchTableLists(String condition,boolean status){
+		ArrayList<Table> tableList = new ArrayList<>();
+		try {			
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE name = ? OR type = ? AND status = ?");						
+			prepareStatement.setString(1, condition);			
+			prepareStatement.setString(2, condition);			
+			prepareStatement.setBoolean(3, status);		
+			resultSet = prepareStatement.executeQuery();
+			
+			while(resultSet.next()) {
+				tableList.add(new Table(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getBoolean(4),resultSet.getBoolean(5)));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				prepareStatement.close();
+				resultSet.close();
+			} catch (Exception e) {				
+				e.printStackTrace();
+			}
+		}
+		return tableList;
+	}
+	
 }

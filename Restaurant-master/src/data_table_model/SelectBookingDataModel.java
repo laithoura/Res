@@ -46,7 +46,7 @@ public class SelectBookingDataModel extends AbstractTableModel {
 		Table table = tableList.get(rowIndex);
 		
 		switch (colIndex) {
-		case 0: return table.isAvailable();
+		case 0: return !table.isAvailable();
 		case 1: return table.getName();		
 		case 2: return table.getType();
 		default: return null;

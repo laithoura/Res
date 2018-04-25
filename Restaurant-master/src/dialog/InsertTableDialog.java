@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 
 import control_classes.ColorModel;
 import control_classes.MessageShow;
+import controller.TableDao;
 import instance_classes.Table;
 import interfaces.CallBackListenter;
 
@@ -186,19 +187,33 @@ public class InsertTableDialog extends JDialog implements ActionListener{
 		btnSubmit.addActionListener(this);
 		btnCancel.addActionListener(this);		
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		TableDao tableDao = new TableDao();
 		if(e.getSource() == btnSubmit) {
 			if(textBoxTableName.getText().equals("")) {
 				MessageShow.Error("Please input Table Name", "Create Table"); return;
 			}
 			String type = (rdbtnVIP.isSelected())?"VIP":"Normal";
 			
-			if(this.table == null) {
-				Table newTable = new Table(0,textBoxTableName.getText().trim(),type,true,true);
+			if(this.table == null) {				
+				if(tableDao.checkExistTableName(textBoxTableName.getText().trim()))
+				{
+					MessageShow.Error("This Table Name is already exist.", "Create Table");
+					return;
+				}
+				Table newTable = new Table(0,textBoxTableName.getText().trim(),type,true,true);				
 				backListener.CallBack(newTable);
 			}else {
+				if(!textBoxTableName.getText().trim().equals(table.getName()))
+				{
+					if(tableDao.checkExistTableName(textBoxTableName.getText().trim()))
+					{
+						MessageShow.Error("This Table Name is already exist.", "Create Table");
+						return;
+					}
+				}				
 				this.table.setName(textBoxTableName.getText().trim());
 				this.table.setType(type);
 				backListener.CallBack(this.table);

@@ -10,6 +10,7 @@ public class DateFormat{
 	}
 	
 	public static String timeFormat(Date time) {
+		System.out.println(time.toString());
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		return sdf.format(time);
 	}

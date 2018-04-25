@@ -200,10 +200,9 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
             
             InetAddress myHost = InetAddress.getLocalHost();
 	        cboServerName.addItem(myHost.toString());             
-            
         } catch (Exception ex) {
             ex.printStackTrace();
-        }						
+        }
 	}
 	
 	@Override
@@ -224,7 +223,7 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
 			System.exit(0);
 		}
 	}
-
+	
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getSource() == cboServerName) {

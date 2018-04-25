@@ -2,9 +2,7 @@ package controller;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.mysql.jdbc.PreparedStatement;
 import connection.DbConnection;
@@ -22,9 +20,9 @@ public class BookingDao {
 			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("INSERT INTO Booking(cus_name, cus_phone, time, booking_date, checkin_date, total_table, status) VALUES(?,?,?,?,?,?,?)");
 			prepareStatement.setString(1, booking.getCustomerName());
 			prepareStatement.setString(2, booking.getCustomerPhone());		
-			prepareStatement.setDate(3, new java.sql.Date(booking.getTime().getDate()) );			
-			prepareStatement.setDate(4, new java.sql.Date(booking.getBookingDate().getDate()));			
-			prepareStatement.setDate(5, new java.sql.Date(booking.getCheckInDate().getDate()));
+			prepareStatement.setDate(3, new java.sql.Date(booking.getTime().getTimezoneOffset()));
+			prepareStatement.setDate(4, new java.sql.Date(booking.getBookingDate().getTime()));			
+			prepareStatement.setDate(5, new java.sql.Date(booking.getCheckInDate().getTime()));
 			prepareStatement.setInt(6, booking.getTotalTable());
 			prepareStatement.setBoolean(7, true);			
 			if(prepareStatement.executeUpdate() > 0) {
