@@ -11,7 +11,9 @@ import java.util.Date;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import control_classes.DateFormat;
 import control_classes.Exporter;
+import control_classes.InputControl;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.BookingDao;
@@ -19,19 +21,15 @@ import data_table_model.BookingDataModel;
 import dialog.InsertBookingDialog;
 import dialog.UpdateBookingDialog;
 import instance_classes.Booking;
-import instance_classes.BookingDetail;
 import interfaces.CallBackListenter;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
-
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Time;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -40,6 +38,16 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
+import javax.swing.SpinnerDateModel;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.DefaultComboBoxModel;
+import com.toedter.calendar.JDateChooser;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerModel;
 
 public class BookingPanel extends JPanel implements ActionListener{
 	private JTable tableBooking;
@@ -53,7 +61,12 @@ public class BookingPanel extends JPanel implements ActionListener{
 	
 	private int selectedIndex = -1;
 	private BookingDao daoBooking = new BookingDao();
-	private JTextField textField;
+	private JTextField textBoxSearch;
+	private JComboBox<?> comboBoxSearchType;
+	private JDateChooser dateChooser;
+	private JSpinner timeSpinner; 
+	private JPanel panelFooter;
+	private JButton btnRefresh;
 	/**
 	 * Create the panel.
 	 */
@@ -61,6 +74,7 @@ public class BookingPanel extends JPanel implements ActionListener{
 		setLayout(new BorderLayout(0, 0));
 		
 		JPanel panelHeader = new JPanel();
+		panelHeader.setBorder(new EmptyBorder(0, 0, 0, 0));
 		add(panelHeader, BorderLayout.NORTH);
 		
 		btnExport = new JButton("Export");
@@ -84,23 +98,21 @@ public class BookingPanel extends JPanel implements ActionListener{
 		btnNewBooking.setMinimumSize(new Dimension(65, 23));
 		btnNewBooking.setMaximumSize(new Dimension(65, 23));
 		
-		JLabel labelSearch = new JLabel("");
-		labelSearch.setIcon(new ImageIcon(BookingPanel.class.getResource("/resources/Search_20.png")));
-		labelSearch.setToolTipText("Search");
-		labelSearch.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		JPanel panelSearch = new JPanel();
 		
-		textField = new JTextField();
-		textField.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		textField.setColumns(10);
+		btnRefresh = new JButton("Refresh");
+		btnRefresh.setIcon(new ImageIcon(BookingPanel.class.getResource("/resources/Refresh_20.png")));
+		btnRefresh.setMinimumSize(new Dimension(65, 23));
+		btnRefresh.setMaximumSize(new Dimension(65, 23));
 		GroupLayout gl_panelHeader = new GroupLayout(panelHeader);
 		gl_panelHeader.setHorizontalGroup(
 			gl_panelHeader.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panelHeader.createSequentialGroup()
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addComponent(textField, GroupLayout.PREFERRED_SIZE, 116, GroupLayout.PREFERRED_SIZE)
-					.addGap(5)
-					.addComponent(labelSearch, GroupLayout.PREFERRED_SIZE, 27, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGap(9)
+					.addComponent(panelSearch, GroupLayout.PREFERRED_SIZE, 249, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+					.addComponent(btnRefresh, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnNewBooking, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -110,47 +122,132 @@ public class BookingPanel extends JPanel implements ActionListener{
 					.addComponent(btnDelete, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
 					.addGap(6)
 					.addComponent(btnExport, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
+					.addGap(8))
 		);
 		gl_panelHeader.setVerticalGroup(
 			gl_panelHeader.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelHeader.createSequentialGroup()
-					.addGap(5)
-					.addGroup(gl_panelHeader.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnExport, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnDelete, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnDetail, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-						.addComponent(btnNewBooking, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)))
-				.addGroup(gl_panelHeader.createSequentialGroup()
-					.addContainerGap()
 					.addGroup(gl_panelHeader.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panelHeader.createSequentialGroup()
-							.addGap(7)
-							.addComponent(textField, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE))
+							.addGap(18)
+							.addGroup(gl_panelHeader.createParallelGroup(Alignment.TRAILING, false)
+								.addComponent(btnExport, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+								.addComponent(btnDelete, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+								.addComponent(btnDetail, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+								.addComponent(btnUpdate, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+								.addComponent(btnNewBooking, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+								.addComponent(btnRefresh, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(gl_panelHeader.createSequentialGroup()
 							.addGap(8)
-							.addComponent(labelSearch, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE))))
+							.addComponent(panelSearch, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
+		panelSearch.setLayout(null);
+		
+		textBoxSearch = new JTextField();
+		textBoxSearch.setBounds(0, 25, 203, 24);
+		panelSearch.add(textBoxSearch);
+		textBoxSearch.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+					searchBooking();
+				}
+			}
+		});
+		textBoxSearch.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		textBoxSearch.setColumns(10);
+		
+		JLabel labelSearch = new JLabel("");
+		labelSearch.setBounds(212, 27, 36, 20);
+		panelSearch.add(labelSearch);
+		labelSearch.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				searchBooking();
+			}
+		});
+		labelSearch.setIcon(new ImageIcon(BookingPanel.class.getResource("/resources/Search_20.png")));
+		labelSearch.setToolTipText("Search");
+		labelSearch.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		
+		comboBoxSearchType = new JComboBox();
+		comboBoxSearchType.setBounds(0, 2, 203, 22);
+		panelSearch.add(comboBoxSearchType);
+		comboBoxSearchType.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(comboBoxSearchType.getSelectedIndex() == -1) return;
+				
+				textBoxSearch.setText("");
+				textBoxSearch.setFocusable(true);
+				textBoxSearch.requestFocus();		
+				
+				if(comboBoxSearchType.getSelectedIndex() == 0) { /*Booking ID*/
+					textBoxSearch.setVisible(true);
+					timeSpinner.setVisible(false);
+					dateChooser.setVisible(false);										
+					
+				}else if(comboBoxSearchType.getSelectedIndex() == 1) { /*Customer's Name*/
+					
+					textBoxSearch.setVisible(true);
+					timeSpinner.setVisible(false);
+					dateChooser.setVisible(false);					
+					
+				}else if(comboBoxSearchType.getSelectedIndex() == 2) { /*Customer's Phone*/
+					
+					textBoxSearch.setVisible(true);
+					timeSpinner.setVisible(false);
+					dateChooser.setVisible(false);					
+					
+				}else if(comboBoxSearchType.getSelectedIndex() == 3) { /*Booking Date*/
+					
+					dateChooser.setVisible(true);
+					textBoxSearch.setVisible(false);
+					timeSpinner.setVisible(false);
+					
+				}else if(comboBoxSearchType.getSelectedIndex() == 4) { /*Check-in Date*/
+					
+					dateChooser.setVisible(true);
+					textBoxSearch.setVisible(false);
+					timeSpinner.setVisible(false);
+					
+				}else if(comboBoxSearchType.getSelectedIndex() == 5) { /*Time*/
+					
+					timeSpinner.setVisible(true);
+					textBoxSearch.setVisible(false);
+					dateChooser.setVisible(false);
+					
+				}else if(comboBoxSearchType.getSelectedIndex() == 5) {
+					
+					textBoxSearch.setVisible(true);
+					timeSpinner.setVisible(false);
+					dateChooser.setVisible(false);					
+				}				
+			}
+		});
+		comboBoxSearchType.setModel(new DefaultComboBoxModel(new String[] {"Booking ID", "Customer's Name", "Customer's Phone", "Booking Date", "Check-in Date", "Time", "Table Name"}));
+		comboBoxSearchType.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		
+		dateChooser = new JDateChooser();
+		dateChooser.setBounds(0, 25, 203, 24);
+		panelSearch.add(dateChooser);
+		dateChooser.setDateFormatString("dd/MM/yyyy");
+											
+		Date date = new Date();
+		SpinnerDateModel sm = new SpinnerDateModel(date, null, null, Calendar.HOUR_OF_DAY);
+		timeSpinner = new javax.swing.JSpinner(sm);
+		JSpinner.DateEditor de = new JSpinner.DateEditor(timeSpinner, "HH:mm");
+		timeSpinner.setBounds(0, 25, 203, 24);
+		timeSpinner.setFont(new Font("Tahoma", Font.PLAIN, 13));	
+		panelSearch.add(timeSpinner);
+		timeSpinner.setEditor(de);
 		panelHeader.setLayout(gl_panelHeader);
 		
 		JPanel panelContainer = new JPanel();
 		panelContainer.setBorder(new EmptyBorder(1, 10, 0, 10));
 		add(panelContainer, BorderLayout.CENTER);
-		panelContainer.setLayout(new BorderLayout(0, 0));
-				
-		JPanel panelFooter = new JPanel();
-		add(panelFooter, BorderLayout.SOUTH);
-		GroupLayout gl_panelFooter = new GroupLayout(panelFooter);
-		gl_panelFooter.setHorizontalGroup(
-			gl_panelFooter.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 661, Short.MAX_VALUE)
-		);
-		gl_panelFooter.setVerticalGroup(
-			gl_panelFooter.createParallelGroup(Alignment.LEADING)
-				.addGap(0, 10, Short.MAX_VALUE)
-		);
-		panelFooter.setLayout(gl_panelFooter);
+		panelContainer.setLayout(new BorderLayout(0, 0));			
 		
 		JScrollPane scrollPaneBooking = new JScrollPane();
 		panelContainer.add(scrollPaneBooking, BorderLayout.CENTER);
@@ -158,22 +255,23 @@ public class BookingPanel extends JPanel implements ActionListener{
 		tableBooking = new JTable();
 		scrollPaneBooking.setViewportView(tableBooking);				
 		
-		TableSetting.TableControl(tableBooking);
-	
-		bookingModel = new BookingDataModel();		
-		bookingList = daoBooking.getBookingLists(true);		
-		bookingModel.setBookingList(bookingList);
+		panelFooter = new JPanel();
+		add(panelFooter, BorderLayout.SOUTH);
+		bookingList = daoBooking.getBookingLists(true);	
 		
-		/*Error this line*/		
-		tableBooking.setModel(bookingModel);
-		bookingModel.updateTable();
+		bookingModel = new BookingDataModel();
 		
-		tableBooking.getSelectionModel().addListSelectionListener(new RowListener());
+		refreshTableModel();	
 		
-		RegisterEvent();
-	}
-	
-	private void RegisterEvent() {
+		registerEvent();		
+	}	
+
+	private void registerEvent() {			
+		
+		TableSetting.TableControl(tableBooking);	
+		tableBooking.getSelectionModel().addListSelectionListener(new RowListener());		
+		
+		this.btnRefresh.addActionListener(this);
 		this.btnNewBooking.addActionListener(this);
 		this.btnUpdate.addActionListener(this);
 		this.btnDetail.addActionListener(this);
@@ -191,6 +289,10 @@ public class BookingPanel extends JPanel implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == btnRefresh) {
+			bookingList = daoBooking.getBookingLists(true);	
+			refreshTableModel();
+		}
 		if(e.getSource() == btnNewBooking) {
 			InsertBookingDialog insertBooking = new InsertBookingDialog();
 			insertBooking.setCallBackListener(new CallBackListenter() {				
@@ -264,5 +366,59 @@ public class BookingPanel extends JPanel implements ActionListener{
 		}else if(e.getSource() == btnExport) {	
 			Exporter.jtableToExcel(tableBooking);
 		}
+	}
+	
+	
+	private void searchBooking() {
+
+		bookingList.clear();
+		if(textBoxSearch.getText().trim().equals("")) {
+			bookingList = daoBooking.getBookingLists(true);
+		}
+		else {
+			Object condition = null;
+			if(comboBoxSearchType.getSelectedIndex() == 0) { /*Booking ID*/
+				
+				try {
+					condition = Integer.parseInt(textBoxSearch.getText().trim());			
+				}catch(NumberFormatException ex) {			
+					return;
+				}
+				
+			}else if(comboBoxSearchType.getSelectedIndex() == 1) { /*Customer's Name*/
+				
+				condition = textBoxSearch.getText().trim();
+				
+			}else if(comboBoxSearchType.getSelectedIndex() == 2) { /*Customer's Phone*/
+				
+				condition = textBoxSearch.getText().trim();
+				
+			}else if(comboBoxSearchType.getSelectedIndex() == 3) { /*Booking Date*/
+				
+				condition = dateChooser.getDate();
+				
+			}else if(comboBoxSearchType.getSelectedIndex() == 4) { /*Check-in Date*/
+				
+				condition = dateChooser.getDate();
+				
+			}else if(comboBoxSearchType.getSelectedIndex() == 5) { /*Time*/
+				
+				condition = DateFormat.timeFormat((Date)timeSpinner.getValue());
+				
+			}else if(comboBoxSearchType.getSelectedIndex() == 6) {
+				
+				condition = textBoxSearch.getText().trim();
+			}
+			bookingList = daoBooking.searchBookingList(condition,comboBoxSearchType.getSelectedIndex());		
+		}
+		refreshTableModel();
+	}
+	
+	private void refreshTableModel() {
+		
+		bookingModel.setBookingList(bookingList);		
+		/*Error this line*/
+		tableBooking.setModel(bookingModel);
+		bookingModel.updateTable();		
 	}
 }

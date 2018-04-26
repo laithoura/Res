@@ -51,4 +51,12 @@ public class InputControl {
 			}
 		});
 	}
+	
+	public static void inputAnythings(JTextField txt) {
+		txt.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent e) {
+				
+			}
+		});
+	}
 }

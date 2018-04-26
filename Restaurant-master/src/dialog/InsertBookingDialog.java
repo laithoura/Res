@@ -12,6 +12,7 @@ import com.toedter.calendar.JDateChooser;
 
 import connection.DbConnection;
 import control_classes.ColorModel;
+import control_classes.DateFormat;
 import control_classes.Help;
 import control_classes.InputControl;
 import control_classes.MessageShow;
@@ -106,7 +107,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		textBoxCustomerName.setText(booking.getCustomerName());
 		textBoxCustomerPhone.setText(booking.getCustomerPhone());
 		datePickerCheckInDate.setDate(booking.getCheckInDate());
-		spinnerTime.setValue(booking.getTime());
+		spinnerTime.setValue(DateFormat.stringToSqlTime(booking.getTime()));
 		
 		/*Get The Booking Table Only from TABLE BOOKING*/
 		tableList = tableDao.getBookingListOnly(booking.getId());	
@@ -240,7 +241,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		Date date = new Date();
 		SpinnerDateModel sm = new SpinnerDateModel(date, null, null, Calendar.HOUR_OF_DAY);
 		spinnerTime = new javax.swing.JSpinner(sm);
-		JSpinner.DateEditor de = new JSpinner.DateEditor(spinnerTime, "HH:mm a");
+		JSpinner.DateEditor de = new JSpinner.DateEditor(spinnerTime, "HH:mm");
 		spinnerTime.setEditor(de);
 		
 		spinnerTime.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -393,7 +394,8 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		BookingDao daoBooking = new BookingDao();			
 		Date bookingDate = new Date();
 		Date checkInDate = datePickerCheckInDate.getDate();
-		Date checkInTime = (Date) spinnerTime.getValue();
+		
+		String checkInTime = DateFormat.timeFormat( (Date) spinnerTime.getValue());
 		
 		Booking booking = new Booking(0,textBoxCustomerName.getText().trim(),textBoxCustomerPhone.getText().trim(),bookingDate,checkInDate,checkInTime,totalBooking);
 		

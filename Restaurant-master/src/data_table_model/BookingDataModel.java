@@ -35,8 +35,8 @@ public class BookingDataModel extends AbstractTableModel{
 		case 2: return booking.getCustomerPhone();
 		case 3: return DateFormat.dateFormat(booking.getBookingDate());
 		case 4: return DateFormat.dateFormat(booking.getCheckInDate());
-		case 5: return DateFormat.timeFormat(booking.getTime());
-		case 6: return booking.getTotalTable();		
+		case 5: return booking.getTime();
+		case 6: return booking.getTotalTable();
 		default: return null;		
 		}
 	}

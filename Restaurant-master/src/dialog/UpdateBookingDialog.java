@@ -12,6 +12,7 @@ import com.toedter.calendar.JDateChooser;
 
 import connection.DbConnection;
 import control_classes.ColorModel;
+import control_classes.DateFormat;
 import control_classes.Help;
 import control_classes.InputControl;
 import control_classes.MessageShow;
@@ -110,7 +111,7 @@ public class UpdateBookingDialog extends JDialog implements ActionListener{
 		textBoxCustomerName.setText(booking.getCustomerName());
 		textBoxCustomerPhone.setText(booking.getCustomerPhone());
 		datePickerCheckInDate.setDate(booking.getCheckInDate());
-		spinnerTime.setValue(booking.getTime());
+		spinnerTime.setValue(DateFormat.stringToSqlTime(booking.getTime()));
 	
 		tableList = tableDao.getBookingListOnly(booking.getId());
 		tableList.addAll(tableDao.getTableLists(true, true));
@@ -230,7 +231,7 @@ public class UpdateBookingDialog extends JDialog implements ActionListener{
 		Date date = new Date();
 		SpinnerDateModel sm = new SpinnerDateModel(date, null, null, Calendar.HOUR_OF_DAY);
 		spinnerTime = new javax.swing.JSpinner(sm);
-		JSpinner.DateEditor de = new JSpinner.DateEditor(spinnerTime, "HH:mm a");
+		JSpinner.DateEditor de = new JSpinner.DateEditor(spinnerTime, "HH:mm");
 		spinnerTime.setEditor(de);
 		
 		spinnerTime.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -344,8 +345,7 @@ public class UpdateBookingDialog extends JDialog implements ActionListener{
 	}	
 
 	private void updateBooking() {
-		BookingDao bookingDao = new BookingDao();
-		boolean success = false;
+		
 		int totalBooking = 0;		
 		/*Begin Validation Data Input*/
 		if(textBoxCustomerName.getText().trim().equals("")) {
@@ -372,12 +372,12 @@ public class UpdateBookingDialog extends JDialog implements ActionListener{
 		/*After Validate All Required DATA*/
 		BookingDao daoBooking = new BookingDao();				
 		Date checkInDate = datePickerCheckInDate.getDate();
-		Date checkInTime = (Date) spinnerTime.getValue();
+		Date time = (Date) spinnerTime.getValue();
 		
 		this.booking.setCustomerName(textBoxCustomerName.getText().trim());
 		this.booking.setCustomerPhone(textBoxCustomerPhone.getText().trim());
 		this.booking.setCheckInDate(checkInDate);
-		this.booking.setTime(checkInTime);
+		this.booking.setTime(DateFormat.timeFormat(time));
 		this.booking.setTotalTable(totalBooking);
 		
 		if(daoBooking.deleteAllTablesInBookingDetails(this.booking.getId()) && daoBooking.reInsertIntoBookingDetails(this.booking.getId(),this.tableList)) {

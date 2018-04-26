@@ -8,7 +8,7 @@ public class Booking {
 	private int id;
 	private String customerName;
 	private String customerPhone;
-	private Date time;
+	private String time;
 	private Date bookingDate;
 	private Date checkInDate;
 	private int totalTable;
@@ -31,10 +31,10 @@ public class Booking {
 	public void setCustomerPhone(String customerPhone) {
 		this.customerPhone = customerPhone;
 	}
-	public Date getTime() {
+	public String getTime() {
 		return time;
 	}
-	public void setTime(Date time) {
+	public void setTime(String time) {
 		this.time = time;
 	}
 	public Date getBookingDate() {
@@ -66,7 +66,7 @@ public class Booking {
 		
 	}
 	
-	public Booking(int id, String customerName, String customerPhone, Date bookingDate, Date checkInDate, Date time,int totalTable) {
+	public Booking(int id, String customerName, String customerPhone, Date bookingDate, Date checkInDate, String time,int totalTable) {
 		this.id = id;
 		this.customerName = customerName;
 		this.customerPhone = customerPhone;
@@ -76,7 +76,7 @@ public class Booking {
 		this.totalTable = totalTable;
 	}
 	
-	public Booking(int id, String customerName, String customerPhone, Date bookingDate, Date checkInDate, Date time,int totalTable, ArrayList<BookingDetail> tableBookingList) {
+	public Booking(int id, String customerName, String customerPhone, Date bookingDate, Date checkInDate, String time,int totalTable, ArrayList<BookingDetail> tableBookingList) {
 		this.id = id;
 		this.customerName = customerName;
 		this.customerPhone = customerPhone;

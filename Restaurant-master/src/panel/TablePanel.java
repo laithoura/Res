@@ -178,7 +178,7 @@ public class TablePanel extends JPanel implements ActionListener{
 		);
 		panelFooter.setLayout(gl_panelFooter);
 		
-		LoadDataIntoTable();
+		loadDataIntoTable();
 		TableSetting.TableControl(tableTableDetail);
 		
 		RegisterEvent();
@@ -257,41 +257,41 @@ public class TablePanel extends JPanel implements ActionListener{
 					listTable.remove(selectedIndex);
 					tableModel.updateTableModel();
 					MessageShow.success("Table was deleted successfully.", "Delete Table");
-					RefreshTotalRow();
+					refreshTotalRow();
 				}
 			}
 		}else if(e.getSource() == buttonExport) {
 			Exporter.jtableToExcel(tableTableDetail);
 		}else if(e.getSource() == buttonRefresh) {
-			LoadDataIntoTable();
+			loadDataIntoTable();
 		}
 	}
 	
 	private void SearchTableList() {
 		if(textBoxSeach.getText().equals(""))
 		{	
-			LoadDataIntoTable();
+			loadDataIntoTable();
 			return;
 		}					
 		listTable =  tableDao.searchTableLists(textBoxSeach.getText().trim(), true);					
 		tableModel.setTableModel(listTable);
 		tableTableDetail.setModel(tableModel);
 		tableModel.updateTableModel();	
-		RefreshTotalRow();		
+		refreshTotalRow();		
 	}
 	
-	private void LoadDataIntoTable() {
+	private void loadDataIntoTable() {
 		listTable = tableDao.getAllTableLists(true);
 		
 		tableModel = new TableDataModel();
 		tableModel.setTableModel(listTable);			
 		
-		tableTableDetail.setModel(tableModel);
+		//tableTableDetail.setModel(tableModel);
 		tableModel.updateTableModel();	
-		RefreshTotalRow();
+		refreshTotalRow();
 	}
 
-	private void RefreshTotalRow() {
+	private void refreshTotalRow() {
 		labelTotalRow.setText(String.format("Total Row : %d", listTable.size()));
 	}
 	
