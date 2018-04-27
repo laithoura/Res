@@ -1,7 +1,6 @@
 package data_table_model;
 
 import java.util.ArrayList;
-import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 import instance_classes.Table;
@@ -26,11 +25,6 @@ public class SelectBookingDataModel extends AbstractTableModel {
 		return tableList.size();
 	}
 
-	@Override
-	public void addTableModelListener(TableModelListener l) {
-		System.out.println("Did AddTableModelListener");
-	}
-	
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {		
 		switch (columnIndex) {

@@ -218,26 +218,26 @@ public class BookingDao {
 				
 			}else if(searchType == 1) { /*Cus Name*/
 				
-				prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT id, cus_name, cus_phone, booking_date, checkin_date, time, total_table FROM Booking WHERE cus_name like ? AND status = ?");				
+				prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT id, cus_name, cus_phone, booking_date, checkin_date, time, total_table FROM Booking WHERE cus_name LIKE ? AND status = ?");				
 				prepareStatement.setString(1, "%" +((String) condition) + "%" );
 				prepareStatement.setBoolean(2, true); /*Available Booking Status*/
 				
 			}else if(searchType == 2) { /*Cus Phone*/
 				
-				prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT id, cus_name, cus_phone, booking_date, checkin_date, time, total_table FROM Booking WHERE cus_phone = ? AND status = ?");				
-				prepareStatement.setString(1, (String) condition);
+				prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT id, cus_name, cus_phone, booking_date, checkin_date, time, total_table FROM Booking WHERE cus_phone LIKE ? AND status = ?");				
+				prepareStatement.setString(1, "%" + (String) condition + "%");
 				prepareStatement.setBoolean(2, true); /*Available Booking Status*/
 				
 			}else if(searchType == 3) { /*Booking Date*/
 				prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT id, cus_name, cus_phone, booking_date, checkin_date, time, total_table FROM Booking WHERE booking_date = ? AND status = ?");
 				
-				prepareStatement.setDate(1, (java.sql.Date) condition);
+				prepareStatement.setDate(1, new java.sql.Date(((Date)condition).getTime()));
 				prepareStatement.setBoolean(2, true); /*Available Booking Status*/
 			}else if(searchType == 4) { /*Check-in Date*/
 				
 				prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT id, cus_name, cus_phone, booking_date, checkin_date, time, total_table FROM Booking WHERE checkin_date = ? AND status = ?");
 				
-				prepareStatement.setDate(1, (java.sql.Date) condition);
+				prepareStatement.setDate(1, new java.sql.Date(((Date)condition).getTime()));
 				prepareStatement.setBoolean(2, true); /*Available Booking Status*/
 
 			}else if(searchType == 5) { /*Time*/
@@ -248,9 +248,9 @@ public class BookingDao {
 				prepareStatement.setBoolean(2, true); /*Available Booking Status*/
 				
 			}else if(searchType == 6) { /*Table Name*/
-				prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT B.id, B.cus_name, B.cus_phone, B.booking_date, B.checkin_date, B.time, B.total_table,"
-						+ "	FROM (Booking AS B INNER JOIN Booking_Detail AS BD ON B.id = BD.booking_id) INNER JOIN Tables AS T ON BD.table_id ON T.id"
-						+ " WHERE T.name = ? AND status = ?");
+				prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT B.id, B.cus_name, B.cus_phone, B.booking_date, B.checkin_date, B.time, B.total_table"
+						+ "	FROM (Booking AS B INNER JOIN Booking_Detail AS BD ON B.id = BD.booking_id) INNER JOIN Tables AS T ON BD.table_id = T.id"
+						+ " WHERE T.name = ? AND B.status = ?");
 				
 				prepareStatement.setString(1, (String) condition);
 				prepareStatement.setBoolean(2, true); /*Available Booking Status*/

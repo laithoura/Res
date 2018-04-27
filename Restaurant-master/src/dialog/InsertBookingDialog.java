@@ -366,8 +366,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 
 	private void submitBooking() {
 		
-		int bookingId = 0;	
-		boolean success = false;			
+		int bookingId = 0;					
 		int totalBooking = 0;
 					
 		if(textBoxCustomerName.getText().trim().equals("")) {

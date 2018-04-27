@@ -6,14 +6,9 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import com.mysql.jdbc.PreparedStatement;
 import com.toedter.calendar.JDateChooser;
-
-import connection.DbConnection;
 import control_classes.ColorModel;
 import control_classes.DateFormat;
-import control_classes.Help;
 import control_classes.InputControl;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
@@ -23,9 +18,7 @@ import data_table_model.SelectBookingDataModel;
 import instance_classes.Booking;
 import instance_classes.Table;
 import interfaces.CallBackListenter;
-
 import javax.swing.JLabel;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,16 +33,13 @@ import javax.swing.SpinnerDateModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.Dimension;
-
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JSpinner;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
-import javax.swing.JCheckBox;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.sql.SQLException;
 import javax.swing.JRadioButton;
 
 public class UpdateBookingDialog extends JDialog implements ActionListener{

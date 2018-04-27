@@ -176,49 +176,49 @@ public class BookingPanel extends JPanel implements ActionListener{
 		panelSearch.add(comboBoxSearchType);
 		comboBoxSearchType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				if(comboBoxSearchType.getSelectedIndex() == -1) return;
+				int selectedIndex = comboBoxSearchType.getSelectedIndex();
+				if(selectedIndex == -1) return;
 				
 				textBoxSearch.setText("");
 				textBoxSearch.setFocusable(true);
 				textBoxSearch.requestFocus();		
 				
-				if(comboBoxSearchType.getSelectedIndex() == 0) { /*Booking ID*/
+				if(selectedIndex == 0) { /*Booking ID*/
 					textBoxSearch.setVisible(true);
 					timeSpinner.setVisible(false);
 					dateChooser.setVisible(false);										
 					
-				}else if(comboBoxSearchType.getSelectedIndex() == 1) { /*Customer's Name*/
+				}else if(selectedIndex == 1) { /*Customer's Name*/
 					
 					textBoxSearch.setVisible(true);
 					timeSpinner.setVisible(false);
 					dateChooser.setVisible(false);					
 					
-				}else if(comboBoxSearchType.getSelectedIndex() == 2) { /*Customer's Phone*/
+				}else if(selectedIndex == 2) { /*Customer's Phone*/
 					
 					textBoxSearch.setVisible(true);
 					timeSpinner.setVisible(false);
 					dateChooser.setVisible(false);					
 					
-				}else if(comboBoxSearchType.getSelectedIndex() == 3) { /*Booking Date*/
+				}else if(selectedIndex == 3) { /*Booking Date*/
 					
 					dateChooser.setVisible(true);
 					textBoxSearch.setVisible(false);
 					timeSpinner.setVisible(false);
 					
-				}else if(comboBoxSearchType.getSelectedIndex() == 4) { /*Check-in Date*/
+				}else if(selectedIndex == 4) { /*Check-in Date*/
 					
 					dateChooser.setVisible(true);
 					textBoxSearch.setVisible(false);
 					timeSpinner.setVisible(false);
 					
-				}else if(comboBoxSearchType.getSelectedIndex() == 5) { /*Time*/
+				}else if(selectedIndex == 5) { /*Time*/
 					
 					timeSpinner.setVisible(true);
 					textBoxSearch.setVisible(false);
 					dateChooser.setVisible(false);
 					
-				}else if(comboBoxSearchType.getSelectedIndex() == 5) {
+				}else if(selectedIndex == 6) {
 					
 					textBoxSearch.setVisible(true);
 					timeSpinner.setVisible(false);
@@ -367,17 +367,17 @@ public class BookingPanel extends JPanel implements ActionListener{
 			Exporter.jtableToExcel(tableBooking);
 		}
 	}
-	
-	
+		
 	private void searchBooking() {
-
+		int selectedIndex = comboBoxSearchType.getSelectedIndex();
 		bookingList.clear();
-		if(textBoxSearch.getText().trim().equals("")) {
+		if(textBoxSearch.getText().trim().equals("") && ( selectedIndex == 0 || selectedIndex == 1 || selectedIndex == 2 || selectedIndex == 6)) {
 			bookingList = daoBooking.getBookingLists(true);
 		}
 		else {
+			
 			Object condition = null;
-			if(comboBoxSearchType.getSelectedIndex() == 0) { /*Booking ID*/
+			if(selectedIndex == 0) { /*Booking ID*/
 				
 				try {
 					condition = Integer.parseInt(textBoxSearch.getText().trim());			
@@ -385,31 +385,31 @@ public class BookingPanel extends JPanel implements ActionListener{
 					return;
 				}
 				
-			}else if(comboBoxSearchType.getSelectedIndex() == 1) { /*Customer's Name*/
+			}else if(selectedIndex == 1) { /*Customer's Name*/
 				
 				condition = textBoxSearch.getText().trim();
 				
-			}else if(comboBoxSearchType.getSelectedIndex() == 2) { /*Customer's Phone*/
+			}else if(selectedIndex == 2) { /*Customer's Phone*/
 				
 				condition = textBoxSearch.getText().trim();
 				
-			}else if(comboBoxSearchType.getSelectedIndex() == 3) { /*Booking Date*/
+			}else if(selectedIndex == 3) { /*Booking Date*/
 				
 				condition = dateChooser.getDate();
 				
-			}else if(comboBoxSearchType.getSelectedIndex() == 4) { /*Check-in Date*/
+			}else if(selectedIndex == 4) { /*Check-in Date*/
 				
 				condition = dateChooser.getDate();
 				
-			}else if(comboBoxSearchType.getSelectedIndex() == 5) { /*Time*/
+			}else if(selectedIndex == 5) { /*Time*/
 				
-				condition = DateFormat.timeFormat((Date)timeSpinner.getValue());
+				condition = DateFormat.timeFormat((Date)timeSpinner.getValue());				
 				
-			}else if(comboBoxSearchType.getSelectedIndex() == 6) {
+			}else if(selectedIndex == 6) {
 				
 				condition = textBoxSearch.getText().trim();
 			}
-			bookingList = daoBooking.searchBookingList(condition,comboBoxSearchType.getSelectedIndex());		
+			bookingList = daoBooking.searchBookingList(condition,selectedIndex);		
 		}
 		refreshTableModel();
 	}
