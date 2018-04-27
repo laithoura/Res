@@ -21,7 +21,7 @@ public class DbConnection {
 	/* For Static Connection */
 	public static Connection getConnection() {
 		try {
-			dbConnection = DriverManager.getConnection("jdbc:mysql://localhost/restaurant_project","root","");	
+			dbConnection = DriverManager.getConnection("jdbc:mysql://localhost/restaurant_project?useSSL=false","root","");	
 		} catch (SQLException e) {			
 			e.printStackTrace();
 		}

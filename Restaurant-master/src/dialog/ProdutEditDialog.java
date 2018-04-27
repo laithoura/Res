@@ -14,14 +14,17 @@ import javax.swing.JComboBox;
 import instance_classes.*;
 import interfaces.CallBackListenter;
 import connection.*;
+import controller.ProductDao;
+
 import java.sql.*;
+import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 public class ProdutEditDialog extends JDialog {
-	private Connection con = null;
+	/*private Connection con = null;
 	private Statement stType = null;
 	private ResultSet rsType = null;
-	private PreparedStatement pstUpdate = null;
+	private PreparedStatement pstUpdate = null;*/
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtName;
@@ -30,7 +33,7 @@ public class ProdutEditDialog extends JDialog {
 	private JTextField txtId;
 	private CallBackListenter backListenter;
 	private Product product;
-
+	private ArrayList<String> typeList;
 	/**
 	 * Launch the application.
 	 */
@@ -55,7 +58,7 @@ public class ProdutEditDialog extends JDialog {
 		txtName.setText(product.getName());
 		txtUnitPrice.setText(product.getUnitPrice() + "");
 		txtId.setText(product.getId() + "");
-		cboType.setSelectedItem(product.getType().getId());
+		cboType.setSelectedItem(product.getType());
 		txtId.setVisible(false);	
 	}
 	
@@ -64,7 +67,7 @@ public class ProdutEditDialog extends JDialog {
 	}
  	
 	public ProdutEditDialog() {
-		con = DbConnection.getConnection();
+		//con = DbConnection.getConnection();
 		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -102,16 +105,8 @@ public class ProdutEditDialog extends JDialog {
 		contentPanel.add(txtUnitPrice);
 		
 		cboType = new JComboBox();
-		try {
-			stType = con.createStatement();
-			rsType = stType.executeQuery("select id, name from type where category = \"Product\"");
-			while(rsType.next()) {
-				cboType.addItem(rsType.getInt("id"));
-			}
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}	
-		
+		cboType.addItem("Drink");
+		cboType.addItem("Food");
 		cboType.setBounds(123, 85, 159, 20);
 		contentPanel.add(cboType);
 		{
@@ -125,33 +120,20 @@ public class ProdutEditDialog extends JDialog {
 						int id = Integer.parseInt(txtId.getText());
 						String name = txtName.getText();
 						double unitPrice = Double.parseDouble(txtUnitPrice.getText());
-						int typeId = Integer.parseInt(cboType.getSelectedItem().toString());
-						try {
-							pstUpdate = con.prepareStatement("update product set name = ?, type = ?, unit_price = ? where id = ?");
-							pstUpdate.setString(1, name);
-							pstUpdate.setInt(2, typeId);
-							pstUpdate.setDouble(3, unitPrice);
-							pstUpdate.setInt(4, id);
-							if (pstUpdate.executeUpdate() > 0) {
-								JOptionPane.showMessageDialog(null, "Updated successfully");			
-								product.setName(name);
-								product.setPrice(unitPrice);
-								instance_classes.Type type = null;
-								stType = con.createStatement();
-								rsType = stType.executeQuery("select * from type where id =" + typeId);
-								while (rsType.next()) {
-									int idType = rsType.getInt("id");
-									String nameType = rsType.getString("name");
-									String categoryType = rsType.getString("category");
-									boolean statusType = rsType.getBoolean("status");
-									type = new instance_classes.Type(idType, nameType, categoryType, statusType);							
-								}
-								product.setType(type);
-								backListenter.CallBack(product);
-							}
-						} catch (SQLException e) {
+						String type = cboType.getSelectedItem().toString();
+						
+						ProductDao productDao = new ProductDao(); 
+						
+						Product product = new Product(id,name, type, unitPrice, true);
+						
+						if (productDao.updateProduct(product)) {
+							JOptionPane.showMessageDialog(null, "Updated successfully");
+							product.setName(name);
+							product.setPrice(unitPrice);
+							product.setType(type);
+							backListenter.CallBack(product);
+						} else {
 							JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
-							e.printStackTrace();
 						}
 					}
 				});

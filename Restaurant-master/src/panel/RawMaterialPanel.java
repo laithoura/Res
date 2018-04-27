@@ -18,6 +18,8 @@ import java.sql.*;
 import java.util.ArrayList;
 
 import connection.*;
+import controller.RawMaterialDao;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import dialog.*;
@@ -75,17 +77,16 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					pst = con.prepareStatement("update raw_material set status = false where id=" + selectedIndex);
-					if (pst.executeUpdate() > 0) {
-						JOptionPane.showMessageDialog(null, "Deleted successfull");
-						rawMaterialList.remove(selectedIndex);
-					}
-				}catch(SQLException e) {
-					JOptionPane.showMessageDialog(null, "Deleted unsuccessfull");
-					e.printStackTrace();
-				}
+				RawMaterialDao rawMaterialDao = new RawMaterialDao();
+				RawMaterial rawMaterial = new RawMaterial();
+				rawMaterial = rawMaterialList.get(selectedIndex);
 				
+				if (rawMaterialDao.deleteRawMaterial(rawMaterial.getId())) {
+					JOptionPane.showMessageDialog(null, "Deleted successfully");
+					rawMaterialList.remove(selectedIndex);
+				} else {
+					JOptionPane.showMessageDialog(null, "Deleted unsuccessfully");
+				}
 			}
 		});
 		btnDelete.setIcon(new ImageIcon(RawMaterialPanel.class.getResource("/resources/Cancel_20.png")));
@@ -109,19 +110,10 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 			while (rs.next()) {
 				int id = Integer.parseInt(rs.getString("id"));
 				String name = rs.getString("name");
-				int typeId = Integer.parseInt(rs.getString("type"));
-				Type type = null;
-				stType = con.createStatement();
-				rsType = stType.executeQuery("select * from type where id =" + typeId);
-				while (rsType.next()) {
-					int idType = rsType.getInt("id");
-					String nameType = rsType.getString("name");
-					String categoryType = rsType.getString("category");
-					boolean statusType = rsType.getBoolean("status");
-					type = new Type(idType, nameType, categoryType, statusType);							
-				}
+				String type = rs.getString("type");
 				String description = rs.getString("description");
 				boolean status = Boolean.parseBoolean(rs.getString("status"));
+				
 				RawMaterial rawMaterial = new RawMaterial(id, name, type, description, status);
 				rawMaterialList.add(rawMaterial);
 			}

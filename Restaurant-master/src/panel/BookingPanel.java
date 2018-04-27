@@ -268,6 +268,9 @@ public class BookingPanel extends JPanel implements ActionListener{
 
 	private void registerEvent() {			
 		
+		timeSpinner.setVisible(false);
+		dateChooser.setVisible(false);
+		
 		TableSetting.TableControl(tableBooking);	
 		tableBooking.getSelectionModel().addListSelectionListener(new RowListener());		
 		
@@ -418,7 +421,7 @@ public class BookingPanel extends JPanel implements ActionListener{
 		
 		bookingModel.setBookingList(bookingList);		
 		/*Error this line*/
-		tableBooking.setModel(bookingModel);
+		//tableBooking.setModel(bookingModel);
 		bookingModel.updateTable();		
 	}
 }

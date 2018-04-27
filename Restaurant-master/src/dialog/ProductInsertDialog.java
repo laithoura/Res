@@ -17,12 +17,14 @@ import java.awt.event.ActionEvent;
 
 import java.sql.*;
 import connection.*;
+import controller.ProductDao;
+import instance_classes.Product;
 public class ProductInsertDialog extends JDialog {
 	
-	private Connection con = null;
+	/*private Connection con = null;
 	private PreparedStatement pst = null;
 	private Statement stType = null;
-	private ResultSet rsType = null;
+	private ResultSet rsType = null;*/
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtName;
@@ -46,8 +48,7 @@ public class ProductInsertDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public ProductInsertDialog() {
-		con = DbConnection.getConnection();
-		
+	
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -92,17 +93,10 @@ public class ProductInsertDialog extends JDialog {
 		}
 		
 		cboType = new JComboBox();
+		cboType.addItem("Drink");
+		cboType.addItem("Food");
 		cboType.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		cboType.setBounds(108, 86, 228, 20);
-		try {
-			stType = con.createStatement();
-			rsType = stType.executeQuery("select id, name from type where category = \"Product\"");
-			while(rsType.next()) {
-				cboType.addItem(rsType.getInt("id"));
-			}
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}		
 		
 		contentPanel.add(cboType);
 		{
@@ -113,24 +107,19 @@ public class ProductInsertDialog extends JDialog {
 				JButton btnSave = new JButton("Save");
 				btnSave.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
+
+						String name = txtName.getText().toString();
+						String type = cboType.getSelectedItem().toString();
+						double unitPrice = Double.parseDouble(txtUnitPrice.getText());
 						
-						try {
-							String name = txtName.getText().toString();
-							System.out.println(name);
-							int type = Integer.parseInt(cboType.getSelectedItem().toString());
-							double unitPrice = Double.parseDouble(txtUnitPrice.getText());
-							
-							pst = con.prepareStatement("insert into product(name, type, unit_price, status) values(?,?,?,true);");
-							pst.setString(1, name);
-							pst.setInt(2, type);
-							pst.setDouble(3, unitPrice);
-							if(pst.executeUpdate() > 0) {
-								JOptionPane.showMessageDialog(null, "Inserted successfully!");
-							}
-						}catch(SQLException e) {
+						ProductDao productDao = new ProductDao();
+						
+						Product product = new Product(0,name, type, unitPrice, true);
+						if (productDao.insertProduct(product)) {
+							JOptionPane.showMessageDialog(null, "Inserted successfully!");
+						} else {
 							JOptionPane.showMessageDialog(null, "Inserted unsuccessfully!");
-							e.printStackTrace();
-						}			
+						}		
 					}
 					
 				});

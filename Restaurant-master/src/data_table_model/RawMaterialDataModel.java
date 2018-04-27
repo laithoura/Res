@@ -28,7 +28,7 @@ public class RawMaterialDataModel extends AbstractTableModel{
 		switch (colIndex) {
 			case 0: return rawMaterial.getId();
 			case 1: return rawMaterial.getName();
-			case 2: return rawMaterial.getType().getName();
+			case 2: return rawMaterial.getType();
 			case 3: return rawMaterial.getDescriptioin();
 			case 4: return rawMaterial.getStatus();
 			default: return null;		

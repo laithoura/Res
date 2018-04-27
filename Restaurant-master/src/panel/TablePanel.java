@@ -286,7 +286,7 @@ public class TablePanel extends JPanel implements ActionListener{
 		tableModel = new TableDataModel();
 		tableModel.setTableModel(listTable);			
 		
-		//tableTableDetail.setModel(tableModel);
+		tableTableDetail.setModel(tableModel);
 		tableModel.updateTableModel();	
 		refreshTotalRow();
 	}

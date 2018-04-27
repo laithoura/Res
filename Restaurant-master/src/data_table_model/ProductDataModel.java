@@ -27,7 +27,7 @@ public class ProductDataModel extends AbstractTableModel {
 		switch (colIndex) {
 			case 0: return product.getId();
 			case 1: return product.getName();
-			case 2: return product.getType().getName();
+			case 2: return product.getType();
 			case 3: return product.getUnitPrice();
 			case 4: return product.getStatus();
 			default: return null;		
