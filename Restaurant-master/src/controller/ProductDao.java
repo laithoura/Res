@@ -87,7 +87,7 @@ public class ProductDao {
 		return success;
 	}
 	
-	public ArrayList<Product> getBookingLists(boolean status){
+	public ArrayList<Product> getProductLists(boolean status){
 		ArrayList<Product> productList = new ArrayList<>();
 		try {			
 			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM product WHERE status = ?");						
@@ -113,4 +113,34 @@ public class ProductDao {
 		}
 		return productList;
 	}
+	
+	/*Added by Thoura Lai : 28-04-2018*/
+	public ArrayList<Product> getProductListByType(String productType){
+		ArrayList<Product> productList = new ArrayList<>();
+		try {			
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM product WHERE type = ? AND status = ? ORDER BY name");
+			prepareStatement.setString(1, productType);
+			prepareStatement.setBoolean(2, true);
+			resultSet = prepareStatement.executeQuery();
+			while(resultSet.next()) {
+				productList.add(new Product(resultSet.getInt("id"),
+											resultSet.getString("name"),
+											resultSet.getString("type"),
+											resultSet.getDouble("unit_price"),
+											resultSet.getBoolean("status")			
+						));
+			}
+		} catch (SQLException e) {		
+			e.printStackTrace();	
+		}finally {
+			try {
+				prepareStatement.close();
+				resultSet.close();
+			} catch (Exception e) {			
+				e.printStackTrace();
+			}
+		}
+		return productList;
+	}/*End Adding by Thoura Lai : 28-04-2018*/
+	
 }

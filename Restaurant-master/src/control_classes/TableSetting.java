@@ -23,23 +23,34 @@ public class TableSetting {
 	
 	public static void alignColumnToRight(JTable table,int colIndex) {
 		
-		DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
-		centerRender.setHorizontalAlignment(JLabel.RIGHT);
-		table.getColumnModel().getColumn(colIndex).setCellRenderer(centerRender);
+		try {
+			DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
+			centerRender.setHorizontalAlignment(JLabel.RIGHT);
+			table.getColumnModel().getColumn(colIndex).setCellRenderer(centerRender);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void alignColumnToLeft(JTable table,int colIndex) {
-			
+		try{	
 			DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
 			centerRender.setHorizontalAlignment(JLabel.LEFT);
 			table.getColumnModel().getColumn(colIndex).setCellRenderer(centerRender);
+			
+		} catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void alignColumnToCenter(JTable table,int colIndex) {
-		
-		DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
-		centerRender.setHorizontalAlignment(JLabel.CENTER);
-		table.getColumnModel().getColumn(colIndex).setCellRenderer(centerRender);
+		try {
+			DefaultTableCellRenderer centerRender = new DefaultTableCellRenderer();
+			centerRender.setHorizontalAlignment(JLabel.CENTER);
+			table.getColumnModel().getColumn(colIndex).setCellRenderer(centerRender);
+		} catch (ArrayIndexOutOfBoundsException e) {
+			e.printStackTrace();
+		}
 	}
 	
 }

@@ -13,6 +13,8 @@ import javax.swing.JTable;
 import javax.swing.ImageIcon;
 import javax.swing.JTextField;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import com.toedter.calendar.JDateChooser;
@@ -20,11 +22,14 @@ import com.toedter.calendar.JDateChooser;
 import control_classes.TableSetting;
 import controller.SaleDao;
 import data_table_model.SaleDataModel;
+import dialog.SaleProductDialog;
 import instance_classes.Sale;
+import interfaces.CallBackListenter;
+
 import javax.swing.border.EmptyBorder;
 import javax.swing.DefaultComboBoxModel;
 
-public class SalePanel extends JPanel {
+public class SalePanel extends JPanel implements ActionListener{
 	private JTable tableSale;
 	private JTextField textBoxSearch;
 	
@@ -184,6 +189,12 @@ public class SalePanel extends JPanel {
 	}
 	private void registerEvent() {				
 		
+		this.buttonNew.addActionListener(this);
+		this.buttonRefresh.addActionListener(this);
+		this.buttonUpdate.addActionListener(this);
+		this.buttonDetail.addActionListener(this);
+		this.buttonExport.addActionListener(this);
+		
 	}
 	private void refreshTableModel() {
 		
@@ -195,5 +206,24 @@ public class SalePanel extends JPanel {
 	private void hideSearchControls() {	
 				
 		dateChooser.setVisible(false);
+	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		
+		if(e.getSource() == buttonNew) {
+			
+			SaleProductDialog saleDailog = new SaleProductDialog();
+			saleDailog.setCallBackListener(new CallBackListenter() {
+				
+				@Override
+				public void CallBack(Object sender) {
+					saleList.add((Sale)sender);
+					saleDataModel.updateTable();
+					//refreshTableModel();
+				}
+			});
+			saleDailog.setVisible(true);
+			
+		}/*Button New*/
 	}
 }
