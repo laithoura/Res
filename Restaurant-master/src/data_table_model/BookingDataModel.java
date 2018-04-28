@@ -2,9 +2,8 @@ package data_table_model;
 
 import java.util.ArrayList;
 import javax.swing.table.AbstractTableModel;
-import control_classes.DateFormat;
+import control_classes.Formatter;
 import instance_classes.Booking;
-import instance_classes.BookingDetail;
 
 public class BookingDataModel extends AbstractTableModel{
 
@@ -33,8 +32,8 @@ public class BookingDataModel extends AbstractTableModel{
 		case 0: return booking.getId();
 		case 1: return booking.getCustomerName();
 		case 2: return booking.getCustomerPhone();
-		case 3: return DateFormat.dateFormat(booking.getBookingDate());
-		case 4: return DateFormat.dateFormat(booking.getCheckInDate());
+		case 3: return Formatter.dateFormat(booking.getBookingDate());
+		case 4: return Formatter.dateFormat(booking.getCheckInDate());
 		case 5: return booking.getTime();
 		case 6: return booking.getTotalTable();
 		default: return null;		

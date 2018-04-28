@@ -11,9 +11,8 @@ import java.util.Date;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import control_classes.DateFormat;
+import control_classes.Formatter;
 import control_classes.Exporter;
-import control_classes.InputControl;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.BookingDao;
@@ -371,7 +370,7 @@ public class BookingPanel extends JPanel implements ActionListener{
 		}
 	}
 		
-	private void searchBooking() {
+	private void searchBooking() {		
 		int selectedIndex = comboBoxSearchType.getSelectedIndex();
 		bookingList.clear();
 		if(textBoxSearch.getText().trim().equals("") && ( selectedIndex == 0 || selectedIndex == 1 || selectedIndex == 2 || selectedIndex == 6)) {
@@ -406,7 +405,7 @@ public class BookingPanel extends JPanel implements ActionListener{
 				
 			}else if(selectedIndex == 5) { /*Time*/
 				
-				condition = DateFormat.timeFormat((Date)timeSpinner.getValue());				
+				condition = Formatter.timeFormat((Date)timeSpinner.getValue());				
 				
 			}else if(selectedIndex == 6) {
 				

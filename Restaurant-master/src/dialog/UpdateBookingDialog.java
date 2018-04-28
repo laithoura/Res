@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import com.toedter.calendar.JDateChooser;
 import control_classes.ColorModel;
-import control_classes.DateFormat;
+import control_classes.Formatter;
 import control_classes.InputControl;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
@@ -101,7 +101,7 @@ public class UpdateBookingDialog extends JDialog implements ActionListener{
 		textBoxCustomerName.setText(booking.getCustomerName());
 		textBoxCustomerPhone.setText(booking.getCustomerPhone());
 		datePickerCheckInDate.setDate(booking.getCheckInDate());
-		spinnerTime.setValue(DateFormat.stringToSqlTime(booking.getTime()));
+		spinnerTime.setValue(Formatter.stringToSqlTime(booking.getTime()));
 	
 		tableList = tableDao.getBookingListOnly(booking.getId());
 		tableList.addAll(tableDao.getTableLists(true, true));
@@ -367,7 +367,7 @@ public class UpdateBookingDialog extends JDialog implements ActionListener{
 		this.booking.setCustomerName(textBoxCustomerName.getText().trim());
 		this.booking.setCustomerPhone(textBoxCustomerPhone.getText().trim());
 		this.booking.setCheckInDate(checkInDate);
-		this.booking.setTime(DateFormat.timeFormat(time));
+		this.booking.setTime(Formatter.timeFormat(time));
 		this.booking.setTotalTable(totalBooking);
 		
 		if(daoBooking.deleteAllTablesInBookingDetails(this.booking.getId()) && daoBooking.reInsertIntoBookingDetails(this.booking.getId(),this.tableList)) {

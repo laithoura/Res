@@ -8,7 +8,6 @@ import java.util.Date;
 
 import com.mysql.jdbc.PreparedStatement;
 import connection.DbConnection;
-import control_classes.DateFormat;
 import instance_classes.Booking;
 import instance_classes.Table;
 

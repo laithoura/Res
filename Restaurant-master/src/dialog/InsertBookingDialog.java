@@ -1,18 +1,15 @@
 package dialog;
 
 import java.awt.BorderLayout;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
 import com.mysql.jdbc.PreparedStatement;
 import com.toedter.calendar.JDateChooser;
-
 import connection.DbConnection;
 import control_classes.ColorModel;
-import control_classes.DateFormat;
+import control_classes.Formatter;
 import control_classes.Help;
 import control_classes.InputControl;
 import control_classes.MessageShow;
@@ -23,9 +20,7 @@ import data_table_model.SelectBookingDataModel;
 import instance_classes.Booking;
 import instance_classes.Table;
 import interfaces.CallBackListenter;
-
 import javax.swing.JLabel;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,13 +35,11 @@ import javax.swing.SpinnerDateModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.Dimension;
-
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JSpinner;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
-import javax.swing.JCheckBox;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -107,7 +100,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		textBoxCustomerName.setText(booking.getCustomerName());
 		textBoxCustomerPhone.setText(booking.getCustomerPhone());
 		datePickerCheckInDate.setDate(booking.getCheckInDate());
-		spinnerTime.setValue(DateFormat.stringToSqlTime(booking.getTime()));
+		spinnerTime.setValue(Formatter.stringToSqlTime(booking.getTime()));
 		
 		/*Get The Booking Table Only from TABLE BOOKING*/
 		tableList = tableDao.getBookingListOnly(booking.getId());	
@@ -394,7 +387,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 		Date bookingDate = new Date();
 		Date checkInDate = datePickerCheckInDate.getDate();
 		
-		String checkInTime = DateFormat.timeFormat( (Date) spinnerTime.getValue());
+		String checkInTime = Formatter.timeFormat( (Date) spinnerTime.getValue());
 		
 		Booking booking = new Booking(0,textBoxCustomerName.getText().trim(),textBoxCustomerPhone.getText().trim(),bookingDate,checkInDate,checkInTime,totalBooking);
 		

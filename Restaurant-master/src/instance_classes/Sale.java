@@ -5,7 +5,7 @@ import java.util.Date;
 public class Sale {
 	
 	private int id;
-	private Date soldDate;
+	private Date date;
 	private int userId;
 	private String userName;
 	private double total;
@@ -16,11 +16,11 @@ public class Sale {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Date getSoldDate() {
-		return soldDate;
+	public Date getDate() {
+		return date;
 	}
-	public void setSoldDate(Date soldDate) {
-		this.soldDate = soldDate;
+	public void setSoldDate(Date date) {
+		this.date = date;
 	}
 	public int getUserId() {
 		return userId;
@@ -43,10 +43,10 @@ public class Sale {
 	
 	public Sale() { }
 	
-	public Sale(int id, Date soldDate, int userId, String userName, double total) {
+	public Sale(int id, Date date, int userId, String userName, double total) {
 		
 		this.id = id;
-		this.soldDate = soldDate;
+		this.date = date;
 		this.userId = userId;
 		this.userName = userName;
 		this.total = total;
@@ -54,7 +54,7 @@ public class Sale {
 	
 	@Override
 	public String toString() {
-		return "Sell [id=" + id + ", soldDate=" + soldDate + ", userId=" + userId + ", userName=" + userName
+		return "Sell [id=" + id + ", Date=" + date + ", userId=" + userId + ", userName=" + userName
 				+ ", total=" + total + "]";
 	}	
 	
