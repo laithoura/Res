@@ -3,6 +3,7 @@ package dialog;
 import java.awt.BorderLayout;
 import instance_classes.*;
 import connection.*;
+import controller.RawMaterialDao;
 import interfaces.CallBackListenter;
 
 import java.awt.FlowLayout;
@@ -54,7 +55,7 @@ public class RawMaterialEditDialog extends JDialog {
 		txtId = new JTextField();
 		txtName.setText(rawMaterial.getName());
 		txtDescription.setText(rawMaterial.getDescriptioin());
-		cboType.setSelectedItem(rawMaterial.getType().getId());
+		cboType.setSelectedItem(rawMaterial.getType());
 		txtId.setText(rawMaterial.getId() + "");
 		txtId.setVisible(false);
 		
@@ -136,39 +137,19 @@ public class RawMaterialEditDialog extends JDialog {
 				JButton btnUpdate = new JButton("Update");
 				btnUpdate.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						String id = txtId.getText();
+						int id = Integer.parseInt(txtId.getText());
 						String name = txtName.getText();
-						int typeId = Integer.parseInt(cboType.getSelectedItem().toString());
+						String type = cboType.getSelectedItem().toString();
 						String description = txtDescription.getText();
 						
-						try {
-							pstUpdate = con.prepareStatement("update raw_material set name = ?, type = ?, description = ? where id = ?");
-							pstUpdate.setString(1, name);
-							pstUpdate.setInt(2, typeId);
-							pstUpdate.setString(3, description);
-							pstUpdate.setString(4, id);
-							if (pstUpdate.executeUpdate() > 0) {
-								JOptionPane.showMessageDialog(null, "Updated successfully");			
-								rawMateiral.setName(name);
-								rawMateiral.setDescription(description);
-								instance_classes.Type type = null;
-								stType = con.createStatement();
-								rsType = stType.executeQuery("select * from type where id =" + typeId);
-								while (rsType.next()) {
-									int idType = rsType.getInt("id");
-									String nameType = rsType.getString("name");
-									String categoryType = rsType.getString("category");
-									boolean statusType = rsType.getBoolean("status");
-									type = new instance_classes.Type(idType, nameType, categoryType, statusType);							
-								}
-								rawMateiral.setTpe(type);
-								backListener.CallBack(rawMateiral);
-								
-								
-							}
-						} catch (SQLException e) {
+						RawMaterialDao rawMaterialDao = new RawMaterialDao();
+						
+						RawMaterial rawMaterial = new RawMaterial(id, name, type, description, true);
+						if (rawMaterialDao.updateRawMaterial(rawMaterial)) {
+							JOptionPane.showMessageDialog(null, "Updated successfully");
+							backListener.CallBack(rawMateiral);
+						} else {
 							JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
-							e.printStackTrace();
 						}
 						
 					}

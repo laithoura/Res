@@ -3,7 +3,7 @@ package instance_classes;
 public class Product {
 	private int id;
 	private String name;
-	private Type type;
+	private String type;
 	private double unitPrice;
 	private boolean status;
 	
@@ -11,7 +11,7 @@ public class Product {
 		
 	}
 	
-	public Product(int id, String name, Type type, double unitPrice, boolean status ) {
+	public Product(int id, String name, String type, double unitPrice, boolean status ) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
@@ -35,11 +35,11 @@ public class Product {
 		this.name = name;
 	}
 	
-	public Type getType() {
+	public String getType() {
 		return this.type;
 	}
 	
-	public void setType(Type type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 	

@@ -3,7 +3,7 @@ package instance_classes;
 public class RawMaterial {
 	private int id;
 	private String name;
-	private Type type;
+	private String type;
 	private String description;
 	private boolean status;
 	
@@ -23,11 +23,11 @@ public class RawMaterial {
 		this.name = name;
 	}
 	
-	public Type getType() {
+	public String getType() {
 		return this.type;
 	}
 	
-	public void setTpe(Type type) {
+	public void setTpe(String type) {
 		this.type = type;
 	}
 	
@@ -51,7 +51,7 @@ public class RawMaterial {
 		
 	}
 	
-	public RawMaterial(int id, String name, Type type, String description, boolean status) {
+	public RawMaterial(int id, String name, String type, String description, boolean status) {
 		this.id = id;
 		this.name = name;
 		this.description = description;

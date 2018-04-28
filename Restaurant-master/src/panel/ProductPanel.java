@@ -30,6 +30,7 @@ import java.sql.*;
 import instance_classes.*;
 import dialog.*;
 import connection.*;
+import controller.ProductDao;
 import data_table_model.*;
 public class ProductPanel extends JPanel implements CallBackListenter, ActionListener{
 	private Connection con = null;
@@ -74,15 +75,19 @@ public class ProductPanel extends JPanel implements CallBackListenter, ActionLis
 		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					pstDelete = con.prepareStatement("update product set status = false where id=" + selectedIndex);
-					if (pstDelete.executeUpdate() > 0) {
-						JOptionPane.showMessageDialog(null, "Deleted successfull");
-						productList.remove(selectedIndex);
-					}
-				}catch(SQLException e) {
+				ProductDao productDao = new ProductDao();
+				Product pro = new Product();
+				pro = productList.get(selectedIndex);
+				JOptionPane.showMessageDialog(null, "Deleted successfull" + pro.getId());
+				if (productDao.deleteProduct(pro.getId())) {
+					JOptionPane.showMessageDialog(null, "Deleted successfull" + selectedIndex);
+					productList.remove(selectedIndex);
+					
+					productModel.setProuctList(productList);
+					
+				} else {
 					JOptionPane.showMessageDialog(null, "Deleted unsuccessfull");
-					e.printStackTrace();
+				
 				}
 			}
 		});
@@ -124,22 +129,10 @@ public class ProductPanel extends JPanel implements CallBackListenter, ActionLis
 			while (rs.next()) {
 				int id = rs.getInt("id");
 				String name = rs.getString("name");
-				int typeId = rs.getInt("type");
-				Type type = null;
-				
-				stType = con.createStatement();
-				rsType = stType.executeQuery("select * from type where id=" + typeId);
-				while(rsType.next()) {
-					int idType = rsType.getInt("id");
-					String nameType = rsType.getString("name");
-					String category = rsType.getString("category");
-					boolean statusType = rsType.getBoolean("status");
-					type = new Type(idType, nameType, category, statusType);
-					
-				}
-				
+				String type = rs.getString("type");
 				double unitPrice = rs.getDouble("unit_price");
 				boolean status = rs.getBoolean("status");	
+				
 				product = new Product(id, name, type, unitPrice, status);
 				productList.add(product);
 			}
