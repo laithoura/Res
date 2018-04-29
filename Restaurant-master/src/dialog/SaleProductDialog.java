@@ -407,7 +407,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 				loadProductToProductList(radioButtonFood.getText());
 				clearControls();
 				selectedIndexJList = -1;
-			}			
+			}
 		}
 	}
 
