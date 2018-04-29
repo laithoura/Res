@@ -30,7 +30,7 @@ public class SaleDataModel extends AbstractTableModel{
 		Sale sale = saleList.get(rowIndex);			
 		switch (colIndex) {
 			case 0: return Formatter.numberToInvoiceNo(sale.getId());
-			case 1: return sale.getDate();
+			case 1: return Formatter.dateFormat( sale.getDate());
 			case 2: return sale.getUserName();
 			case 3: return Formatter.numberToText(sale.getTotal());
 			default: return null;		

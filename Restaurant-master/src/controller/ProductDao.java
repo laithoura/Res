@@ -115,10 +115,10 @@ public class ProductDao {
 	}
 	
 	/*Added by Thoura Lai : 28-04-2018*/
-	public ArrayList<Product> getProductListByType(String productType){
+	public ArrayList<Product> getProductListByType(String productType){	
 		ArrayList<Product> productList = new ArrayList<>();
 		try {			
-			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM product WHERE type = ? AND status = ? ORDER BY name");
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM product WHERE type = ? AND status = ? ORDER BY name;");
 			prepareStatement.setString(1, productType);
 			prepareStatement.setBoolean(2, true);
 			resultSet = prepareStatement.executeQuery();
@@ -143,4 +143,55 @@ public class ProductDao {
 		return productList;
 	}/*End Adding by Thoura Lai : 28-04-2018*/
 	
+	/*Added by Thoura Lai : 29-04-2018*/
+	public ArrayList<Product> getOnlyInstockDrinkList(){	
+		ArrayList<Product> productList = new ArrayList<>();
+		try {			
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT P.id, P.name, P.type, P.unit_price, P.status FROM Product AS P INNER JOIN Import_Drink_Detail AS IDD ON IDD.pro_id = P.id WHERE (IDD.qty > IDD.soldQty) AND IDD.status = ? AND P.status = ? ORDER BY name");
+			prepareStatement.setBoolean(1, true);
+			prepareStatement.setBoolean(2, true);
+			resultSet = prepareStatement.executeQuery();
+			while(resultSet.next()) {
+				productList.add(new Product(resultSet.getInt(1),
+											resultSet.getString(2),
+											resultSet.getString(3),
+											resultSet.getDouble(4),
+											resultSet.getBoolean(5)			
+						));
+			}
+		} catch (SQLException e) {		
+			e.printStackTrace();	
+		}finally {
+			try {
+				resultSet.close();
+			} catch (Exception e) {			
+				e.printStackTrace();
+			}
+		}
+		return productList;
+	}/*End Adding by Thoura Lai : 29-04-2018*/
+	
+	/*Added by Thoura Lai : 29-04-2018*/
+	public int countInstockDrink(int productId){	
+		int productCount = 0;
+		try {			
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT SUM(qty-soldQty) FROM Import_Drink_Detail WHERE pro_id = ? AND (qty-soldQty) > 0 AND status = ?");
+			prepareStatement.setInt(1, productId);
+			prepareStatement.setBoolean(2, true);
+			resultSet = prepareStatement.executeQuery();
+			while(resultSet.next()) {
+				productCount = resultSet.getInt(1);
+			}
+		} catch (SQLException e) {		
+			e.printStackTrace();	
+		}finally {
+			try {
+				prepareStatement.close();
+				resultSet.close();
+			} catch (Exception e) {			
+				e.printStackTrace();
+			}
+		}
+		return productCount;
+	}/*End Adding by Thoura Lai : 29-04-2018*/	
 }

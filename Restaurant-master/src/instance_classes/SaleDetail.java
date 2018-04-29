@@ -6,6 +6,7 @@ public class SaleDetail {
 	private int saleId;
 	private int productId;
 	private String productName;
+	private String type;
 	private int qty;
 	private double unitPrice;
 	private double amount;
@@ -34,6 +35,13 @@ public class SaleDetail {
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
 	public int getQty() {
 		return qty;
 	}
@@ -56,11 +64,12 @@ public class SaleDetail {
 	
 	public SaleDetail() {}
 	
-	public SaleDetail(int id, int saleId, int productId, String productName, int qty,double unitPrice, double amount) {
+	public SaleDetail(int id, int saleId, int productId, String productName, int qty, String type, double unitPrice, double amount) {
 		this.id = id;
 		this.saleId = saleId;
 		this.productId = productId;
 		this.productName = productName;
+		this.type = type;
 		this.qty = qty;
 		this.unitPrice = unitPrice;
 		this.amount = amount;
@@ -68,7 +77,7 @@ public class SaleDetail {
 	@Override
 	public String toString() {
 		return "SaleDetail [id=" + id + ", saleId=" + saleId + ", productId=" + productId + ", productName="
-				+ productName + ", qty=" + qty + ", unitPrice=" + unitPrice + ", amount=" + amount + "]";
-	}
-	
+				+ productName + ", type=" + type + ", qty=" + qty + ", unitPrice=" + unitPrice + ", amount=" + amount
+				+ "]";
+	}	
 }

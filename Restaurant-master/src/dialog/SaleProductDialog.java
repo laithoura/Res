@@ -1,7 +1,6 @@
 package dialog;
 
 import java.awt.BorderLayout;
-
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -11,16 +10,14 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
-import javax.swing.ListModel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
+import connection.DbConnection;
 import control_classes.Formatter;
 import control_classes.Help;
 import control_classes.InputControl;
@@ -44,8 +41,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-public class SaleProductDialog extends JDialog implements ActionListener, ListSelectionListener{
+public class SaleProductDialog extends JDialog implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -114,6 +116,20 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 		listModel = new DefaultListModel<>();	
 		
 		jListProduct = new JList(listModel);
+		jListProduct.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				if(jListProduct.getModel().getSize() == 0) return;
+				
+				selectedIndexJList = jListProduct.getSelectedIndex();		
+				clearControls();
+				setValueToControl(selectedIndexJList);
+				
+				/*Set Focus to TextBox Input Quantity */
+				textBoxQty.requestFocus();
+			}
+		});
 		jListProduct.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		
 		jListProduct.setBounds(16, 45, 128, 351);
@@ -179,6 +195,16 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 						double price = productList.get(selectedIndexJList).getUnitPrice();
 						String qtyText = textBoxQty.getText().trim();
 						int qty = Integer.parseInt((qtyText.equals(""))?"1":qtyText);
+						
+						int productId = productList.get(selectedIndexJList).getId();
+						int inStockProductCount = productDao.countInstockDrink(productId);
+						
+						if((qty + countQuantity(productId) > inStockProductCount) && productList.get(selectedIndexJList).getType().toLowerCase().equals("drink")) {
+							MessageShow.Error(String.format("We have %s only %d items", productList.get(selectedIndexJList).getName(), inStockProductCount), "Sale");
+							return;
+						}
+
+						
 						double total = price * qty;
 						textBoxTotal.setText(Formatter.numberToText(total));
 				
@@ -260,7 +286,8 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 		saleProductDataModel = new SaleProductDataModel();
 		saleProductDataModel.setSaleList(saleProductList);
 		tableSaleProduct.setModel(saleProductDataModel);
-				
+		
+		productList = new ArrayList<>();
 		productDao = new ProductDao();
 		
 		registerEvent();
@@ -297,11 +324,8 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 		
 		this.radioButtonDrink.addActionListener(this);
 		this.radioButtonFood.addActionListener(this);
-		this.jListProduct.addListSelectionListener(this);
 		
-		this.tableSaleProduct.getSelectionModel().addListSelectionListener(new RowListener());
-		
-		
+		this.tableSaleProduct.getSelectionModel().addListSelectionListener(new RowListener());		
 	}
 
 	@Override
@@ -313,7 +337,9 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 				return;
 			}
 			addProductIntoCart();
-			clearControls();			
+			clearControls();
+			selectedIndexJList = -1;
+			
 		}else if(e.getSource() == buttonRemove) {
 			
 			if(selectedIndexSaleTable == -1) {
@@ -336,6 +362,8 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 			
 		}else if(e.getSource() == buttonPrint) {
 			
+			if(saleProductList.size() == 0) return;
+			
 			if(MessageShow.deleteVerification("Do you want to Print?", "Sale") == 0) {
 				
 				int lastSaleId = 0;
@@ -347,36 +375,112 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 				sale.setUserName("Thoura Test Line 341: SaleProductDialog");
 				sale.setSoldDate(saleDate);
 				sale.setTotal(sumAmount());
-								
+				
 				if(saleDao.insertSale(sale)) {
 					
 					lastSaleId = Help.getLastAutoIncrement("restaurant_project", "Sold");
 					
-					System.out.println(lastSaleId);
+					sale.setId(lastSaleId); /*Updated Sale ID after insertion into Sold Table*/
 					
 					if(insertIntoSaleDetail(lastSaleId)) {
 						
-						/*Write Code Cut Stock Here*/						
-						
-						/*Call to display Sale on Main Form*/
-						this.backListener.CallBack(sale);						
+						/*Write Code Cut Stock Here For product which type is Drink*/						
+						if(cutStockFromImportDrinkDetail()) {
+							
+							/*Call to display Sale on Main Form*/
+							this.backListener.CallBack(sale);	
+						}																
 					}	
-				}
-				
+				}/*End of insertSale*/				
 			}
 			
 		}else if(e.getSource() == radioButtonDrink) {
 			
 			if(radioButtonDrink.isSelected()) {
-				loadProductToProductList(radioButtonDrink.getText());
-			}
-			
+				loadDrinkToProductList();	
+				clearControls();
+				selectedIndexJList = -1;
+			}			
 		}else if(e.getSource() == radioButtonFood) {
 			
 			if(radioButtonFood.isSelected()) {
 				loadProductToProductList(radioButtonFood.getText());
+				clearControls();
+				selectedIndexJList = -1;
 			}			
 		}
+	}
+
+	private boolean cutStockFromImportDrinkDetail() {
+		boolean success = false;
+		
+		PreparedStatement preparedStatement = null;
+	
+		try {
+			preparedStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("UPDATE Import_Drink_Detail SET soldQty = (soldQty + ?) WHERE pro_id = ? AND (qty - soldQty) > 0 AND status = ?");
+			
+			for(SaleDetail saleDetail:saleProductList) {
+				int minQty = 0;
+				int soldQty = saleDetail.getQty();
+				
+				/*Begin of Dynamic Stock Cutting without selecting any import drink number*/
+				
+				while(soldQty > 0){					
+					
+					minQty = getMinInStockQuantity(saleDetail.getProductId());
+					if(minQty > soldQty) {
+						minQty = soldQty;
+						soldQty = 0; /*To stop query for stock cutting*/
+					}else {
+						soldQty -= minQty;
+					}
+					preparedStatement.setInt(1, minQty);
+					preparedStatement.setInt(2, saleDetail.getProductId());
+					preparedStatement.setBoolean(3, true);
+					
+					preparedStatement.executeUpdate();
+				}	
+				/*End of Dynamic Stock Cutting without selecting any import drink number*/
+				
+			}/*End of For Loop*/
+			success = true;
+		} catch (SQLException e) {	
+			success = false;
+			e.printStackTrace();
+		}finally {
+			try {
+				preparedStatement.close();				
+			} catch (SQLException | NullPointerException e) {				
+				e.printStackTrace();
+			}
+		}
+		return success;
+	}
+
+	private int getMinInStockQuantity(int productId) {
+		int minInstockQty = 0;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			preparedStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT MIN(qty) FROM Import_Drink_Detail WHERE pro_id = ? AND (qty - soldQty) > 0 AND status = ?");
+			preparedStatement.setInt(1, productId);
+			preparedStatement.setBoolean(2, true);
+			
+			resultSet = preparedStatement.executeQuery();
+			while(resultSet.next()) {
+				minInstockQty = resultSet.getInt(1);
+			}
+		} catch (SQLException e) {			
+			e.printStackTrace();
+		}finally {
+			try {
+				preparedStatement.close();
+				resultSet.close();
+			} catch (SQLException | NullPointerException e) {				
+				e.printStackTrace();
+			}	
+		}
+		return minInstockQty;
 	}
 
 	private boolean insertIntoSaleDetail(int lastSaleId) {
@@ -402,13 +506,23 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 	private void loadProductToProductList(String type) {
 		
 		if(productList != null) productList.clear();
-		if(listModel != null) listModel.clear();
+		if(listModel != null) listModel.clear();		
 		productList = productDao.getProductListByType(type);		
 		
 		for(Product pro:productList) {
 			listModel.addElement(pro.getName());
-		}
+		}		
+	}
+	
+	private void loadDrinkToProductList() {
 		
+		if(productList != null) productList.clear();
+		if(listModel != null) listModel.clear();
+		productList = productDao.getOnlyInstockDrinkList();		
+		
+		for(Product pro:productList) {
+			listModel.addElement(pro.getName());
+		}		
 	}
 
 	private void addProductIntoCart() {
@@ -420,15 +534,34 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 		int qty = Integer.parseInt((qtyText.equals(""))?"1":qtyText);
 		double total = price * qty;
 		
+		int productId = productList.get(selectedIndexJList).getId();
+		int inStockProductCount = productDao.countInstockDrink(productId);
+		
+		if((qty + countQuantity(productId) > inStockProductCount) && productList.get(selectedIndexJList).getType().toLowerCase().equals("drink")) {
+			MessageShow.Error(String.format("We have %s only %d items", productList.get(selectedIndexJList).getName(), inStockProductCount), "Sale");
+			return;
+		}
+		
 		saleProduct.setProductId(productList.get(selectedIndexJList).getId());
 		saleProduct.setProductName(productList.get(selectedIndexJList).getName());
 		saleProduct.setQty(qty);
+		saleProduct.setType(productList.get(selectedIndexJList).getType());
 		saleProduct.setUnitPrice(price);
 		saleProduct.setAmount(total);
 		
 		saleProductList.add(saleProduct);
 		refreshSaleAmount();
 		refreshTableModel();		
+	}
+
+	private int countQuantity(int productId) {
+		int count = 0;		
+		for(SaleDetail saleDeatail:saleProductList) {
+			if(saleDeatail.getProductId() == productId) {
+				count += saleDeatail.getQty();				
+			}
+		}		
+		return count;
 	}
 
 	private void refreshSaleAmount() {
@@ -450,31 +583,18 @@ public class SaleProductDialog extends JDialog implements ActionListener, ListSe
 		//saleProductDataModel.setSaleList(saleProductList);
 		//tableSaleProduct.setModel(saleProductDataModel);
 		saleProductDataModel.updateTable();
-	}
-
-	@Override
-	public void valueChanged(ListSelectionEvent e) {
-		if(e.getValueIsAdjusting()) return;
-		if(jListProduct.getModel().getSize() == 0) return;
-		
-		selectedIndexJList = jListProduct.getSelectedIndex();		
-		clearControls();
-		setValueToControl(selectedIndexJList);
-		
-		/*Set Focus to TextBox Input Quantity */
-		textBoxQty.requestFocus();
-	}
+	}	
 
 	private void clearControls() {
 		
 		textBoxName.setText("");
 		textBoxPrice.setText("");
 		textBoxQty.setText("");
-		textBoxTotal.setText("");
-		
+		textBoxTotal.setText("");	
 	}
 
-	private void setValueToControl(int selectedIndex) {	
+	private void setValueToControl(int selectedIndex) {		
+		if(selectedIndex < 0) return;
 		textBoxName.setText(productList.get(selectedIndex).getName());
 		textBoxPrice.setText(Formatter.numberToText(productList.get(selectedIndex).getUnitPrice()));
 	}
