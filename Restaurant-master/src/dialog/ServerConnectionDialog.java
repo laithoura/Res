@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import connection.DbConnection;
 import control_classes.ColorModel;
 import form.MainForm;
+import instance_classes.ServerConnection;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -27,11 +28,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import javax.swing.JComboBox;
 import javax.swing.JPasswordField;
 import java.awt.Color;
+import javax.swing.JCheckBox;
+import javax.swing.ImageIcon;
 
-public class ServerConnectionDialog extends JDialog implements ActionListener, ItemListener {
+public final class ServerConnectionDialog extends JDialog implements ActionListener, ItemListener {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtUsername;
@@ -39,16 +49,25 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
 	private JComboBox<String> cboServerName;
 	private JComboBox<String> cboDatabaseName;
 	private JButton btnConnect,btnCancel;
+	private JCheckBox checkBoxRemember;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		
 		try {
 			ServerConnectionDialog dialog = new ServerConnectionDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);	
-			dialog.setLocationRelativeTo(null);
+			
+			ServerConnection[] servers =  dialog.readServerConnection();
+			if(servers != null) {
+				dialog.lockToApplication(servers);
+			}else {
+				dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				dialog.setVisible(true);	
+				dialog.setLocationRelativeTo(null);
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -74,7 +93,7 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
 		
 		setAlwaysOnTop(true);
 		setResizable(false);
-		setBounds(100, 100, 398, 286);
+		setBounds(100, 100, 451, 293);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(mColor.getBackColor());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -83,23 +102,23 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
 		
 		JLabel lblServerName = new JLabel("Server Name / IP");
 		lblServerName.setForeground(Color.WHITE);
-		lblServerName.setFont(new Font("Tahoma", Font.PLAIN, 15));
-		lblServerName.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblServerName.setBounds(30, 69, 137, 14);
+		lblServerName.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		lblServerName.setHorizontalAlignment(SwingConstants.LEFT);
+		lblServerName.setBounds(41, 70, 126, 14);
 		contentPanel.add(lblServerName);
 		
 		cboServerName = new JComboBox();
 		cboServerName.setBackground(Color.WHITE);
 		cboServerName.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cboServerName.setEditable(true);
-		cboServerName.setBounds(177, 65, 167, 24);
+		cboServerName.setBounds(165, 65, 240, 24);
 		contentPanel.add(cboServerName);
 		{
 			JLabel lblDatabaseName = new JLabel("Database Name");
 			lblDatabaseName.setForeground(Color.WHITE);
-			lblDatabaseName.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblDatabaseName.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			lblDatabaseName.setBounds(30, 102, 137, 14);
+			lblDatabaseName.setHorizontalAlignment(SwingConstants.LEFT);
+			lblDatabaseName.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblDatabaseName.setBounds(41, 103, 126, 14);
 			contentPanel.add(lblDatabaseName);
 		}
 		{
@@ -107,63 +126,64 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
 			cboDatabaseName.setBackground(Color.WHITE);
 			cboDatabaseName.setFont(new Font("Tahoma", Font.PLAIN, 12));
 			cboDatabaseName.setEditable(true);
-			cboDatabaseName.setBounds(177, 98, 167, 24);
+			cboDatabaseName.setBounds(165, 98, 240, 24);
 			contentPanel.add(cboDatabaseName);
 		}
 		{
 			txtUsername = new JTextField();
 			txtUsername.setBackground(Color.WHITE);
 			txtUsername.setFont(new Font("Tahoma", Font.PLAIN, 12));
-			txtUsername.setBounds(177, 132, 167, 24);
+			txtUsername.setBounds(165, 132, 240, 24);
 			contentPanel.add(txtUsername);
 			txtUsername.setColumns(10);
 		}
 		{
 			JLabel lblUsername = new JLabel("Username");
 			lblUsername.setForeground(Color.WHITE);
-			lblUsername.setHorizontalAlignment(SwingConstants.RIGHT);
-			lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			lblUsername.setBounds(30, 136, 137, 14);
+			lblUsername.setHorizontalAlignment(SwingConstants.LEFT);
+			lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblUsername.setBounds(41, 137, 126, 14);
 			contentPanel.add(lblUsername);
 		}
 		{
-			JLabel label = new JLabel("Database Name");
-			label.setForeground(Color.WHITE);
-			label.setHorizontalAlignment(SwingConstants.RIGHT);
-			label.setFont(new Font("Tahoma", Font.PLAIN, 15));
-			label.setBounds(30, 168, 137, 14);
-			contentPanel.add(label);
+			JLabel lblPassword = new JLabel("Password");
+			lblPassword.setForeground(Color.WHITE);
+			lblPassword.setHorizontalAlignment(SwingConstants.LEFT);
+			lblPassword.setFont(new Font("Tahoma", Font.PLAIN, 14));
+			lblPassword.setBounds(41, 170, 126, 14);
+			contentPanel.add(lblPassword);
 		}
 		
 		txtPassword = new JPasswordField();
 		txtPassword.setBackground(Color.WHITE);
 		txtPassword.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		txtPassword.setBounds(178, 165, 167, 24);
+		txtPassword.setBounds(165, 165, 240, 24);
 		contentPanel.add(txtPassword);
 		
 		JLabel lblServerConnection = new JLabel("Connect to Server");
-		lblServerConnection.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblServerConnection.setForeground(Color.WHITE);
 		lblServerConnection.setHorizontalAlignment(SwingConstants.LEFT);
+		lblServerConnection.setIcon(new ImageIcon(ServerConnectionDialog.class.getResource("/resources/Connection_32.png")));
+		lblServerConnection.setHorizontalTextPosition(SwingConstants.RIGHT);
+		lblServerConnection.setForeground(Color.WHITE);
 		lblServerConnection.setFont(new Font("Tahoma", Font.BOLD, 20));
-		lblServerConnection.setBounds(43, 11, 197, 37);
+		lblServerConnection.setBounds(39, 11, 260, 37);
 		contentPanel.add(lblServerConnection);
 		{
 			btnCancel = new JButton("Cancel");
-			btnCancel.setBounds(250, 208, 94, 23);
+			btnCancel.setBounds(311, 211, 94, 23);
 			contentPanel.add(btnCancel);
 			btnCancel.setActionCommand("Cancel");
 		}
 		{
 			btnConnect = new JButton("Connect");
-			btnConnect.setBounds(146, 208, 94, 23);
+			btnConnect.setBounds(207, 211, 94, 23);
 			contentPanel.add(btnConnect);
 			btnConnect.setActionCommand("OK");
 			getRootPane().setDefaultButton(btnConnect);
 		}
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(45, 49, 308, 2);
+		panel.setBounds(41, 49, 376, 2);
 		contentPanel.add(panel);
 				
 		loadServerNameToComboBox();
@@ -171,6 +191,17 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
 		registerEvent();
 		
 		txtUsername.setText("root");
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBounds(41, 200, 377, 2);
+		contentPanel.add(panel_1);
+		
+		checkBoxRemember = new JCheckBox("Remember Connection");
+		checkBoxRemember.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		checkBoxRemember.setForeground(Color.WHITE);
+		checkBoxRemember.setBackground(Color.BLACK);
+		checkBoxRemember.setBounds(40, 211, 161, 23);
+		contentPanel.add(checkBoxRemember);		
 	}
 	
 	private void registerEvent() {
@@ -211,19 +242,28 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
 			
 			/*Test Static Connection*/
 			//Connection dbcon = DbConnection.getConnection();
-			
-			/*Test Dynamic Connection*/
-			Boolean connection =  DbConnection.createConnection(cboServerName.getSelectedItem().toString(), cboDatabaseName.getSelectedItem().toString(), txtUsername.getText(), txtPassword.getText());
-			if(connection) {
-				MainForm main = new MainForm();
-				main.setVisible(true);
-				this.dispose();
-			}
+			ServerConnection[] serverConnection = new ServerConnection[] {new ServerConnection(cboServerName.getSelectedItem().toString(), cboDatabaseName.getSelectedItem().toString(), txtUsername.getText(), txtPassword.getText())};
+			lockToApplication(serverConnection);			
 		}else if(e.getSource() == btnCancel){
 			System.exit(0);
 		}
 	}
 	
+	private void lockToApplication(ServerConnection[] serverConnections) {
+		/*Test Dynamic Connection*/
+		
+		ServerConnection server = serverConnections[0];
+		Boolean connection =  DbConnection.createConnection(server.getServerName(),server.getDatabaseName(), server.getUsername(), server.getPassword());
+		if(connection) {
+			if(checkBoxRemember.isSelected()) {
+				saveServerConnection(serverConnections);
+			}
+			MainForm main = new MainForm();
+			main.setVisible(true);
+			this.dispose();
+		}
+	}
+
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		if(e.getSource() == cboServerName) {
@@ -240,5 +280,41 @@ public class ServerConnectionDialog extends JDialog implements ActionListener, I
 		}		
 	}
 	
+	private ServerConnection[] readServerConnection() {
+		  
+		  ObjectInputStream objectInputStream = null;
+		    ServerConnection[] serverConnection = null;
+			try {
+				objectInputStream = new ObjectInputStream(new FileInputStream("lib/DatabaseConnection.dat"));
+				serverConnection = (ServerConnection[]) (objectInputStream.readObject());
+				
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}catch(ClassNotFoundException e1) {	
+				e1.printStackTrace();
+			}
+			return serverConnection;
+	  }
+	  
+	  public void saveServerConnection(ServerConnection[] serverConnection) {
+		  
+		  ObjectOutputStream objectOutputStream = null;
+			try {
+				objectOutputStream = new ObjectOutputStream(new FileOutputStream("lib/DatabaseConnection.dat"));				
+				objectOutputStream.writeObject(serverConnection);
+			} catch (FileNotFoundException e1) {				
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}finally {
+				try {
+					objectOutputStream.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+	  }
 	
 }

@@ -46,6 +46,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.print.PrinterException;
+
+import javax.swing.JTextArea;
 
 public class SaleProductDialog extends JDialog implements ActionListener{
 	
@@ -72,6 +75,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 	private int selectedIndexSaleTable =-1 ;
 	
 	private int selectedIndexJList = -1;
+	private JTextArea textAreaPrint;
 	/**
 	 * Launch the application.
 	 */
@@ -112,6 +116,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		setLocationRelativeTo(null);
 		
 		listModel = new DefaultListModel<>();	
 		
@@ -244,6 +249,11 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 		buttonAdd.setBounds(303, 104, 119, 23);
 		panel.add(buttonAdd);
 		
+		textAreaPrint = new JTextArea();
+		textAreaPrint.setText("Hello World");
+		textAreaPrint.setBounds(298, 10, 133, 75);
+		panel.add(textAreaPrint);
+		
 		JPanel panelProduct = new JPanel();
 		panelProduct.setBounds(151, 188, 456, 180);
 		contentPanel.add(panelProduct);
@@ -361,7 +371,11 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 			}
 			
 		}else if(e.getSource() == buttonPrint) {
-			
+			try {
+				textAreaPrint.print();
+			} catch (PrinterException e1) {				
+				e1.printStackTrace();
+			}
 			if(saleProductList.size() == 0) return;
 			
 			if(MessageShow.deleteVerification("Do you want to Print?", "Sale") == 0) {

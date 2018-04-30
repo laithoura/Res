@@ -37,6 +37,8 @@ public class MainForm extends JFrame implements CallBackListenter{
 	private JLabel lblTitle;
 	private MainMenuPanel mainMenu;
 	private JLabel label_5;
+	private JLabel label;
+	private JLabel label_1;
 	/**
 	 * Launch the application.
 	 */
@@ -71,8 +73,9 @@ public class MainForm extends JFrame implements CallBackListenter{
 			
 		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 745, 427);
+		setBounds(100, 100, 1100, 700);
 		getContentPane().setLayout(new BorderLayout(0, 0));
+		setLocationRelativeTo(null);
 		
 		pHeader = new JPanel();
 		pHeader.setBackground(mColor.getBackColor());
@@ -80,6 +83,7 @@ public class MainForm extends JFrame implements CallBackListenter{
 		
 		panel = new JPanel();
 		panel.setLayout(null);
+		
 		
 		lblBackWard = new JLabel("");
 		lblBackWard.setToolTipText("Go Back");
@@ -112,34 +116,39 @@ public class MainForm extends JFrame implements CallBackListenter{
 					.addComponent(lblBackWard, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
 					.addGap(10)
 					.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE)
-					.addGap(15)
-					.addGroup(gl_pHeader.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pHeader.createSequentialGroup()
-							.addGap(13)
-							.addComponent(panelRightInfo, GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
-							.addGap(8))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addGroup(gl_pHeader.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_pHeader.createSequentialGroup()
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap(355, Short.MAX_VALUE))))
+							.addComponent(panelRightInfo, GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
+							.addGap(8))))
 		);
 		gl_pHeader.setVerticalGroup(
 			gl_pHeader.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pHeader.createSequentialGroup()
 					.addGroup(gl_pHeader.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_pHeader.createParallelGroup(Alignment.LEADING)
-							.addGroup(gl_pHeader.createSequentialGroup()
-								.addGap(5)
-								.addComponent(panelRightInfo, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
-							.addComponent(panel, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_pHeader.createSequentialGroup()
 							.addGap(9)
 							.addComponent(lblBackWard))
 						.addGroup(gl_pHeader.createSequentialGroup()
 							.addGap(6)
-							.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
+						.addGroup(gl_pHeader.createSequentialGroup()
+							.addGap(5)
+							.addComponent(panelRightInfo, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
+		
+		label = new JLabel("");
+		label.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panelRightInfo.add(label);
+		
+		label_1 = new JLabel("");
+		label_1.setIcon(new ImageIcon(MainForm.class.getResource("/resources/Settings_32.png")));
+		label_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panelRightInfo.add(label_1);
 		
 		JLabel lblName = new JLabel("");
 		lblName.setIcon(new ImageIcon(MainForm.class.getResource("/Resources/User_32.png")));
