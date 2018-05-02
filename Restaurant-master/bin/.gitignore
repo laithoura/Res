@@ -1,11 +1,6 @@
 /dialog/
-/resources/
-/Test.class
-/DataIO.class
-/Employee.class
-/Sale.class
-/Test$Link.class
-/Test$ServerConnection.class
-/instance_classes/
 /form/
+/instance_classes/
+/interfaces/
+/org/
 /panel/

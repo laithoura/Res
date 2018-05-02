@@ -228,12 +228,12 @@ public class BookingPanel extends JPanel implements ActionListener{
 		comboBoxSearchType.setModel(new DefaultComboBoxModel(new String[] {"Booking ID", "Customer's Name", "Customer's Phone", "Booking Date", "Check-in Date", "Time", "Table Name"}));
 		comboBoxSearchType.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		
-		dateChooser = new JDateChooser();
+		Date date = new Date();
+		dateChooser = new JDateChooser(date);
 		dateChooser.setBounds(0, 25, 203, 24);
 		panelSearch.add(dateChooser);
 		dateChooser.setDateFormatString("dd/MM/yyyy");
-											
-		Date date = new Date();
+													
 		SpinnerDateModel sm = new SpinnerDateModel(date, null, null, Calendar.HOUR_OF_DAY);
 		timeSpinner = new javax.swing.JSpinner(sm);
 		JSpinner.DateEditor de = new JSpinner.DateEditor(timeSpinner, "HH:mm");
@@ -383,7 +383,8 @@ public class BookingPanel extends JPanel implements ActionListener{
 				
 				try {
 					condition = Integer.parseInt(textBoxSearch.getText().trim());			
-				}catch(NumberFormatException ex) {			
+				}catch(NumberFormatException ex) {	
+					MessageShow.Error("Please input number", "Search Booking");
 					return;
 				}
 				
@@ -398,10 +399,22 @@ public class BookingPanel extends JPanel implements ActionListener{
 			}else if(selectedIndex == 3) { /*Booking Date*/
 				
 				condition = dateChooser.getDate();
+				try {
+					if(condition == null) throw new NullPointerException();
+				}catch(NullPointerException ex) {
+					MessageShow.Error("Please choose date!", "Search Booking");
+					return;
+				}
 				
 			}else if(selectedIndex == 4) { /*Check-in Date*/
 				
 				condition = dateChooser.getDate();
+				try {
+					if(condition == null) throw new NullPointerException();
+				}catch(NullPointerException ex) {
+					MessageShow.Error("Please choose date!", "Search Booking");
+					return;
+				}
 				
 			}else if(selectedIndex == 5) { /*Time*/
 				
@@ -420,7 +433,7 @@ public class BookingPanel extends JPanel implements ActionListener{
 		
 		bookingModel.setBookingList(bookingList);		
 		/*Error this line*/
-		//tableBooking.setModel(bookingModel);
+		tableBooking.setModel(bookingModel);
 		bookingModel.updateTable();		
 	}
 }

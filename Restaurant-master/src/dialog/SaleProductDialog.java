@@ -19,7 +19,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import connection.DbConnection;
 import control_classes.Formatter;
-import control_classes.Help;
 import control_classes.InputControl;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
@@ -27,16 +26,14 @@ import controller.ProductDao;
 import controller.SaleDao;
 import data_table_model.SaleProductDataModel;
 import instance_classes.Product;
-import instance_classes.Sale;
 import instance_classes.SaleDetail;
 import interfaces.CallBackListenter;
-
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Date;
-
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import java.awt.event.KeyAdapter;
@@ -46,8 +43,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.print.PrinterException;
-
+import java.io.File;
+import java.io.InputStream;
 import javax.swing.JTextArea;
 
 public class SaleProductDialog extends JDialog implements ActionListener{
@@ -371,11 +368,75 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 			}
 			
 		}else if(e.getSource() == buttonPrint) {
-			try {
-				textAreaPrint.print();
-			} catch (PrinterException e1) {				
+		
+			/*
+				try {
+					
+					// Compile jrxml file.
+						InputStream is=(InputStream) this.getClass().getResourceAsStream("./jasper_reports/billing9.jrxml");
+						JasperReport jasperReport = JasperCompileManager.compileReport(is);
+					
+//				       JasperReport jasperReport = JasperCompileManager.compileReport("/src/jasper_reports/billing9.jrxml");
+				 
+				       // Parameters for report
+				       Map<String, Object> parameters = new HashMap<String, Object>();
+				 
+				       // DataSource
+				       // This is simple example, no database.
+				       // then using empty datasource.
+				       JRDataSource dataSource = new JREmptyDataSource();
+				 
+				       JasperPrint jasperPrint;
+										
+				       jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+					
+				       // Make sure the output directory exists.
+				       File outDir = new File("C:/jasperoutput");
+				       outDir.mkdirs();
+				 
+				       // Export to PDF.
+				       JasperExportManager.exportReportToPdfFile(jasperPrint,"C:/Destop/StyledTextReport.pdf");
+				        
+				       System.out.println("Done!");
+				       
+			} catch (JRException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+		*/ 
+		
+			
+			/*
+			String userHomeDirectory = System.getProperty("C://Destop");
+			String outPutFile = userHomeDirectory + File.separatorChar + "JasperTableExample.pdf";
+					
+			try {
+				
+				
+				
+				JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(saleProductList);
+				Map<String, Object> parameters =  new HashMap<String,Object>();
+				parameters.put("ItemDataSource", itemsJRBean);
+				
+				JasperPrint jasperPrint = JasperFillManager.fillReport(getClass().getResourceAsStream("/jasper_reports/billing_report.jasper"), parameters); //getClass().getResourceAsStream("/jasper_reports/billing_report.jasper")
+				OutputStream outputStream =  new FileOutputStream(new File(outPutFile));
+				
+				JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream);
+				
+				
+                JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromLocation("./jasper_reports/billing.jasper");
+                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters,DbConnection.dbConnection);
+                JasperViewer jv = new JasperViewer(jasperPrint);
+                jv.setVisible(true);
+                jv.setTitle("Informe de cliente");
+								
+				System.out.println("File Generated");
+				
+			} catch (JRException e1) {
+				e1.printStackTrace();
+			}*/
+			
+			/*
 			if(saleProductList.size() == 0) return;
 			
 			if(MessageShow.deleteVerification("Do you want to Print?", "Sale") == 0) {
@@ -394,20 +455,40 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 					
 					lastSaleId = Help.getLastAutoIncrement("restaurant_project", "Sold");
 					
-					sale.setId(lastSaleId); /*Updated Sale ID after insertion into Sold Table*/
+					sale.setId(lastSaleId); Updated Sale ID after insertion into Sold Table
 					
 					if(insertIntoSaleDetail(lastSaleId)) {
 						
-						/*Write Code Cut Stock Here For product which type is Drink*/						
+						Write Code Cut Stock Here For product which type is Drink						
 						if(cutStockFromImportDrinkDetail()) {
 							
-							/*Call to display Sale on Main Form*/
-							this.backListener.CallBack(sale);	
+							Call to display Sale on Main Form
+							this.backListener.CallBack(sale);
+							
+							String userHomeDirectory = System.getProperty("Destop");
+							String outPutFile = userHomeDirectory + File.separatorChar + "JasperTableExample.pdf";
+							
+							
+							try {
+								
+								JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(saleProductList);
+								Map<String, Object> parameters =  new HashMap<String,Object>();
+								parameters.put("ItemDataSource", itemsJRBean);
+															
+								JasperPrint jasperPrint = JasperFillManager.fillReport("src/jasper_reports/billing_report.jasper", parameters,new JREmptyDataSource());
+								OutputStream outputStream =  new FileOutputStream(new File(outPutFile));
+								
+								JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream);
+								
+								System.out.println("File Generated");
+							} catch (JRException | FileNotFoundException e1) {
+								e1.printStackTrace();
+							}
 						}																
 					}	
-				}/*End of insertSale*/				
+				}End of insertSale				
 			}
-			
+*/			
 		}else if(e.getSource() == radioButtonDrink) {
 			
 			if(radioButtonDrink.isSelected()) {

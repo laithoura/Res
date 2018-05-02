@@ -40,7 +40,7 @@ public class InsertTableDialog extends JDialog implements ActionListener{
 	private JButton btnCancel;
 	private JRadioButton rdbtnVIP, rdbtnNormal;
 	private ButtonGroup buttonGroup = new ButtonGroup();
-	
+	private JLabel labelTitle;
 	private CallBackListenter backListener;
 	/**
 	 * Launch the application.
@@ -70,6 +70,7 @@ public class InsertTableDialog extends JDialog implements ActionListener{
 		this();
 		this.table = table;
 		SetValueToControls();
+		labelTitle.setText("Update Table Information");
 	}
 	
 	private void SetValueToControls() {		
@@ -91,6 +92,7 @@ public class InsertTableDialog extends JDialog implements ActionListener{
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		setLocationRelativeTo(null);
 		
 		JLabel lblCustomersName = new JLabel("Table ID");
 		lblCustomersName.setHorizontalAlignment(SwingConstants.LEFT);
@@ -161,12 +163,12 @@ public class InsertTableDialog extends JDialog implements ActionListener{
 		buttonGroup.add(rdbtnVIP);
 		buttonGroup.add(rdbtnNormal);
 		
-		JLabel lblInsertNewTable = new JLabel("Insert Table Information");
-		lblInsertNewTable.setHorizontalAlignment(SwingConstants.LEFT);
-		lblInsertNewTable.setForeground(Color.WHITE);
-		lblInsertNewTable.setFont(new Font("Tahoma", Font.PLAIN, 20));
-		lblInsertNewTable.setBounds(41, 11, 232, 24);
-		contentPanel.add(lblInsertNewTable);
+		labelTitle = new JLabel("Insert Table Information");
+		labelTitle.setHorizontalAlignment(SwingConstants.LEFT);
+		labelTitle.setForeground(Color.WHITE);
+		labelTitle.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		labelTitle.setBounds(41, 11, 232, 24);
+		contentPanel.add(labelTitle);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(Color.LIGHT_GRAY);
