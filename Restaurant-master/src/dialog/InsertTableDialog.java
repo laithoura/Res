@@ -108,6 +108,7 @@ public class InsertTableDialog extends JDialog implements ActionListener{
 		lblCustomersPhone.setBounds(41, 100, 116, 24);
 		contentPanel.add(lblCustomersPhone);
 		
+		
 		textBoxTableID = new JTextField();
 		textBoxTableID.setEditable(false);
 		textBoxTableID.setText("Auto Number");
@@ -193,7 +194,9 @@ public class InsertTableDialog extends JDialog implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		TableDao tableDao = new TableDao();
+		
 		if(e.getSource() == btnSubmit) {
+			
 			if(textBoxTableName.getText().equals("")) {
 				MessageShow.Error("Please input Table Name", "Create Table"); return;
 			}

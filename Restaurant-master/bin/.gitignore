@@ -1,6 +1,5 @@
-/dialog/
+/resources/
 /form/
-/instance_classes/
-/interfaces/
-/org/
+/dialog/
 /panel/
+/control_classes/

@@ -38,24 +38,10 @@ public class MainForm extends JFrame implements CallBackListenter{
 	private MainMenuPanel mainMenu;
 	private JLabel label_5;
 	private JLabel label;
-	private JLabel label_1;
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainForm frame = new MainForm();
-					frame.setVisible(true);
-					frame.setSize(1100,700);
-					frame.setLocationRelativeTo(null);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the frame.
@@ -73,10 +59,9 @@ public class MainForm extends JFrame implements CallBackListenter{
 			
 		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1100, 700);
+		setBounds(100, 100, 900, 600);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		setLocationRelativeTo(null);
-		
 		pHeader = new JPanel();
 		pHeader.setBackground(mColor.getBackColor());
 		getContentPane().add(pHeader, BorderLayout.NORTH);
@@ -98,9 +83,9 @@ public class MainForm extends JFrame implements CallBackListenter{
 		lblBackWard.setForeground(Color.WHITE);
 		lblBackWard.setFont(new Font("Tahoma", Font.BOLD, 24));
 		
-		lblTitle = new JLabel("Chhnganh Restaurant");
+		lblTitle = new JLabel("FLORA RESTAURANT");
 		lblTitle.setForeground(mColor.getForeColor());
-		lblTitle.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblTitle.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 22));
 		URL imgPath = MainForm.class.getResource("/Resources/Product_96.png");
 		Image getImg = new ImageIcon(imgPath).getImage().getScaledInstance(50, 20, Image.SCALE_DEFAULT);
 		
@@ -116,39 +101,39 @@ public class MainForm extends JFrame implements CallBackListenter{
 					.addComponent(lblBackWard, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
 					.addGap(10)
 					.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 315, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGroup(gl_pHeader.createParallelGroup(Alignment.TRAILING)
+					.addGap(15)
+					.addGroup(gl_pHeader.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_pHeader.createSequentialGroup()
+							.addGap(13)
+							.addComponent(panelRightInfo, GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+							.addGap(8))
 						.addGroup(gl_pHeader.createSequentialGroup()
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(panelRightInfo, GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)
-							.addGap(8))))
+							.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap(355, Short.MAX_VALUE))))
 		);
 		gl_pHeader.setVerticalGroup(
 			gl_pHeader.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pHeader.createSequentialGroup()
 					.addGroup(gl_pHeader.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_pHeader.createParallelGroup(Alignment.LEADING)
+							.addGroup(gl_pHeader.createSequentialGroup()
+								.addGap(5)
+								.addComponent(panelRightInfo, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE))
+							.addComponent(panel, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 						.addGroup(gl_pHeader.createSequentialGroup()
 							.addGap(9)
 							.addComponent(lblBackWard))
 						.addGroup(gl_pHeader.createSequentialGroup()
 							.addGap(6)
-							.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_pHeader.createSequentialGroup()
-							.addGap(5)
-							.addComponent(panelRightInfo, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)))
+							.addComponent(lblTitle, GroupLayout.PREFERRED_SIZE, 37, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		
 		label = new JLabel("");
+		label.setIcon(new ImageIcon(MainForm.class.getResource("/resources/Settings_32.png")));
 		label.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelRightInfo.add(label);
-		
-		label_1 = new JLabel("");
-		label_1.setIcon(new ImageIcon(MainForm.class.getResource("/resources/Settings_32.png")));
-		label_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panelRightInfo.add(label_1);
 		
 		JLabel lblName = new JLabel("");
 		lblName.setIcon(new ImageIcon(MainForm.class.getResource("/Resources/User_32.png")));
@@ -192,7 +177,7 @@ public class MainForm extends JFrame implements CallBackListenter{
 		panelContainer = new JPanel();
 		panelContainer.setAlignmentY(0.0f);
 		panelContainer.setAlignmentX(0.0f);
-		panelContainer.setBackground(mColor.getLightBrown());
+		panelContainer.setBackground(mColor.getBackColor());
 		getContentPane().add(panelContainer, BorderLayout.CENTER);
 		panelContainer.setLayout(new BorderLayout(0, 0));
 		

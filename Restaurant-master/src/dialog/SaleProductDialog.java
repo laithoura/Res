@@ -28,6 +28,15 @@ import data_table_model.SaleProductDataModel;
 import instance_classes.Product;
 import instance_classes.SaleDetail;
 import interfaces.CallBackListenter;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -369,11 +378,11 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 			
 		}else if(e.getSource() == buttonPrint) {
 		
-			/*
+			
 				try {
 					
 					// Compile jrxml file.
-						InputStream is=(InputStream) this.getClass().getResourceAsStream("./jasper_reports/billing9.jrxml");
+						InputStream is=(InputStream) this.getClass().getResourceAsStream("./jasper_report/test_cherry.jrxml");
 						JasperReport jasperReport = JasperCompileManager.compileReport(is);
 					
 //				       JasperReport jasperReport = JasperCompileManager.compileReport("/src/jasper_reports/billing9.jrxml");
@@ -403,7 +412,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-		*/ 
+		
 		
 			
 			/*
