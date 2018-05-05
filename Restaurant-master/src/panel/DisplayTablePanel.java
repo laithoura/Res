@@ -45,6 +45,7 @@ public class DisplayTablePanel extends JPanel {
 	private JPopupMenu popupMenu ;
 	
 	public DisplayTablePanel() {
+		
 		setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
@@ -67,7 +68,7 @@ public class DisplayTablePanel extends JPanel {
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 	   // scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 	    
-		int itemCount =15;
+		int itemCount =25;
 		int itemPerRow = 4;
 		int totalRow = Math.round(itemCount/ itemPerRow);		
 		
@@ -75,9 +76,9 @@ public class DisplayTablePanel extends JPanel {
 		popupMenu.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("Hello World");
+				System.out.println("Hello World");			
 			}
-		});		
+		});
 		
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Item 1");
 		popupMenu.add(mntmNewMenuItem_2);
@@ -114,6 +115,7 @@ public class DisplayTablePanel extends JPanel {
 		}else {
 			labelTable.setForeground(ColorModel.getDarkRed());
 		}
+				
 		labelTable.setIcon(new ImageIcon(image));
 		
 		Border border = labelTable.getBorder();
@@ -122,8 +124,7 @@ public class DisplayTablePanel extends JPanel {
 		
 		addPopup(labelTable, popupMenu);
 		
-		return labelTable;
-		
+		return labelTable;	
 	}
 	
 	// Then on your component(s)

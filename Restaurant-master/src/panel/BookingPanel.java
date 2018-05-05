@@ -3,14 +3,11 @@ package panel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-
 import control_classes.Formatter;
 import control_classes.Exporter;
 import control_classes.MessageShow;
@@ -21,7 +18,6 @@ import dialog.InsertBookingDialog;
 import dialog.UpdateBookingDialog;
 import instance_classes.Booking;
 import interfaces.CallBackListenter;
-
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -29,7 +25,6 @@ import javax.swing.JComboBox;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -38,7 +33,6 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
-
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -46,7 +40,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.DefaultComboBoxModel;
 import com.toedter.calendar.JDateChooser;
 import javax.swing.JSpinner;
-import javax.swing.SpinnerModel;
+
 
 public class BookingPanel extends JPanel implements ActionListener{
 	private JTable tableBooking;

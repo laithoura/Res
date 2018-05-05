@@ -213,6 +213,7 @@ public class TableDao {
 			while(resultSet.next()) {
 				if(name.equals(resultSet.getString(1))) {
 					exist = true;
+					break;
 				}
 			}
 		} catch (SQLException e) {			
