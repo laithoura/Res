@@ -136,9 +136,10 @@ public class TableDao {
 	public ArrayList<Table> getFilterTableType(String tableType,boolean isAvailable){
 		ArrayList<Table> tableList = new ArrayList<>();
 		try {			
-			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE type = ? and available = ?");						
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE type = ? and available = ? AND status = ?");						
 			prepareStatement.setString(1, tableType);
 			prepareStatement.setBoolean(2, isAvailable);
+			prepareStatement.setBoolean(3, true);
 			resultSet = prepareStatement.executeQuery();
 			
 			while(resultSet.next()) {	
@@ -232,10 +233,19 @@ public class TableDao {
 	public ArrayList<Table> searchTableLists(String condition,boolean status){
 		ArrayList<Table> tableList = new ArrayList<>();
 		try {			
-			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE name LIKE ? OR type LIKE ? AND status = ?");						
-			prepareStatement.setString(1, "%" + condition + "%");			
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE id = ? OR name LIKE ? OR type LIKE ? AND status = ?");
+			
+			int tableId = 0;
+			try {
+				tableId = Integer.parseInt(condition);
+			} catch (NumberFormatException e) {
+				tableId = 0;
+			}
+			
+			prepareStatement.setInt(1, tableId);
 			prepareStatement.setString(2, "%" + condition + "%");			
-			prepareStatement.setBoolean(3, status);		
+			prepareStatement.setString(3, "%" + condition + "%");			
+			prepareStatement.setBoolean(4, status);		
 			resultSet = prepareStatement.executeQuery();
 			
 			while(resultSet.next()) {
@@ -252,6 +262,56 @@ public class TableDao {
 			}
 		}
 		return tableList;
+	}
+	
+	
+	
+	public ArrayList<Table> getTableByType(String tableType, boolean status){
+		ArrayList<Table> tableList = new ArrayList<>();
+		try {			
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE type = ? and status = ?");						
+			prepareStatement.setString(1, tableType);
+			prepareStatement.setBoolean(2, status);
+			resultSet = prepareStatement.executeQuery();
+			
+			while(resultSet.next()) {	
+				tableList.add(new Table(resultSet.getInt(1),resultSet.getString(2),resultSet.getString(3),resultSet.getBoolean(4),resultSet.getBoolean(5)));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				prepareStatement.close();
+				resultSet.close();
+			} catch (Exception e) {		
+				e.printStackTrace();
+			}
+		}
+		return tableList;
+	}
+	
+	public boolean setAvailability(int tableId, boolean availability) {
+		boolean success = false;
+		try {
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("UPDATE tables SET available = ? WHERE id = ?");			
+			prepareStatement.setBoolean(1, availability);
+			prepareStatement.setInt(2, tableId);					
+
+			if(prepareStatement.executeUpdate() > 0) {
+				success = true;
+			}
+			
+		} catch (SQLException e) {		
+			e.printStackTrace();
+			success = false;
+		}finally {
+			try {
+				prepareStatement.close();
+			} catch (SQLException e) {			
+				e.printStackTrace();
+			}
+		}	
+		return success;
 	}
 	
 }
