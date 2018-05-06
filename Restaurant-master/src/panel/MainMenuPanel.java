@@ -290,8 +290,8 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 			BookingPanel booking = new BookingPanel();
 			callBack.CallBack(booking);
 		}else if(e.getSource() == lblTable) {
-			TablePanel table = new TablePanel();
-			callBack.CallBack(table);
+			TableContainerPanel tableDisplayPanel = new TableContainerPanel();
+			callBack.CallBack(tableDisplayPanel);
 		}else if(e.getSource() == lblProduct) {
 			ProductPanel product = new ProductPanel();
 			callBack.CallBack(product);
