@@ -1,33 +1,30 @@
 package panel;
 
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
-import javax.swing.SwingConstants;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.JButton;
-import java.sql.*;
 import java.util.ArrayList;
 
-import connection.*;
+import control_classes.TableSetting;
 import controller.RawMaterialDao;
 
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import dialog.*;
 import instance_classes.RawMaterial;
-import instance_classes.RawMaterial;
-import instance_classes.Type;
 import interfaces.CallBackListenter;
-import panel.BookingPanel.RowListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.GroupLayout;
@@ -35,28 +32,31 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import data_table_model.*;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
 public class RawMaterialPanel extends JPanel implements CallBackListenter, ActionListener{
-	private Connection con = null;
-	private Statement st = null;
-	private PreparedStatement pst = null;
-	private ResultSet rs = null;
-	private Statement stType = null;
-	private ResultSet rsType = null; 
 	
 	private RawMaterialDataModel rawMaterialDataModel;
-	private int selectedIndex = 0;
+	private int selectedIndex = -1;
 	ArrayList<RawMaterial> rawMaterialList ;
 	private JTable table;
 	private JButton btnAdd;
 	private JButton btnEdit;
 	private JButton btnDelete;
-
+	private JTextField txtSearch;
+	private RawMaterialEditDialog rawMaterialEdit;
+	private RawMaterialDao rawMaterialDao;
+	
 	/**
 	 * Create the panel.
 	 */
 	public RawMaterialPanel() {
-		con = DbConnection.getConnection();
 		
+		table = new JTable();
+		rawMaterialDataModel = new RawMaterialDataModel();
+		rawMaterialList = new ArrayList<RawMaterial>();
+		rawMaterialDao = new RawMaterialDao();
 		JPanel pnlBtn = new JPanel();
 		pnlBtn.setBackground(Color.LIGHT_GRAY);
 		
@@ -65,6 +65,14 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				RawMaterialInsertDialog rawMaterialInsert = new RawMaterialInsertDialog();
+				rawMaterialInsert.setCallBackListener(new CallBackListenter() {
+					
+					@Override
+					public void CallBack(Object sender) {
+						rawMaterialList.add((RawMaterial) sender);
+						rawMaterialDataModel.updateTable();				
+					}
+				});
 				rawMaterialInsert.setVisible(true);				
 			}
 		});
@@ -84,6 +92,7 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 				if (rawMaterialDao.deleteRawMaterial(rawMaterial.getId())) {
 					JOptionPane.showMessageDialog(null, "Deleted successfully");
 					rawMaterialList.remove(selectedIndex);
+					rawMaterialDataModel.updateTable();
 				} else {
 					JOptionPane.showMessageDialog(null, "Deleted unsuccessfully");
 				}
@@ -99,28 +108,9 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		
-		table = new JTable();
-		rawMaterialDataModel = new RawMaterialDataModel();
-		rawMaterialList = new ArrayList<RawMaterial>();
+		/* Show data on table */
 		
-		
-		try {
-			st = con.createStatement();
-			rs = st.executeQuery("select * from raw_material where status = true");
-			while (rs.next()) {
-				int id = Integer.parseInt(rs.getString("id"));
-				String name = rs.getString("name");
-				String type = rs.getString("type");
-				String description = rs.getString("description");
-				boolean status = Boolean.parseBoolean(rs.getString("status"));
-				
-				RawMaterial rawMaterial = new RawMaterial(id, name, type, description, status);
-				rawMaterialList.add(rawMaterial);
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
+		rawMaterialList = rawMaterialDao.getRawMaterialList();
 		rawMaterialDataModel.setRawMaterialList(rawMaterialList);
 		table.setModel(rawMaterialDataModel);
 		scrollPane.setViewportView(table);
@@ -133,43 +123,67 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 		gl_pnlTable.setVerticalGroup(
 			gl_pnlTable.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pnlTable.createSequentialGroup()
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 164, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(49, Short.MAX_VALUE))
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+					.addGap(1))
 		);
 		pnlTable.setLayout(gl_pnlTable);
 		
 		JLabel lblNewLabel = new JLabel("List of raw materials");
-		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 13));
+		lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 18));
+		
+		txtSearch = new JTextField();
+		/** Search function */
+		txtSearch.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					AbstractTableModel tableRawmaterial =(AbstractTableModel)table.getModel();
+					String search = txtSearch.getText();
+					TableRowSorter<AbstractTableModel> tr = new TableRowSorter<AbstractTableModel>(tableRawmaterial);
+					table.setRowSorter(tr);
+					tr.setRowFilter(RowFilter.regexFilter(search));
+				}
+			}
+		});
+		txtSearch.setColumns(10);
+		
+		JLabel lblSearch = new JLabel("Search: ");
 		GroupLayout gl_pnlBtn = new GroupLayout(pnlBtn);
 		gl_pnlBtn.setHorizontalGroup(
-			gl_pnlBtn.createParallelGroup(Alignment.LEADING)
+			gl_pnlBtn.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_pnlBtn.createSequentialGroup()
-					.addGap(5)
+					.addContainerGap()
+					.addComponent(lblSearch)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addComponent(btnAdd)
-					.addGap(5)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnEdit)
-					.addGap(5)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnDelete))
 		);
 		gl_pnlBtn.setVerticalGroup(
 			gl_pnlBtn.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pnlBtn.createSequentialGroup()
 					.addGap(5)
-					.addGroup(gl_pnlBtn.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnAdd)
+					.addGroup(gl_pnlBtn.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnDelete)
 						.addComponent(btnEdit)
-						.addComponent(btnDelete)))
+						.addComponent(btnAdd)
+						.addComponent(lblSearch)
+						.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)))
 		);
 		pnlBtn.setLayout(gl_pnlBtn);
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(10)
+					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 154, GroupLayout.PREFERRED_SIZE)
-						.addComponent(pnlTable, GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
-						.addComponent(pnlBtn, GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE))
+						.addComponent(pnlTable, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(pnlBtn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
@@ -177,15 +191,17 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(7)
 					.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-					.addGap(2)
+					.addGap(18)
 					.addComponent(pnlBtn, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
-					.addGap(11)
+					.addGap(20)
 					.addComponent(pnlTable, GroupLayout.PREFERRED_SIZE, 165, Short.MAX_VALUE)
-					.addGap(48))
+					.addGap(23))
 		);
 		setLayout(groupLayout);
 		table.getSelectionModel().addListSelectionListener(new RowListener());
+		
 		btnEdit.addActionListener(this);
+		TableSetting.TableControl(table);
 
 	}
 	
@@ -200,8 +216,13 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		RawMaterial rawMaterial = rawMaterialList.get(selectedIndex);
-		RawMaterialEditDialog rawMaterialEdit = new RawMaterialEditDialog(rawMaterial);
+		
+		RawMaterial rawMaterial = null;
+		if (rawMaterialList.size() > 0 && selectedIndex >= 0) { 
+			rawMaterial = rawMaterialList.get(selectedIndex);
+		}
+		
+		rawMaterialEdit = new RawMaterialEditDialog(rawMaterial);
 				
 		rawMaterialEdit.setCallBackListener(this);
 		rawMaterialEdit.setVisible(true);	
@@ -209,9 +230,12 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 
 	@Override
 	public void CallBack(Object sender) {
-		System.out.println("Called Back");
+
 		rawMaterialList.set(selectedIndex, (RawMaterial)sender);
 		rawMaterialDataModel.setRawMaterialList(rawMaterialList);
-		rawMaterialDataModel.updateTable();		
+		rawMaterialDataModel.updateTable();	
+		
+		rawMaterialEdit.setVisible(false);
+		rawMaterialEdit.dispose();
 	}
 }

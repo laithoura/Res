@@ -3,6 +3,7 @@ package controller;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import connection.DbConnection;
@@ -11,6 +12,7 @@ import instance_classes.RawMaterial;
 public class RawMaterialDao {
 	private PreparedStatement prepareStatement;
 	private ResultSet resultSet;
+	private Statement st;
 	
 	public boolean insertRawMaterial(RawMaterial rawMaterial) {
 		boolean success = false;
@@ -41,10 +43,11 @@ public class RawMaterialDao {
 	public boolean updateRawMaterial(RawMaterial rawMaterial) {
 		boolean success = false;
 		try {
-			prepareStatement = DbConnection.getConnection().prepareStatement("UPDATE  raw_material set name = ?, type = ?, description = ?, status = true"); 
+			prepareStatement = DbConnection.getConnection().prepareStatement("UPDATE  raw_material set name = ?, type = ?, description = ?, status = true where id = ?"); 
 			prepareStatement.setString(1, rawMaterial.getName());
 			prepareStatement.setString(2, rawMaterial.getType());
 			prepareStatement.setString(3, rawMaterial.getDescriptioin());
+			prepareStatement.setInt(4, rawMaterial.getId());
 			
 			if (prepareStatement.executeUpdate() > 0) {
 				success = true;
@@ -85,30 +88,25 @@ public class RawMaterialDao {
 		return success;
 	}
 	
-	public ArrayList<RawMaterial> getBookingLists(boolean status){
-		ArrayList<RawMaterial> rawMaterialList = new ArrayList<>();
-		try {			
-			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM raw_materail WHERE status = ?");						
-			prepareStatement.setBoolean(1, status);
-			resultSet = prepareStatement.executeQuery();
-			while(resultSet.next()) {
-				rawMaterialList.add(new RawMaterial(resultSet.getInt("id"),
-											resultSet.getString("name"),
-											resultSet.getString("type"),
-											resultSet.getString("description"),
-											resultSet.getBoolean("status")			
-						));
+	public ArrayList<RawMaterial> getRawMaterialList(){
+		ArrayList<RawMaterial> rawMaterialList = new ArrayList<RawMaterial>();
+		try {
+			st = (Statement)  DbConnection.dbConnection.createStatement();
+			resultSet = st.executeQuery("select * from raw_material where status = true");
+			while (resultSet.next()) {
+				int id = Integer.parseInt(resultSet.getString("id"));
+				String name = resultSet.getString("name");
+				String type = resultSet.getString("type");
+				String description = resultSet.getString("description");
+				boolean status = resultSet.getBoolean("status");
+				
+				RawMaterial rawMaterial = new RawMaterial(id, name, type, description, status);
+				rawMaterialList.add(rawMaterial);
 			}
-		} catch (SQLException e) {		
-			e.printStackTrace();	
-		}finally {
-			try {
-				prepareStatement.close();
-				resultSet.close();
-			} catch (Exception e) {			
-				e.printStackTrace();
-			}
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 		return rawMaterialList;
 	}
+	
 }

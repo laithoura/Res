@@ -6,7 +6,7 @@ public class ImportRawMaterial {
 	private int id;
 	private Date importRawMaterialDate;
 	private String invoiceNumber;
-	private User user;
+	private int userId;
 	private double total;
 	private boolean status;
 	
@@ -14,13 +14,13 @@ public class ImportRawMaterial {
 		
 	}
 	
-	public ImportRawMaterial(int id, Date importRawMaterialDate, String invoiceNumber, User user, double total,
+	public ImportRawMaterial(int id, Date importRawMaterialDate, String invoiceNumber, int userId, double total,
 			boolean status) {
 		super();
 		this.id = id;
 		this.importRawMaterialDate = importRawMaterialDate;
 		this.invoiceNumber = invoiceNumber;
-		this.user = user;
+		this.userId = userId;
 		this.total = total;
 		this.status = status;
 	}
@@ -49,12 +49,12 @@ public class ImportRawMaterial {
 		this.invoiceNumber = invoiceNumber;
 	}
 	
-	public User getUser() {
-		return user;
+	public int getUserId() {
+		return userId;
 	}
 	
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 	
 	public double getTotal() {

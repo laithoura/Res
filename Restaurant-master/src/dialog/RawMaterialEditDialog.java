@@ -3,6 +3,7 @@ package dialog;
 import java.awt.BorderLayout;
 import instance_classes.*;
 import connection.*;
+import control_classes.InputControl;
 import controller.RawMaterialDao;
 import interfaces.CallBackListenter;
 
@@ -17,6 +18,8 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -70,13 +73,29 @@ public class RawMaterialEditDialog extends JDialog {
 	 */
 	public RawMaterialEditDialog() {
 		
-		con = DbConnection.getConnection();
-
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		setLocationRelativeTo(null);
 		{
 			JLabel lblNewLabel = new JLabel("Edit raw material");
 			lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 13));
@@ -115,16 +134,10 @@ public class RawMaterialEditDialog extends JDialog {
 		contentPanel.add(txtDescription);
 		
 		cboType = new JComboBox();
-		try {
-			stType = con.createStatement();
-			rsType = stType.executeQuery("select * from type where category = \"Raw material\" && status = true");
-			while(rsType.next()) {
-				cboType.addItem(rsType.getInt("id"));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		cboType.addItem("Meat");
+		cboType.addItem("Vegatable");
+		cboType.addItem("Ingredient");
+		
 		
 		cboType.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		cboType.setBounds(107, 84, 167, 20);
@@ -137,21 +150,30 @@ public class RawMaterialEditDialog extends JDialog {
 				JButton btnUpdate = new JButton("Update");
 				btnUpdate.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						int id = Integer.parseInt(txtId.getText());
-						String name = txtName.getText();
-						String type = cboType.getSelectedItem().toString();
-						String description = txtDescription.getText();
 						
-						RawMaterialDao rawMaterialDao = new RawMaterialDao();
-						
-						RawMaterial rawMaterial = new RawMaterial(id, name, type, description, true);
-						if (rawMaterialDao.updateRawMaterial(rawMaterial)) {
-							JOptionPane.showMessageDialog(null, "Updated successfully");
-							backListener.CallBack(rawMateiral);
+						if (txtName.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Please input name!");
+							return;
 						} else {
-							JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
+							int id = Integer.parseInt(txtId.getText());
+							String name = txtName.getText();
+							String type = cboType.getSelectedItem().toString();
+							String description = txtDescription.getText();
+							
+							RawMaterialDao rawMaterialDao = new RawMaterialDao();
+							
+							RawMaterial rawMaterial = new RawMaterial(id, name, type, description, true);
+							if (rawMaterialDao.updateRawMaterial(rawMaterial)) {
+				
+								JOptionPane.showMessageDialog(null, "Updated successfully");
+								rawMaterial.setName(name);
+								rawMaterial.setType(type);
+								rawMaterial.setDescription(description);
+								backListener.CallBack(rawMateiral);
+							} else {
+								JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
+							}
 						}
-						
 					}
 				});
 				btnUpdate.setFont(new Font("Times New Roman", Font.PLAIN, 12));

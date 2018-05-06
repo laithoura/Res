@@ -2,23 +2,41 @@ package instance_classes;
 
 public class ImportRawMaterialDetail {
 	private int id;
-	private RawMaterial rawmaterial;
-	private ImportRawMaterial importRawMaterial;
+	private int rawmaterialId;
+	private String rawMaterialName;
+	private String invoiceNumber;
+	private int importRawMaterialId;
 	private double qty;
 	private double unitPrice;
 	private double amount;
 	private boolean status;
 	
+	
+	public ImportRawMaterialDetail(int id, String rawMaterialName, int importRawMaterialId, String invoiceNumber,
+			double qty, double unitPrice, double amount, boolean status) {
+		super();
+		this.id = id;
+		this.rawMaterialName = rawMaterialName;
+		this.invoiceNumber = invoiceNumber;
+		this.importRawMaterialId = importRawMaterialId;
+		this.qty = qty;
+		this.unitPrice = unitPrice;
+		this.amount = amount;
+		this.status = status;
+	}
+
+	
 	public ImportRawMaterialDetail() {
 		
 	}
+	
+	
 
-	public ImportRawMaterialDetail(int id, RawMaterial rawmaterial, ImportRawMaterial importRawMaterial, double qty,
-			double unitPrice, double amount, boolean status) {
-		super();
+	public ImportRawMaterialDetail(int id, int rawmaterialId, int importRawMaterialId, double qty, double unitPrice,
+			double amount, boolean status) {
 		this.id = id;
-		this.rawmaterial = rawmaterial;
-		this.importRawMaterial = importRawMaterial;
+		this.rawmaterialId = rawmaterialId;
+		this.importRawMaterialId = importRawMaterialId;
 		this.qty = qty;
 		this.unitPrice = unitPrice;
 		this.amount = amount;
@@ -33,20 +51,20 @@ public class ImportRawMaterialDetail {
 		this.id = id;
 	}
 
-	public RawMaterial getRawmaterial() {
-		return rawmaterial;
+	public int getRawmaterialId() {
+		return rawmaterialId;
 	}
 
-	public void setRawmaterial(RawMaterial rawmaterial) {
-		this.rawmaterial = rawmaterial;
+	public void setRawmaterialId(int rawmaterialId) {
+		this.rawmaterialId = rawmaterialId;
 	}
 
-	public ImportRawMaterial getImportRawMaterial() {
-		return importRawMaterial;
+	public int getImportRawMaterialId() {
+		return importRawMaterialId;
 	}
 
-	public void setImportRawMaterial(ImportRawMaterial importRawMaterial) {
-		this.importRawMaterial = importRawMaterial;
+	public void setImportRawMaterialId(int importRawMaterialId) {
+		this.importRawMaterialId = importRawMaterialId;
 	}
 
 	public double getQty() {
@@ -80,5 +98,22 @@ public class ImportRawMaterialDetail {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+
+	public String getRawMaterialName() {
+		return rawMaterialName;
+	}
+
+	public void setRawMaterialName(String rawMaterialName) {
+		this.rawMaterialName = rawMaterialName;
+	}
+
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+	
 	
 }
