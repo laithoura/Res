@@ -5,16 +5,18 @@ public class User {
 	private String username;
 	private String password;
 	private boolean status;
+	private String role;
 	
 	public User() {
 		
 	}
 	
-	public User(int id, String username, String password, boolean status) {
+	public User(int id, String username, String password, String role, boolean status) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
+		this.role= role;
 		this.status = status;
 	}
 
@@ -41,7 +43,12 @@ public class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
+	public String getRole() {
+		return role;
+	}
+	public void setRole(String role) {
+		this.role=role;
+	}
 	public boolean isStatus() {
 		return status;
 	}
@@ -49,4 +56,5 @@ public class User {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
+
 }

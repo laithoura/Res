@@ -51,7 +51,6 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 		lblSale.setVerticalTextPosition(SwingConstants.BOTTOM);
 		lblSale.setHorizontalTextPosition(SwingConstants.CENTER);
 		lblSale.setIcon(new ImageIcon(MainMenuPanel.class.getResource("/Resources/Sale_96.png")));
-		lblSale.setBackground(new Color(178, 34, 34));
 		lblSale.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSale.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		GroupLayout gl_panelSale = new GroupLayout(panelSale);
@@ -300,8 +299,10 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 			RawMaterialPanel raw = new RawMaterialPanel();
 			callBack.CallBack(raw);
 		}else if(e.getSource() == lblType) {
-			TypePanel type = new TypePanel();
-			callBack.CallBack(type);
+			//TypePanel type = new TypePanel();
+			  DisplayTablePanel displayTablePanel = new DisplayTablePanel();
+			callBack.CallBack(displayTablePanel);
+			//callBack.CallBack(type);
 		}else if(e.getSource() == lblUserAccount) {
 			UserAccountPanel user = new UserAccountPanel();
 			callBack.CallBack(user);

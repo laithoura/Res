@@ -213,6 +213,7 @@ public class TableDao {
 			while(resultSet.next()) {
 				if(name.equals(resultSet.getString(1))) {
 					exist = true;
+					break;
 				}
 			}
 		} catch (SQLException e) {			
@@ -231,9 +232,9 @@ public class TableDao {
 	public ArrayList<Table> searchTableLists(String condition,boolean status){
 		ArrayList<Table> tableList = new ArrayList<>();
 		try {			
-			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE name = ? OR type = ? AND status = ?");						
-			prepareStatement.setString(1, condition);			
-			prepareStatement.setString(2, condition);			
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT * FROM tables WHERE name LIKE ? OR type LIKE ? AND status = ?");						
+			prepareStatement.setString(1, "%" + condition + "%");			
+			prepareStatement.setString(2, "%" + condition + "%");			
 			prepareStatement.setBoolean(3, status);		
 			resultSet = prepareStatement.executeQuery();
 			

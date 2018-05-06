@@ -1,9 +1,13 @@
 package instance_classes;
 
+import java.util.Date;
+
 public class SaleDetail {
 	
 	private int id;
 	private int saleId;
+	private Date saleDate;
+	private String username;
 	private int productId;
 	private String productName;
 	private String type;
@@ -22,6 +26,20 @@ public class SaleDetail {
 	}
 	public void setSaleId(int saleId) {
 		this.saleId = saleId;
+	}	
+	
+	public Date getSaleDate() {
+		return saleDate;
+	}
+	public void setSaleDate(Date saleDate) {
+		this.saleDate = saleDate;
+	}	
+	
+	public String getUsername() {
+		return username;
+	}
+	public void setUsername(String username) {
+		this.username = username;
 	}
 	public int getProductId() {
 		return productId;
@@ -73,7 +91,19 @@ public class SaleDetail {
 		this.qty = qty;
 		this.unitPrice = unitPrice;
 		this.amount = amount;
+	}			
+	
+	public SaleDetail(int saleId, Date saleDate, String username, String productName, String type, int qty, double unitPrice, double amount) {
+		this.saleId = saleId;
+		this.saleDate = saleDate;
+		this.username = username;
+		this.productName = productName;
+		this.type = type;
+		this.qty = qty;
+		this.unitPrice = unitPrice;
+		this.amount = amount;
 	}
+	
 	@Override
 	public String toString() {
 		return "SaleDetail [id=" + id + ", saleId=" + saleId + ", productId=" + productId + ", productName="

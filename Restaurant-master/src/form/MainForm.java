@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.net.URL;
 
 import javax.swing.JFrame;
@@ -12,12 +13,16 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import connection.DbConnection;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import control_classes.ColorModel;
+import instance_classes.User;
 import interfaces.CallBackListenter;
 import panel.MainMenuPanel;
 
@@ -37,49 +42,30 @@ public class MainForm extends JFrame implements CallBackListenter{
 	private JLabel lblTitle;
 	private MainMenuPanel mainMenu;
 	private JLabel label_5;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainForm frame = new MainForm();
-					frame.setVisible(true);
-					frame.setSize(1100,700);
-					frame.setLocationRelativeTo(null);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 * @throws UnsupportedLookAndFeelException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws ClassNotFoundException 
-	 */			
-
+	private JLabel label;
+	private JLabel lblUserAccount;
+	
+	
 	public MainForm() {
-
+		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e) {
 			
 		}
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
+		setTitle("Flora Restaurant");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 745, 427);
+		setBounds(100, 100, 900, 600);
 		getContentPane().setLayout(new BorderLayout(0, 0));
-		
+		setLocationRelativeTo(null);
 		pHeader = new JPanel();
 		pHeader.setBackground(mColor.getBackColor());
 		getContentPane().add(pHeader, BorderLayout.NORTH);
 		
 		panel = new JPanel();
 		panel.setLayout(null);
+		
 		
 		lblBackWard = new JLabel("");
 		lblBackWard.setToolTipText("Go Back");
@@ -94,9 +80,9 @@ public class MainForm extends JFrame implements CallBackListenter{
 		lblBackWard.setForeground(Color.WHITE);
 		lblBackWard.setFont(new Font("Tahoma", Font.BOLD, 24));
 		
-		lblTitle = new JLabel("Chhnganh Restaurant");
+		lblTitle = new JLabel("FLORA RESTAURANT");
 		lblTitle.setForeground(mColor.getForeColor());
-		lblTitle.setFont(new Font("Tahoma", Font.BOLD, 24));
+		lblTitle.setFont(new Font("Tahoma", Font.BOLD | Font.ITALIC, 22));
 		URL imgPath = MainForm.class.getResource("/Resources/Product_96.png");
 		Image getImg = new ImageIcon(imgPath).getImage().getScaledInstance(50, 20, Image.SCALE_DEFAULT);
 		
@@ -141,15 +127,20 @@ public class MainForm extends JFrame implements CallBackListenter{
 					.addContainerGap())
 		);
 		
+		label = new JLabel("");
+		label.setIcon(new ImageIcon(MainForm.class.getResource("/resources/Settings_32.png")));
+		label.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		panelRightInfo.add(label);
+		
 		JLabel lblName = new JLabel("");
 		lblName.setIcon(new ImageIcon(MainForm.class.getResource("/Resources/User_32.png")));
 		lblName.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		panelRightInfo.add(lblName);
 		
-		JLabel lblUsername = new JLabel("Username : Role Name");
-		lblUsername.setForeground(mColor.getForeColor());
-		lblUsername.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		panelRightInfo.add(lblUsername);
+		lblUserAccount = new JLabel("Username : Role Name");
+		lblUserAccount.setForeground(mColor.getForeColor());
+		lblUserAccount.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		panelRightInfo.add(lblUserAccount);
 		
 		label_5 = new JLabel(" ");
 		label_5.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -183,7 +174,7 @@ public class MainForm extends JFrame implements CallBackListenter{
 		panelContainer = new JPanel();
 		panelContainer.setAlignmentY(0.0f);
 		panelContainer.setAlignmentX(0.0f);
-		panelContainer.setBackground(mColor.getLightBrown());
+		panelContainer.setBackground(mColor.getBackColor());
 		getContentPane().add(panelContainer, BorderLayout.CENTER);
 		panelContainer.setLayout(new BorderLayout(0, 0));
 		
@@ -201,7 +192,16 @@ public class MainForm extends JFrame implements CallBackListenter{
 		lblCopyRight.setForeground(mColor.getForeColor());
 		panelFooter.add(lblCopyRight);
 				
-		openMainMenuPanel();			
+		openMainMenuPanel();
+		setUserAccountOnTitleBar();
+	}
+
+	private void setUserAccountOnTitleBar() {
+		if(DbConnection.user == null) {
+			lblUserAccount.setText("No Username : No Role");
+		}else {
+			lblUserAccount.setText(DbConnection.user.getUsername() + " : " + DbConnection.user.getRole());
+		}
 	}
 
 	private void openMainMenuPanel() {

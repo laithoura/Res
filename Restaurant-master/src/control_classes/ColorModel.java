@@ -19,4 +19,9 @@ public class ColorModel {
 	public Color getBlackColor() {
 		return Color.decode("#000");
 	}
+	
+	public static Color getDarkRed() {		
+		return Color.decode("#8B0000");
+	}
+	
 }

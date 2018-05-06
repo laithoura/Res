@@ -92,6 +92,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 	public InsertBookingDialog(Booking booking){
 		this();
 		this.booking = booking;
+		
 		LoadDataIntoControls();
 	}
 	

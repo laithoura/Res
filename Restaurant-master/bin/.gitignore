@@ -1,5 +1,11 @@
-/panel/
+
 /data_table_model/
 /controller/
-/instance_classes/
 /dialog/
+/connection/
+/control_classes/
+/form/
+/instance_classes/
+/interfaces/
+/org/
+/panel/

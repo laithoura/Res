@@ -44,15 +44,14 @@ import java.awt.event.MouseEvent;
 public class TablePanel extends JPanel implements ActionListener{
 	
 	private TableDao tableDao = new TableDao();
-	private TableDataModel tableModel;
+	private TableDataModel tableDataModel;
 	private ArrayList<Table> listTable;
-	private JTable tableTableDetail;
+	private JTable tableDetail;
 	private JButton buttonNew, buttonUpdate, buttonDelete, buttonExport, buttonRefresh;
 	private JLabel labelTotalRow;
 	private JTextField textBoxSeach;
-	/**
-	 * Create the panel.
-	 */
+	
+	
 	public TablePanel() {
 		setLayout(new BorderLayout(0, 0));
 		
@@ -153,8 +152,8 @@ public class TablePanel extends JPanel implements ActionListener{
 		JScrollPane scrollPane = new JScrollPane();
 		panelBody.add(scrollPane, BorderLayout.CENTER);
 		
-		tableTableDetail = new JTable();
-		scrollPane.setViewportView(tableTableDetail);
+		tableDetail = new JTable();
+		scrollPane.setViewportView(tableDetail);
 		
 		JPanel panelFooter = new JPanel();
 		add(panelFooter, BorderLayout.SOUTH);
@@ -179,13 +178,13 @@ public class TablePanel extends JPanel implements ActionListener{
 		panelFooter.setLayout(gl_panelFooter);
 		
 		loadDataIntoTable();
-		TableSetting.TableControl(tableTableDetail);
+		TableSetting.TableControl(tableDetail);
 		
 		RegisterEvent();
 	}
 	
 	private void RegisterEvent() {
-		tableTableDetail.getSelectionModel().addListSelectionListener(new RowListener());
+		tableDetail.getSelectionModel().addListSelectionListener(new RowListener());
 		
 		this.buttonRefresh.addActionListener(this);
 		this.buttonNew.addActionListener(this);
@@ -199,7 +198,7 @@ public class TablePanel extends JPanel implements ActionListener{
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			if(e.getValueIsAdjusting()) return;
-			int selectedIndex = tableTableDetail.getSelectedRow();
+			int selectedIndex = tableDetail.getSelectedRow();
 			System.out.println(selectedIndex);
 		}
 	}
@@ -215,8 +214,8 @@ public class TablePanel extends JPanel implements ActionListener{
 					if(tableDao.insertTable(table)) {
 						table.setId(Help.getLastAutoIncrement("restaurant_project", "tables"));
 						listTable.add(0, table);
-						tableModel.setTableModel(listTable);
-						tableModel.updateTableModel();
+						tableDataModel.setTableModel(listTable);
+						tableDataModel.updateTableModel();
 						
 						MessageShow.success("Table was created successfully.", "Create Table");
 					}else {
@@ -227,7 +226,7 @@ public class TablePanel extends JPanel implements ActionListener{
 			});
 			insertTable.setVisible(true);
 		}else if(e.getSource() == buttonUpdate) {
-			int selectedIndex = tableTableDetail.getSelectedRow();
+			int selectedIndex = tableDetail.getSelectedRow();
 			if(selectedIndex < 0) return;
 			
 			InsertTableDialog insertTable = new InsertTableDialog(listTable.get(selectedIndex));
@@ -238,8 +237,8 @@ public class TablePanel extends JPanel implements ActionListener{
 					if(tableDao.updateTable(table)) {
 						
 						listTable.set(selectedIndex, table);
-						tableModel.setTableModel(listTable);
-						tableModel.updateTableModel();
+						tableDataModel.setTableModel(listTable);
+						tableDataModel.updateTableModel();
 						
 						MessageShow.success("Table was updated successfully.", "Update Table");
 					}else {
@@ -249,19 +248,19 @@ public class TablePanel extends JPanel implements ActionListener{
 			});
 			insertTable.setVisible(true);
 		}else if(e.getSource() == buttonDelete) {
-			int selectedIndex = tableTableDetail.getSelectedRow();
+			int selectedIndex = tableDetail.getSelectedRow();
 			if(selectedIndex < 0) return;
 			int choose = MessageShow.deleteVerification("Do you want to delete?","Delete Table");
 			if(choose == 0) {
 				if(tableDao.deleteTable(listTable.get(selectedIndex).getId())) {
 					listTable.remove(selectedIndex);
-					tableModel.updateTableModel();
+					tableDataModel.updateTableModel();
 					MessageShow.success("Table was deleted successfully.", "Delete Table");
 					refreshTotalRow();
 				}
 			}
 		}else if(e.getSource() == buttonExport) {
-			Exporter.jtableToExcel(tableTableDetail);
+			Exporter.jtableToExcel(tableDetail);
 		}else if(e.getSource() == buttonRefresh) {
 			loadDataIntoTable();
 		}
@@ -272,22 +271,23 @@ public class TablePanel extends JPanel implements ActionListener{
 		{	
 			loadDataIntoTable();
 			return;
-		}					
+		}	
+		
 		listTable =  tableDao.searchTableLists(textBoxSeach.getText().trim(), true);					
-		tableModel.setTableModel(listTable);
-		tableTableDetail.setModel(tableModel);
-		tableModel.updateTableModel();	
+		tableDataModel.setTableModel(listTable);
+		tableDetail.setModel(tableDataModel);
+		tableDataModel.updateTableModel();	
 		refreshTotalRow();		
 	}
 	
 	private void loadDataIntoTable() {
 		listTable = tableDao.getAllTableLists(true);
 		
-		tableModel = new TableDataModel();
-		tableModel.setTableModel(listTable);			
+		tableDataModel = new TableDataModel();
+		tableDataModel.setTableModel(listTable);			
 		
-		tableTableDetail.setModel(tableModel);
-		tableModel.updateTableModel();	
+		tableDetail.setModel(tableDataModel);
+		tableDataModel.updateTableModel();	
 		refreshTotalRow();
 	}
 
