@@ -352,6 +352,10 @@ public class ImportInsertDialog extends JDialog{
 					} catch (SQLException ex) {
 						ex.printStackTrace();
 					}
+					
+					if (cboProduct.getItemCount() == 0) {
+						JOptionPane.showMessageDialog(null, "Please input drink!");
+					}
 				}
 		    }
 		});
@@ -373,6 +377,10 @@ public class ImportInsertDialog extends JDialog{
 						
 					} catch (SQLException ex) {
 						ex.printStackTrace();
+					}
+					
+					if (cboProduct.getItemCount() == 0) {
+						JOptionPane.showMessageDialog(null, "Please input raw material!");
 					}
 				}
 		    }
