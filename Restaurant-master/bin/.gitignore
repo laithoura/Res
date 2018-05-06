@@ -1,1 +1,5 @@
-/resources/
+/panel/
+/data_table_model/
+/controller/
+/instance_classes/
+/dialog/

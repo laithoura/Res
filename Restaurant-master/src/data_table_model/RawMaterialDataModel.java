@@ -8,7 +8,7 @@ import instance_classes.*;
 
 public class RawMaterialDataModel extends AbstractTableModel{
 
-	private final String COLUMNS[] = new String[] {"Id", "Name", "Type","Description", "Status"};
+	private final String COLUMNS[] = new String[] {"Id", "Name", "Type","Description"};
 	private ArrayList<RawMaterial> rawMaterialList = new ArrayList<RawMaterial>();
 
 	@Override
@@ -30,7 +30,6 @@ public class RawMaterialDataModel extends AbstractTableModel{
 			case 1: return rawMaterial.getName();
 			case 2: return rawMaterial.getType();
 			case 3: return rawMaterial.getDescriptioin();
-			case 4: return rawMaterial.getStatus();
 			default: return null;		
 		}
 	}

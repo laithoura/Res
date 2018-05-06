@@ -2,31 +2,41 @@ package instance_classes;
 
 public class ImportDrinkDetail {
 	private int id;
-	private Product product;
-	private ImportDrink importDrink;
+	private int productId;
+	private int importDrinkId;
 	private double qty;
 	private double unitPrice;
 	private double amount;
 	private boolean status;
+	private String drinkName;
+	private String invoiceNumber;
 	
 	public ImportDrinkDetail() {
 		
 	}
 	
-
-	public ImportDrinkDetail(int id, Product product, ImportDrink importDrink, double qty, double unitPrice,
-			double amount, boolean status) {
-		super();
+	public ImportDrinkDetail(int id, String drinkName, int importDrinkId, String invoiceNumber,  double qty, double unitPrice, double amount,
+			boolean status) {
 		this.id = id;
-		this.product = product;
-		this.importDrink = importDrink;
+		this.drinkName = drinkName;
+		this.invoiceNumber = invoiceNumber;
+		this.importDrinkId = importDrinkId;
 		this.qty = qty;
 		this.unitPrice = unitPrice;
 		this.amount = amount;
 		this.status = status;
 	}
 
-
+	public ImportDrinkDetail(int id, int productId, int importDrinkId,  double qty, double unitPrice, double amount,
+			boolean status) {
+		this.id = id;
+		this.productId = productId;
+		this.importDrinkId = importDrinkId;
+		this.qty = qty;
+		this.unitPrice = unitPrice;
+		this.amount = amount;
+		this.status = status;
+	}
 
 	public int getId() {
 		return id;
@@ -36,20 +46,20 @@ public class ImportDrinkDetail {
 		this.id = id;
 	}
 
-	public Product getProduct() {
-		return product;
+	public int getProductId() {
+		return productId;
 	}
 
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProductId(int productId) {
+		this.productId = productId;
 	}
 
-	public ImportDrink getImportDrink() {
-		return importDrink;
+	public int getImportDrinkId() {
+		return importDrinkId;
 	}
 
-	public void setImportDrink(ImportDrink importDrink) {
-		this.importDrink = importDrink;
+	public void setImportDrinkId(int importDrinkId) {
+		this.importDrinkId = importDrinkId;
 	}
 
 	public double getQty() {
@@ -76,6 +86,22 @@ public class ImportDrinkDetail {
 		this.amount = amount;
 	}
 
+	public String getDrinkName() {
+		return drinkName;
+	}
+
+	public void setDrinkName(String drinkName) {
+		this.drinkName = drinkName;
+	}
+
+	public String getInvoiceNumber() {
+		return invoiceNumber;
+	}
+
+	public void setInvoiceNumber(String invoiceNumber) {
+		this.invoiceNumber = invoiceNumber;
+	}
+
 	public boolean isStatus() {
 		return status;
 	}
@@ -83,5 +109,4 @@ public class ImportDrinkDetail {
 	public void setStatus(boolean status) {
 		this.status = status;
 	}
-	
 }

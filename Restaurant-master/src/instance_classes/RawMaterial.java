@@ -27,7 +27,7 @@ public class RawMaterial {
 		return this.type;
 	}
 	
-	public void setTpe(String type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 	

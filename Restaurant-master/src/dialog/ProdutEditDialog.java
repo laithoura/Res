@@ -10,10 +10,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JComboBox;
 import instance_classes.*;
 import interfaces.CallBackListenter;
 import connection.*;
+import control_classes.InputControl;
 import controller.ProductDao;
 
 import java.sql.*;
@@ -67,13 +70,28 @@ public class ProdutEditDialog extends JDialog {
 	}
  	
 	public ProdutEditDialog() {
-		//con = DbConnection.getConnection();
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		setLocationRelativeTo(null);
 		
 		JLabel lblEditProduct = new JLabel("Edit product");
 		lblEditProduct.setBounds(10, 11, 103, 14);
@@ -108,6 +126,9 @@ public class ProdutEditDialog extends JDialog {
 		cboType.addItem("Drink");
 		cboType.addItem("Food");
 		cboType.setBounds(123, 85, 159, 20);
+		
+		/** Validation fields */	
+		InputControl.inputFloatingPoint(txtUnitPrice);
 		contentPanel.add(cboType);
 		{
 			JPanel buttonPane = new JPanel();
@@ -117,24 +138,34 @@ public class ProdutEditDialog extends JDialog {
 				JButton btnUpdate = new JButton("Update");
 				btnUpdate.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						int id = Integer.parseInt(txtId.getText());
-						String name = txtName.getText();
-						double unitPrice = Double.parseDouble(txtUnitPrice.getText());
-						String type = cboType.getSelectedItem().toString();
 						
-						ProductDao productDao = new ProductDao(); 
-						
-						Product product = new Product(id,name, type, unitPrice, true);
-						
-						if (productDao.updateProduct(product)) {
-							JOptionPane.showMessageDialog(null, "Updated successfully");
-							product.setName(name);
-							product.setPrice(unitPrice);
-							product.setType(type);
-							backListenter.CallBack(product);
+						if (txtName.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Pleas input name!");
+							return;
+						} else if (txtUnitPrice.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Please input unit price!");
+							return;
 						} else {
-							JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
-						}
+							int id = Integer.parseInt(txtId.getText());
+							String name = txtName.getText();
+							double unitPrice = Double.parseDouble(txtUnitPrice.getText());
+							String type = cboType.getSelectedItem().toString();
+							
+							ProductDao productDao = new ProductDao(); 
+							
+							Product product = new Product(id,name, type, unitPrice, true);
+							
+							if (productDao.updateProduct(product)) {
+								JOptionPane.showMessageDialog(null, "Updated successfully");
+								product.setName(name);
+								product.setPrice(unitPrice);
+								product.setType(type);
+								backListenter.CallBack(product);
+							
+							} else {
+								JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
+							}
+						}				
 					}
 				});
 				btnUpdate.setActionCommand("OK");
@@ -147,11 +178,15 @@ public class ProdutEditDialog extends JDialog {
 				buttonPane.add(btnCancel);
 				btnCancel.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						txtName.setText("");
-						txtUnitPrice.setText("");						
+						clearInputBox();					
 					}					
 				});
 			}
 		}
+	}
+	
+	private void clearInputBox() {
+		txtName.setText("");
+		txtUnitPrice.setText("");		
 	}
 }

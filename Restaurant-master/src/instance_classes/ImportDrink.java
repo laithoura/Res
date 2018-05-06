@@ -6,32 +6,32 @@ public class ImportDrink {
 	private int id;
 	private Date importDrinkDate;
 	private String invoiceNumber;
-	private User user;
+	private int userId;
 	private double total;
 	private boolean status;
 	
 	public ImportDrink() {
 		
 	}
-	
-	public ImportDrink(int id, Date importDrinkDate, String invoiceNumber, User user, double total, boolean status) {
+
+	public ImportDrink(int id, Date importDrinkDate, String invoiceNumber, int userId, double total, boolean status) {
 		super();
 		this.id = id;
 		this.importDrinkDate = importDrinkDate;
 		this.invoiceNumber = invoiceNumber;
-		this.user = user;
+		this.userId = userId;
 		this.total = total;
 		this.status = status;
 	}
 
 	public int getId() {
-		return this.id;
+		return id;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public Date getImportDrinkDate() {
 		return importDrinkDate;
 	}
@@ -44,39 +44,32 @@ public class ImportDrink {
 		return invoiceNumber;
 	}
 
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-
-	public String getInvoniceNumber() {
-		return this.invoiceNumber;
-	}
-
 	public void setInvoiceNumber(String invoiceNumber) {
 		this.invoiceNumber = invoiceNumber;
 	}
-	
-	public User getUser() {
-		return this.user;
+
+	public int getUserId() {
+		return userId;
 	}
-	
-	public void setUser(User user) {
-		this.user = user;
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
-	
+
 	public double getTotal() {
-		return this.total;
+		return total;
 	}
-	
+
 	public void setTotal(double total) {
-		this. total = total;
+		this.total = total;
 	}
-	
-	public boolean getStatus() {
-		return this.status;
+
+	public boolean isStatus() {
+		return status;
 	}
-	
-	public void setStaus(boolean status) {
+
+	public void setStatus(boolean status) {
 		this.status = status;
 	}
+	
 }

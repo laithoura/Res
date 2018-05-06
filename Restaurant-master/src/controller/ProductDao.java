@@ -3,15 +3,16 @@ package controller;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import connection.DbConnection;
-import instance_classes.Booking;
 import instance_classes.Product;
 
 public class ProductDao {
 	private PreparedStatement prepareStatement;
 	private ResultSet resultSet;
+	private Statement st;
 	
 	public boolean insertProduct(Product product) {
 		boolean success = false;
@@ -194,4 +195,28 @@ public class ProductDao {
 		}
 		return productCount;
 	}/*End Adding by Thoura Lai : 29-04-2018*/	
+	
+	public ArrayList<Product> getProductList() {
+		ArrayList<Product> productList = new ArrayList<Product>();
+		try {
+			st = (Statement)  DbConnection.dbConnection.createStatement();
+			resultSet = st.executeQuery("select * from product where status = true");
+			Product product = null;
+			while (resultSet.next()) {
+				int id = resultSet.getInt("id");
+				String name = resultSet.getString("name");
+				String type = resultSet.getString("type");
+				double unitPrice = resultSet.getDouble("unit_price");
+				boolean status = resultSet.getBoolean("status");	
+				
+				product = new Product(id, name, type, unitPrice, status);
+				productList.add(product);
+			}
+			
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return productList;
+	}
 }

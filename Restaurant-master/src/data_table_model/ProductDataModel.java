@@ -7,7 +7,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class ProductDataModel extends AbstractTableModel {
 
-	private final String COLUMNS[] = new String[] {"Id", "Name", "Type","Unit Price", "Status"};
+	private final String COLUMNS[] = new String[] {"Id", "Name", "Type","Unit Price"};
 	private ArrayList<Product> productList = new ArrayList<Product>();
 
 	@Override
@@ -29,7 +29,6 @@ public class ProductDataModel extends AbstractTableModel {
 			case 1: return product.getName();
 			case 2: return product.getType();
 			case 3: return product.getUnitPrice();
-			case 4: return product.getStatus();
 			default: return null;		
 		}
 	}

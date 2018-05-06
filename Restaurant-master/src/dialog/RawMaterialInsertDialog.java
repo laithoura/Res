@@ -10,6 +10,11 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import connection.DbConnection;
+import control_classes.Help;
+import control_classes.InputControl;
+import controller.RawMaterialDao;
+import instance_classes.RawMaterial;
+import interfaces.CallBackListenter;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,6 +22,9 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -32,6 +40,7 @@ public class RawMaterialInsertDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtName;
 	private JTextField txtDescription;
+	private CallBackListenter callBack;
 
 	/**
 	 * Launch the application.
@@ -51,12 +60,28 @@ public class RawMaterialInsertDialog extends JDialog {
 	 */
 	public RawMaterialInsertDialog() {
 		
-		con = DbConnection.getConnection();
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
+		setLocationRelativeTo(null);
 		{
 			JLabel lblInsertRawMaterail = new JLabel("Insert raw materail");
 			lblInsertRawMaterail.setFont(new Font("Times New Roman", Font.BOLD, 13));
@@ -74,22 +99,17 @@ public class RawMaterialInsertDialog extends JDialog {
 		cboType.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		cboType.setBounds(143, 100, 181, 20);
 		contentPanel.add(cboType);
-		try {
-			stType = con.createStatement();
-			rs = stType.executeQuery("select * from type where category=\"Raw material\" && status = true");
-			while(rs.next()) {
-				cboType.addItem(Integer.parseInt(rs.getString("id")));
-			}
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		
+		cboType.addItem("Meat");
+		cboType.addItem("Vegatable");
+		cboType.addItem("Ingredient");
 		
 		txtName = new JTextField();
 		txtName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		txtName.setBounds(143, 52, 184, 20);
 		contentPanel.add(txtName);
 		txtName.setColumns(10);
+		
+		
 		
 		JLabel lblType = new JLabel("Type");
 		lblType.setFont(new Font("Times New Roman", Font.PLAIN, 12));
@@ -106,6 +126,8 @@ public class RawMaterialInsertDialog extends JDialog {
 		txtDescription.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		txtDescription.setColumns(10);
 		txtDescription.setBounds(143, 144, 184, 20);
+		
+		
 		contentPanel.add(txtDescription);
 		{
 			JPanel buttonPane = new JPanel();
@@ -116,23 +138,29 @@ public class RawMaterialInsertDialog extends JDialog {
 				btnSave.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						
-						try {
+						if (txtName.getText().isEmpty()) {
+							JOptionPane.showMessageDialog(null, "Please input name!");
+							return;
+						} else {
+							RawMaterialDao rawMaterialDao = new RawMaterialDao();
 							String name = txtName.getText();
-							int type = Integer.parseInt(cboType.getSelectedItem().toString());
+							String type = cboType.getSelectedItem().toString();
 							String description = txtDescription.getText(); 
-							String sql = "insert into raw_material (name, type, description, status) value (?,?,?, true);";
-							pst = con.prepareStatement(sql);
-							pst.setString(1, name);
-							pst.setInt(2, type);
-							pst.setString(3, description);
-							if (pst.executeUpdate() > 0) {
-								JOptionPane.showMessageDialog(null, "Inserted succesfully!");
-							}
-						}catch (SQLException e) {
-							JOptionPane.showMessageDialog(null, "Inserted unsuccesfully!");
-							e.printStackTrace();
-						}
-						
+							
+							RawMaterial rawMaterial = new RawMaterial(0, name, type, description, true);
+							
+							if (rawMaterialDao.insertRawMaterial(rawMaterial)) {
+								
+								int lastRawMaterialId = Help.getLastAutoIncrement("restaurant_project", "raw_material");
+								rawMaterial.setId(lastRawMaterialId);
+								JOptionPane.showMessageDialog(null, "Inserted succesfully!");							
+								clearInputBox();
+								callBack.CallBack(rawMaterial);
+								
+							} else {
+								JOptionPane.showMessageDialog(null, "Inserted unsuccesfully!");
+							}	
+						}				
 					}
 				});
 				btnSave.setFont(new Font("Times New Roman", Font.PLAIN, 12));
@@ -144,16 +172,22 @@ public class RawMaterialInsertDialog extends JDialog {
 				JButton btnCancel = new JButton("Cancel");
 				btnCancel.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						txtName.setText("");
-						txtDescription.setText("");
-						
-					}
-					
+						clearInputBox();					
+					}				
 				});
 				btnCancel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 				btnCancel.setActionCommand("Cancel");
 				buttonPane.add(btnCancel);
 			}
 		}
+	}
+	
+	public void clearInputBox() {
+		txtName.setText("");
+		txtDescription.setText("");
+	}
+	
+	public void setCallBackListener(CallBackListenter callBack) {
+		this.callBack = callBack;
 	}
 }
