@@ -5,22 +5,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
-
 import connection.DbConnection;
-import instance_classes.ImportDrinkDetail;
 import instance_classes.ImportRawMaterial;
 import instance_classes.ImportRawMaterialDetail;
-import instance_classes.SaleDetail;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import instance_classes.User;
 
 
 public class ImportRawMaterialDao {
 	private PreparedStatement prepareStatement;
 	private ResultSet resultSet;
-	private Connection con;
 	private Statement st;
 	
 	public ImportRawMaterialDao() {
@@ -29,8 +23,8 @@ public class ImportRawMaterialDao {
 	public boolean insertImportRawMaterialDao(ImportRawMaterial importRawMaterial) {
 		boolean success = false;
 		try {
-			con = DbConnection.getConnection();
-			prepareStatement = con.prepareStatement("INSERT INTO import_rm (date, invoice_no, user_id, total, status) VALUES(?,?,?,?,true)"); 
+			
+			prepareStatement = DbConnection.dbConnection.prepareStatement("INSERT INTO import_rm (date, invoice_no, user_id, total, status) VALUES(?,?,?,?,true)"); 
 			prepareStatement.setDate(1, new java.sql.Date(importRawMaterial.getImportRawMaterialDate().getTime()));
 			prepareStatement.setString(2, importRawMaterial.getInvoiceNumber());
 			prepareStatement.setInt(3, importRawMaterial.getUserId());
@@ -161,7 +155,7 @@ public class ImportRawMaterialDao {
 	public ArrayList<ImportRawMaterial> getImportRawMaterialList() {
 		ArrayList<ImportRawMaterial> importRawMaterialList = new ArrayList<ImportRawMaterial>();
 		try {
-			st = con.createStatement();
+			st = DbConnection.dbConnection.createStatement();
 			resultSet = st.executeQuery("select * from import_rm where status = true");
 			ImportRawMaterial importRawMaterial = null;
 			while (resultSet.next()) {
