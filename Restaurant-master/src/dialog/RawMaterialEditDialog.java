@@ -35,7 +35,7 @@ public class RawMaterialEditDialog extends JDialog {
 	private JTextField txtName;
 	private JTextField txtDescription;
 	private JComboBox cboType;
-	private RawMaterial rawMateiral = null;
+	private RawMaterial rawMaterial = null;
 	private JTextField txtId; 
 	private CallBackListenter backListener;
 	/**
@@ -53,7 +53,7 @@ public class RawMaterialEditDialog extends JDialog {
 	
 	public RawMaterialEditDialog(RawMaterial rawMaterial) {
 		this();
-		this.rawMateiral = rawMaterial;	
+		this.rawMaterial = rawMaterial;	
 		
 		txtId = new JTextField();
 		txtName.setText(rawMaterial.getName());
@@ -162,14 +162,14 @@ public class RawMaterialEditDialog extends JDialog {
 							
 							RawMaterialDao rawMaterialDao = new RawMaterialDao();
 							
-							RawMaterial rawMaterial = new RawMaterial(id, name, type, description, true);
+							rawMaterial = new RawMaterial(id, name, type, description, true);
 							if (rawMaterialDao.updateRawMaterial(rawMaterial)) {
 				
 								JOptionPane.showMessageDialog(null, "Updated successfully");
 								rawMaterial.setName(name);
 								rawMaterial.setType(type);
 								rawMaterial.setDescription(description);
-								backListener.CallBack(rawMateiral);
+								backListener.CallBack(rawMaterial);
 							} else {
 								JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
 							}

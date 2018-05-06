@@ -15,6 +15,7 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.JButton;
 import java.util.ArrayList;
 
+import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.RawMaterialDao;
 
@@ -85,16 +86,25 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				RawMaterialDao rawMaterialDao = new RawMaterialDao();
-				RawMaterial rawMaterial = new RawMaterial();
-				rawMaterial = rawMaterialList.get(selectedIndex);
 				
-				if (rawMaterialDao.deleteRawMaterial(rawMaterial.getId())) {
-					JOptionPane.showMessageDialog(null, "Deleted successfully");
-					rawMaterialList.remove(selectedIndex);
-					rawMaterialDataModel.updateTable();
-				} else {
-					JOptionPane.showMessageDialog(null, "Deleted unsuccessfully");
+				if (selectedIndex < 0) {
+					return;
+				}
+				int choose = MessageShow.deleteVerification("Do you want to delete?", "Delete");
+				if(choose == 0) {
+					RawMaterialDao rawMaterialDao = new RawMaterialDao();
+					RawMaterial rawMaterial = new RawMaterial();
+					rawMaterial = rawMaterialList.get(selectedIndex);
+					
+					if (rawMaterialDao.deleteRawMaterial(rawMaterial.getId())) {
+						JOptionPane.showMessageDialog(null, "Deleted successfully");
+						rawMaterialList.remove(selectedIndex);
+						rawMaterialDataModel.updateTable();
+						selectedIndex = -1;
+					} else {
+						JOptionPane.showMessageDialog(null, "Deleted unsuccessfully");
+					}								
+			
 				}
 			}
 		});
@@ -135,14 +145,14 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 		/** Search function */
 		txtSearch.addKeyListener(new KeyAdapter() {
 			@Override
-			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					AbstractTableModel tableRawmaterial =(AbstractTableModel)table.getModel();
-					String search = txtSearch.getText();
-					TableRowSorter<AbstractTableModel> tr = new TableRowSorter<AbstractTableModel>(tableRawmaterial);
-					table.setRowSorter(tr);
-					tr.setRowFilter(RowFilter.regexFilter(search));
-				}
+			public void keyReleased(KeyEvent e) {
+				
+				AbstractTableModel tableRawmaterial =(AbstractTableModel)table.getModel();
+				String search = txtSearch.getText();
+				TableRowSorter<AbstractTableModel> tr = new TableRowSorter<AbstractTableModel>(tableRawmaterial);
+				table.setRowSorter(tr);
+				tr.setRowFilter(RowFilter.regexFilter(search));
+			
 			}
 		});
 		txtSearch.setColumns(10);
@@ -156,7 +166,7 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 					.addComponent(lblSearch)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
 					.addComponent(btnAdd)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnEdit)
@@ -232,7 +242,7 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 	public void CallBack(Object sender) {
 
 		rawMaterialList.set(selectedIndex, (RawMaterial)sender);
-		rawMaterialDataModel.setRawMaterialList(rawMaterialList);
+		//rawMaterialDataModel.setRawMaterialList(rawMaterialList);
 		rawMaterialDataModel.updateTable();	
 		
 		rawMaterialEdit.setVisible(false);

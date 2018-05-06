@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import instance_classes.*;
 import interfaces.CallBackListenter;
 import dialog.*;
+import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.ProductDao;
 import data_table_model.*;
@@ -83,19 +84,25 @@ public class ProductPanel extends JPanel implements CallBackListenter, ActionLis
 		btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				ProductDao productDao = new ProductDao();
-				Product pro = new Product();
-				pro = productList.get(selectedIndex);
-				if (productDao.deleteProduct(pro.getId())) {
-					JOptionPane.showMessageDialog(null, "Deleted successfull!");
-					productList.remove(selectedIndex);
-					productModel.updateTable();
-					
-					
-				} else {
-					JOptionPane.showMessageDialog(null, "Deleted unsuccessfull");
-				
+				if (selectedIndex < 0) {
+					return;
 				}
+				int choose = MessageShow.deleteVerification("Do you want to delete?", "Delete");
+				if(choose == 0) {
+					ProductDao productDao = new ProductDao();
+					Product pro = new Product();
+					pro = productList.get(selectedIndex);
+					if (productDao.deleteProduct(pro.getId())) {
+						JOptionPane.showMessageDialog(null, "Deleted successfull!");
+						productList.remove(selectedIndex);
+						productModel.updateTable();
+						selectedIndex = -1;
+						
+					} else {
+						JOptionPane.showMessageDialog(null, "Deleted unsuccessfull");
+					
+					}
+				}			
 			}
 		});
 		btnDelete.setIcon(new ImageIcon(ProductPanel.class.getResource("/resources/Cancel_20.png")));
@@ -223,9 +230,7 @@ public class ProductPanel extends JPanel implements CallBackListenter, ActionLis
 		productEdit = new ProdutEditDialog(product);
 		
 		productEdit.setCallBackListener(this);
-		productEdit.setVisible(true);
-		
-		
+		productEdit.setVisible(true);		
 	}
 
 	@Override
