@@ -2,6 +2,7 @@ package dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -14,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 import control_classes.Help;
 import control_classes.MessageShow;
 import controller.UserDao;
+import form.LoginForm;
 import instance_classes.User;
 import interfaces.CallBackListenter;
 import javax.swing.JPasswordField;
@@ -50,6 +52,8 @@ public class CreateUserDialog extends JDialog{
 		} catch (UnsupportedLookAndFeelException e1) {
 			e1.printStackTrace();
 		}
+		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
 		
 		setResizable(false);
 		setTitle("Create User Account");		

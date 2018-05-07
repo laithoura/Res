@@ -17,11 +17,13 @@ import control_classes.TableSetting;
 import controller.BookingDao;
 import controller.TableDao;
 import data_table_model.SelectBookingDataModel;
+import form.LoginForm;
 import instance_classes.Booking;
 import instance_classes.Table;
 import interfaces.CallBackListenter;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import java.util.Date;
 import java.awt.Color;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.JScrollPane;
@@ -67,23 +70,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 	private JRadioButton radioButtonAll, radioButtonNormal, radioButtonVIP;
 	private ButtonGroup buttonGroupTableType;
 	private CallBackListenter backListener;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			InsertBookingDialog dialog = new InsertBookingDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
-	/**
-	 * Create the dialog.
-	 */
 	ColorModel cModel = new ColorModel();
 	public void setCallBackListener( CallBackListenter backListener) {
 		this.backListener = backListener;
@@ -122,13 +109,28 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 	}
 
 	public InsertBookingDialog() {
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			e1.printStackTrace();
+		}
+		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
+		
 		setTitle("Booking Table");
 		setBounds(100, 100, 499, 500);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		setLocationRelativeTo(null);
+		setLocationRelativeTo(null);		
 		
 		JLabel lblCustomersName = new JLabel("Customer's Name");
 		lblCustomersName.setHorizontalAlignment(SwingConstants.LEFT);

@@ -20,7 +20,7 @@ public class ImportRawMaterialDao {
 	public ImportRawMaterialDao() {
 	}
 	
-	public boolean insertImportRawMaterialDao(ImportRawMaterial importRawMaterial) {
+	public boolean insertImportRawMaterial(ImportRawMaterial importRawMaterial) {
 		boolean success = false;
 		try {
 			

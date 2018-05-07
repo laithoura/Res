@@ -2,6 +2,7 @@ package dialog;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -18,6 +19,7 @@ import interfaces.CallBackListenter;
 import connection.*;
 import control_classes.InputControl;
 import controller.ProductDao;
+import form.LoginForm;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -37,32 +39,20 @@ public class ProdutEditDialog extends JDialog {
 	private CallBackListenter backListenter;
 	private Product product;
 	private ArrayList<String> typeList;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			ProdutEditDialog dialog = new ProdutEditDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Create the dialog.
-	 */
+	
 	public ProdutEditDialog(Product product) {
 		this();
 		txtId = new JTextField();
 		
 		this.product = product;
-		txtName.setText(product.getName());
-		txtUnitPrice.setText(product.getUnitPrice() + "");
-		txtId.setText(product.getId() + "");
-		cboType.setSelectedItem(product.getType());
-		txtId.setVisible(false);	
+		if(product != null) {
+			
+			txtName.setText(product.getName());
+			txtUnitPrice.setText(product.getUnitPrice() + "");
+			txtId.setText(product.getId() + "");
+			cboType.setSelectedItem(product.getType());
+			txtId.setVisible(false);	
+		}
 	}
 	
 	public void setCallBackListener(CallBackListenter backListener) {
@@ -70,21 +60,20 @@ public class ProdutEditDialog extends JDialog {
 	}
  	
 	public ProdutEditDialog() {
+		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (UnsupportedLookAndFeelException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
 		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());

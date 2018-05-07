@@ -133,6 +133,7 @@ public class SaleDao {
 		}/*End Try-Catch*/
 		return success;
 	}
+	
 
 	public boolean insertIntoSaleDetails(SaleDetail saleDetail) {
 		boolean success = false;

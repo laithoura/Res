@@ -2,9 +2,8 @@ package dialog;
 
 import java.awt.BorderLayout;
 import instance_classes.*;
-import connection.*;
-import control_classes.InputControl;
 import controller.RawMaterialDao;
+import form.LoginForm;
 import interfaces.CallBackListenter;
 
 import java.awt.FlowLayout;
@@ -17,19 +16,17 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.sql.*;
+
+
 public class RawMaterialEditDialog extends JDialog {
-	private Connection con = null;
-	private Statement stType = null;
-	private ResultSet rsType = null;
-	private PreparedStatement pstUpdate = null;
-	
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtName;
@@ -76,19 +73,16 @@ public class RawMaterialEditDialog extends JDialog {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (UnsupportedLookAndFeelException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));		
 		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());

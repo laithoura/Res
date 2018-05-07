@@ -23,7 +23,7 @@ import java.awt.Font;
 
 public class MainMenuPanel extends JPanel implements MouseListener{
 	
-	private JLabel lblSale, lblImport, lblBooking, lblTable, lblProduct, lblRawMaterial, lblType,lblUserAccount;
+	private JLabel lblSale, lblImport, lblBooking, lblTable, lblProduct, lblRawMaterial, lblAboutUs,lblUserAccount;
 	private JPanel panelContainer, panelSale, panelImport, panelBooking, panelTable, panelProduct, panelRawMaterial, panelType,panelUserAccount;
 	private ColorModel mColor = new ColorModel();
 	
@@ -213,25 +213,25 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 		panelType.setBackground(new Color(139, 69, 19));
 		panelContainer.add(panelType);
 		
-		lblType = new JLabel("Type");
-		lblType.setVerticalTextPosition(SwingConstants.BOTTOM);
-		lblType.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblType.setIcon(new ImageIcon(MainMenuPanel.class.getResource("/Resources/Category_96.png")));
-		lblType.setHorizontalAlignment(SwingConstants.CENTER);
-		lblType.setFont(new Font("Tahoma", Font.PLAIN, 20));
+		lblAboutUs = new JLabel("About Us");
+		lblAboutUs.setVerticalTextPosition(SwingConstants.BOTTOM);
+		lblAboutUs.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblAboutUs.setIcon(new ImageIcon(MainMenuPanel.class.getResource("/resources/About_us_96.png")));
+		lblAboutUs.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAboutUs.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		GroupLayout gl_panelType = new GroupLayout(panelType);
 		gl_panelType.setHorizontalGroup(
 			gl_panelType.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelType.createSequentialGroup()
 					.addGap(15)
-					.addComponent(lblType, GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+					.addComponent(lblAboutUs, GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		gl_panelType.setVerticalGroup(
 			gl_panelType.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panelType.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(lblType, GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
+					.addComponent(lblAboutUs, GroupLayout.DEFAULT_SIZE, 170, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		panelType.setLayout(gl_panelType);
@@ -274,7 +274,7 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 		this.lblTable.addMouseListener(this);
 		this.lblProduct.addMouseListener(this);
 		this.lblRawMaterial.addMouseListener(this);
-		this.lblType.addMouseListener(this);
+		this.lblAboutUs.addMouseListener(this);
 		this.lblUserAccount.addMouseListener(this);
 	}
 
@@ -298,11 +298,9 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 		}else if(e.getSource() == lblRawMaterial) {
 			RawMaterialPanel raw = new RawMaterialPanel();
 			callBack.CallBack(raw);
-		}else if(e.getSource() == lblType) {
-			//TypePanel type = new TypePanel();
-			  DisplayTablePanel displayTablePanel = new DisplayTablePanel();
-			callBack.CallBack(displayTablePanel);
-			//callBack.CallBack(type);
+		}else if(e.getSource() == lblAboutUs) {			
+			AboutUsPanel type = new AboutUsPanel();
+			callBack.CallBack(type);
 		}else if(e.getSource() == lblUserAccount) {
 			UserAccountPanel user = new UserAccountPanel();
 			callBack.CallBack(user);
@@ -311,7 +309,7 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		if(e.getSource() == lblSale || e.getSource() == lblImport || e.getSource() == lblBooking || e.getSource() == lblTable || e.getSource() == lblProduct || e.getSource() == lblRawMaterial || e.getSource() == lblType || e.getSource() == lblUserAccount)
+		if(e.getSource() == lblSale || e.getSource() == lblImport || e.getSource() == lblBooking || e.getSource() == lblTable || e.getSource() == lblProduct || e.getSource() == lblRawMaterial || e.getSource() == lblAboutUs || e.getSource() == lblUserAccount)
 		{
 			((JComponent) e.getSource()).setForeground(mColor.getForeColor());
 		}
@@ -319,7 +317,7 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		if(e.getSource() == lblSale || e.getSource() == lblImport || e.getSource() == lblBooking || e.getSource() == lblTable || e.getSource() == lblProduct || e.getSource() == lblRawMaterial || e.getSource() == lblType || e.getSource() == lblUserAccount)
+		if(e.getSource() == lblSale || e.getSource() == lblImport || e.getSource() == lblBooking || e.getSource() == lblTable || e.getSource() == lblProduct || e.getSource() == lblRawMaterial || e.getSource() == lblAboutUs || e.getSource() == lblUserAccount)
 		{			
 			((JComponent) e.getSource()).setForeground(mColor.getBlackColor());
 		}

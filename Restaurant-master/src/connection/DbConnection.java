@@ -14,7 +14,8 @@ public class DbConnection {
 	/* Dynamic Connection */
 	public static Boolean createConnection (String serverIP,String databaseName, String username, String password) {
 		try {
-			dbConnection = DriverManager.getConnection(String.format("jdbc:mysql://%s/%s?useSSL=false",serverIP,databaseName),username,password);
+			
+			dbConnection = DriverManager.getConnection(String.format("jdbc:mysql://%s:3306/%s",serverIP,databaseName),username,password);
 			return true;			
 		} catch (SQLException e) {
 			e.printStackTrace();

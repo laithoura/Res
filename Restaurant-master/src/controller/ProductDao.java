@@ -148,7 +148,7 @@ public class ProductDao {
 	public ArrayList<Product> getOnlyInstockDrinkList(){	
 		ArrayList<Product> productList = new ArrayList<>();
 		try {			
-			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT P.id, P.name, P.type, P.unit_price, P.status FROM Product AS P INNER JOIN Import_Drink_Detail AS IDD ON IDD.pro_id = P.id WHERE (IDD.qty > IDD.soldQty) AND IDD.status = ? AND P.status = ? ORDER BY name");
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT P.id, P.name, P.type, P.unit_price, P.status FROM Product AS P INNER JOIN Import_Drink_Detail AS IDD ON IDD.pro_id = P.id WHERE (IDD.qty > IDD.soldQty) AND IDD.status = ? AND P.status = ? GROUP BY P.id, P.name, P.type, P.unit_price, P.status");
 			prepareStatement.setBoolean(1, true);
 			prepareStatement.setBoolean(2, true);
 			resultSet = prepareStatement.executeQuery();

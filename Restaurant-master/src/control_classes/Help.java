@@ -27,7 +27,7 @@ public class Help {
 			try {
 				resultSet.close();
 				preparedStatement.close();
-			} catch (SQLException e) {
+			} catch (SQLException | NullPointerException e) {
 				e.printStackTrace();
 			}			
 		}

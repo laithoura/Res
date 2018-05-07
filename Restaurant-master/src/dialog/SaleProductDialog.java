@@ -19,13 +19,16 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import connection.DbConnection;
 import control_classes.Formatter;
+import control_classes.Help;
 import control_classes.InputControl;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.ProductDao;
 import controller.SaleDao;
 import data_table_model.SaleProductDataModel;
+import form.LoginForm;
 import instance_classes.Product;
+import instance_classes.Sale;
 import instance_classes.SaleDetail;
 import interfaces.CallBackListenter;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -38,9 +41,11 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JScrollPane;
@@ -116,6 +121,8 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 			e.printStackTrace();
 		}
 		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
+
 		setBounds(100, 100, 658, 459);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.BLACK);
@@ -377,75 +384,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 			}
 			
 		}else if(e.getSource() == buttonPrint) {
-		
-			
-				try {
-					
-					// Compile jrxml file.
-						InputStream is=(InputStream) this.getClass().getResourceAsStream("./jasper_report/test_cherry.jrxml");
-						JasperReport jasperReport = JasperCompileManager.compileReport(is);
-					
-//				       JasperReport jasperReport = JasperCompileManager.compileReport("/src/jasper_reports/billing9.jrxml");
-				 
-				       // Parameters for report
-				       Map<String, Object> parameters = new HashMap<String, Object>();
-				 
-				       // DataSource
-				       // This is simple example, no database.
-				       // then using empty datasource.
-				       JRDataSource dataSource = new JREmptyDataSource();
-				 
-				       JasperPrint jasperPrint;
-										
-				       jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-					
-				       // Make sure the output directory exists.
-				       File outDir = new File("C:/jasperoutput");
-				       outDir.mkdirs();
-				 
-				       // Export to PDF.
-				       JasperExportManager.exportReportToPdfFile(jasperPrint,"C:/Destop/StyledTextReport.pdf");
-				        
-				       System.out.println("Done!");
-				       
-			} catch (JRException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		
-		
-			
-			/*
-			String userHomeDirectory = System.getProperty("C://Destop");
-			String outPutFile = userHomeDirectory + File.separatorChar + "JasperTableExample.pdf";
-					
-			try {
-				
-				
-				
-				JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(saleProductList);
-				Map<String, Object> parameters =  new HashMap<String,Object>();
-				parameters.put("ItemDataSource", itemsJRBean);
-				
-				JasperPrint jasperPrint = JasperFillManager.fillReport(getClass().getResourceAsStream("/jasper_reports/billing_report.jasper"), parameters); //getClass().getResourceAsStream("/jasper_reports/billing_report.jasper")
-				OutputStream outputStream =  new FileOutputStream(new File(outPutFile));
-				
-				JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream);
-				
-				
-                JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromLocation("./jasper_reports/billing.jasper");
-                JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,parameters,DbConnection.dbConnection);
-                JasperViewer jv = new JasperViewer(jasperPrint);
-                jv.setVisible(true);
-                jv.setTitle("Informe de cliente");
-								
-				System.out.println("File Generated");
-				
-			} catch (JRException e1) {
-				e1.printStackTrace();
-			}*/
-			
-			/*
+							
 			if(saleProductList.size() == 0) return;
 			
 			if(MessageShow.deleteVerification("Do you want to Print?", "Sale") == 0) {
@@ -455,8 +394,8 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 				Sale sale = new Sale();
 				SaleDao saleDao = new SaleDao();
 				
-				sale.setUserId(1);
-				sale.setUserName("Thoura Test Line 341: SaleProductDialog");
+				sale.setUserId(DbConnection.user.getId());
+				sale.setUserName(DbConnection.user.getUsername());
 				sale.setSoldDate(saleDate);
 				sale.setTotal(sumAmount());
 				
@@ -464,40 +403,30 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 					
 					lastSaleId = Help.getLastAutoIncrement("restaurant_project", "Sold");
 					
-					sale.setId(lastSaleId); Updated Sale ID after insertion into Sold Table
+					System.out.println(lastSaleId);
+					
+					
+					sale.setId(lastSaleId); /*Updated Sale ID after insertion into Sold Table*/
 					
 					if(insertIntoSaleDetail(lastSaleId)) {
 						
-						Write Code Cut Stock Here For product which type is Drink						
+
+						System.out.println(lastSaleId);
+						
+						/*Write Code Cut Stock Here For product which type is Drink						*/
 						if(cutStockFromImportDrinkDetail()) {
 							
-							Call to display Sale on Main Form
-							this.backListener.CallBack(sale);
+							/*Call to display Sale on Main Form*/
 							
-							String userHomeDirectory = System.getProperty("Destop");
-							String outPutFile = userHomeDirectory + File.separatorChar + "JasperTableExample.pdf";
+
+							System.out.println(lastSaleId);
 							
-							
-							try {
-								
-								JRBeanCollectionDataSource itemsJRBean = new JRBeanCollectionDataSource(saleProductList);
-								Map<String, Object> parameters =  new HashMap<String,Object>();
-								parameters.put("ItemDataSource", itemsJRBean);
-															
-								JasperPrint jasperPrint = JasperFillManager.fillReport("src/jasper_reports/billing_report.jasper", parameters,new JREmptyDataSource());
-								OutputStream outputStream =  new FileOutputStream(new File(outPutFile));
-								
-								JasperExportManager.exportReportToPdfStream(jasperPrint,outputStream);
-								
-								System.out.println("File Generated");
-							} catch (JRException | FileNotFoundException e1) {
-								e1.printStackTrace();
-							}
+							this.backListener.CallBack(sale);														
 						}																
 					}	
-				}End of insertSale				
+				}//End of insertSale				
 			}
-*/			
+			
 		}else if(e.getSource() == radioButtonDrink) {
 			
 			if(radioButtonDrink.isSelected()) {
@@ -521,24 +450,34 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 		PreparedStatement preparedStatement = null;
 	
 		try {
-			preparedStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("UPDATE Import_Drink_Detail SET soldQty = (soldQty + ?) WHERE pro_id = ? AND (qty - soldQty) > 0 AND status = ?");
+			preparedStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("UPDATE Import_Drink_Detail SET soldQty = (soldQty + ?) WHERE pro_id = ? AND (qty - soldQty) > 0 AND status = ? LIMIT 1;");
 			
 			for(SaleDetail saleDetail:saleProductList) {
-				int minQty = 0;
-				int soldQty = saleDetail.getQty();
+				
+				if(!saleDetail.getType().toLowerCase().equals("drink")) {
+					continue;
+				}
+				
+				int minQtyProductInStock = 0;
+				int currentSaleQty = saleDetail.getQty();
 				
 				/*Begin of Dynamic Stock Cutting without selecting any import drink number*/
 				
-				while(soldQty > 0){					
+				while(currentSaleQty > 0){					
 					
-					minQty = getMinInStockQuantity(saleDetail.getProductId());
-					if(minQty > soldQty) {
-						minQty = soldQty;
-						soldQty = 0; /*To stop query for stock cutting*/
+					minQtyProductInStock = getMinInStockQuantity(saleDetail.getProductId());
+					
+					if(minQtyProductInStock > currentSaleQty) {
+						
+						minQtyProductInStock = currentSaleQty;						
+						currentSaleQty = 0; /*To stop query for stock cutting*/
+						
 					}else {
-						soldQty -= minQty;
+												
+						currentSaleQty = currentSaleQty - minQtyProductInStock;						
 					}
-					preparedStatement.setInt(1, minQty);
+					
+					preparedStatement.setInt(1, minQtyProductInStock);
 					preparedStatement.setInt(2, saleDetail.getProductId());
 					preparedStatement.setBoolean(3, true);
 					
@@ -607,6 +546,8 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 		return success;
 	}
 
+	
+	
 	private void loadProductToProductList(String type) {
 		
 		if(productList != null) productList.clear();
@@ -622,6 +563,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 		
 		if(productList != null) productList.clear();
 		if(listModel != null) listModel.clear();
+		
 		productList = productDao.getOnlyInstockDrinkList();		
 		
 		for(Product pro:productList) {

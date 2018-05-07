@@ -223,14 +223,15 @@ public class ProductPanel extends JPanel implements CallBackListenter, ActionLis
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		Product product = null;
-		if (productList.size() > 0 && selectedIndex >= 0) { 
+		if (productList.size() > 0 && selectedIndex != -1) { 
 			product = productList.get(selectedIndex);
-		}
 			
-		productEdit = new ProdutEditDialog(product);
+			productEdit = new ProdutEditDialog(product);
+			
+			productEdit.setCallBackListener(this);
+			productEdit.setVisible(true);		
+		}
 		
-		productEdit.setCallBackListener(this);
-		productEdit.setVisible(true);		
 	}
 
 	@Override

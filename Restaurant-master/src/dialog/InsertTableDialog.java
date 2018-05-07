@@ -10,18 +10,21 @@ import javax.swing.border.EmptyBorder;
 import control_classes.ColorModel;
 import control_classes.MessageShow;
 import controller.TableDao;
+import form.LoginForm;
 import instance_classes.Table;
 import interfaces.CallBackListenter;
 
 import javax.swing.JLabel;
 
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import java.awt.Color;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JTextField;
 import java.awt.Dimension;
 
@@ -42,23 +45,8 @@ public class InsertTableDialog extends JDialog implements ActionListener{
 	private ButtonGroup buttonGroup = new ButtonGroup();
 	private JLabel labelTitle;
 	private CallBackListenter backListener;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			InsertTableDialog dialog = new InsertTableDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Create the dialog.
-	 */
+	
+	
 	ColorModel cModel = new ColorModel();
 	public void setCallBackListener( CallBackListenter backListener) {
 		this.backListener = backListener;
@@ -84,6 +72,21 @@ public class InsertTableDialog extends JDialog implements ActionListener{
 	}
 
 	public InsertTableDialog() {
+		
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			e1.printStackTrace();
+		}
+		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));	
+		
 		setBackground(Color.BLACK);
 		setTitle("Insert Table");
 		setBounds(100, 100, 415, 283);

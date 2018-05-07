@@ -8,73 +8,48 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-
-import connection.DbConnection;
 import control_classes.Help;
-import control_classes.InputControl;
 import controller.RawMaterialDao;
+import form.LoginForm;
 import instance_classes.RawMaterial;
 import interfaces.CallBackListenter;
-
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.Font;
+import java.awt.Toolkit;
+
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-import java.sql.*;
 
 public class RawMaterialInsertDialog extends JDialog {
 	
-	private Connection con = null;
-	private PreparedStatement pst = null;
-	private Statement stType = null;
-	private ResultSet rs = null;
-
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtName;
 	private JTextField txtDescription;
 	private CallBackListenter callBack;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			RawMaterialInsertDialog dialog = new RawMaterialInsertDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Create the dialog.
-	 */
+	
 	public RawMaterialInsertDialog() {
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		} catch (UnsupportedLookAndFeelException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
+		
 		
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());

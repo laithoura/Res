@@ -26,7 +26,7 @@ public class ImportDrinkDao {
 		try {
 			con = DbConnection.getConnection();
 			prepareStatement = con.prepareStatement("INSERT INTO import_drink (date, invoice_no, user_id, total, status) VALUES(?,?,?,?,true)"); 
-			prepareStatement.setDate(1, new java.sql.Date(importDrink.getImportDrinkDate().getDate()));
+			prepareStatement.setDate(1, new java.sql.Date(importDrink.getImportDrinkDate().getTime()));
 			prepareStatement.setString(2, importDrink.getInvoiceNumber());
 			prepareStatement.setInt(3, importDrink.getUserId());
 			prepareStatement.setDouble(4, importDrink.getTotal());
@@ -102,8 +102,8 @@ public class ImportDrinkDao {
 		
 		try {
 			preparedStatement = (PreparedStatement) DbConnection.getConnection().prepareStatement("INSERT INTO import_drink_detail (pro_id, imp_drink_id, qty, unit_price, amount, status) VALUES(?,?,?,?,?,?)");
-			preparedStatement.setInt(1, importDrinkDetail.getImportDrinkId());
-			preparedStatement.setInt(2, importDrinkDetail.getProductId());
+			preparedStatement.setInt(1, importDrinkDetail.getProductId());
+			preparedStatement.setInt(2, importDrinkDetail.getImportDrinkId());
 			preparedStatement.setDouble(3, importDrinkDetail.getQty());
 			preparedStatement.setDouble(4, importDrinkDetail.getUnitPrice());
 			preparedStatement.setDouble(5, importDrinkDetail.getAmount());

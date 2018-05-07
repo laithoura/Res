@@ -2,6 +2,7 @@ package dialog;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -17,28 +18,24 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-
-import com.mysql.jdbc.PreparedStatement;
 import com.toedter.calendar.JDateChooser;
-
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import java.util.ArrayList;
 import java.util.Date;
-
 import instance_classes.*;
 import interfaces.CallBackListenter;
 import connection.*;
+import control_classes.Formatter;
 import control_classes.Help;
 import control_classes.InputControl;
 import control_classes.Item;
 import controller.ImportDrinkDao;
 import controller.ImportRawMaterialDao;
-import controller.SaleDao;
+import form.LoginForm;
 
 import java.awt.event.ActionListener;
 import java.sql.Connection;
@@ -104,6 +101,8 @@ public class ImportInsertDialog extends JDialog{
 			e1.printStackTrace();
 		}
 		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
+
 		setBounds(100, 100, 535, 517);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -222,33 +221,34 @@ public class ImportInsertDialog extends JDialog{
 					JOptionPane.showMessageDialog(null, "Please input unit price!");
 					return;
 				} else {
+					
 					rabtnImportDrink.setEnabled(false);
 					rabtnImportRawMaterial.setEnabled(false);
+														
+					int itemId = ((Item) cboProduct.getSelectedItem()).getValue();										
+					String itemName = cboProduct.getSelectedItem().toString();
 					
-					String invoiceNumber = txtInvoiceNumber.getText();
-					String importDate = dcImportDate.getDate().toString();
 					
-					System.out.println(importDate);
+					System.out.println(itemId + itemName);
 					
-					int imprortDetailId = cboProduct.getSelectedIndex();
-					String importName = cboProduct.getSelectedItem().toString();
 					double qty = Double.parseDouble(txtQauntity.getText());
 					double unitPrice = Double.parseDouble(txtUnitPrice.getText());
 					double  amount = qty * unitPrice;
 					
 					total = total + amount;
 					
-					String[] newRow = new String[] {importName, qty + "", unitPrice + "", amount + ""};
+					String[] newRow = new String[] {itemName, qty + "", Formatter.numberToText(unitPrice) , Formatter.numberToText(amount) };
 					model.addRow(newRow);
+					
 					txtTotal.setText(total + "");
 					
 					if (rabtnImportDrink.isSelected()) {
-						ImportDrinkDetail importDrinkDetail = new ImportDrinkDetail(0, imprortDetailId, 0, qty, unitPrice, amount, true);
+						ImportDrinkDetail importDrinkDetail = new ImportDrinkDetail(0, itemId, 0, qty, unitPrice, amount, true);
 						importDrinkList.add(importDrinkDetail);
 						
 					} else {
 						
-						ImportRawMaterialDetail importRawMaterialDetail = new ImportRawMaterialDetail(0, imprortDetailId, 0, qty, unitPrice, amount, true);
+						ImportRawMaterialDetail importRawMaterialDetail = new ImportRawMaterialDetail(0, itemId, 0, qty, unitPrice, amount, true);
 						importRawMaterialList.add(importRawMaterialDetail);
 					}
 					
@@ -291,28 +291,39 @@ public class ImportInsertDialog extends JDialog{
 						
 						String invoiceNumber = txtInvoiceNumber.getText();
 						Date importDate = dcImportDate.getDate();
-						int userId = 1;
+						
+						int userId = DbConnection.user.getId();
 						
 						if (rabtnImportDrink.isSelected()) {
+							
 							importDrinkDao = new ImportDrinkDao();
-							ImportDrink importDrink = new ImportDrink(0, importDate, invoiceNumber, 1, total, true);
+							
+							ImportDrink importDrink = new ImportDrink(0, importDate, invoiceNumber, userId, total, true);
+							
 							if (importDrinkDao.insertImportDrink(importDrink) ) {
-								int lastImportDrinklId = Help.getLastAutoIncrement("restaurant_project", "import_drink_detail");
-								importDrink.setId(lastImportDrinklId);
+								
+								int lastImportDrinkId = Help.getLastAutoIncrement("restaurant_project", "import_drink");
+								importDrink.setId(lastImportDrinkId);
 	
-								if (insertIntoImportDrinkDetail(lastImportDrinklId)) {
+								if (insertIntoImportDrinkDetail(lastImportDrinkId)) {
 									JOptionPane.showMessageDialog(null, "Inserted successfully!");
 								}
 							}
+							
 						} else {
+							
 							importRawMaterialDao = new ImportRawMaterialDao();
+							
 							ImportRawMaterial importRawMaterial = new ImportRawMaterial(0, importDate, invoiceNumber, userId, total, true);
-							if (importRawMaterialDao.insertImportRawMaterialDao(importRawMaterial)) {
+							
+							if (importRawMaterialDao.insertImportRawMaterial(importRawMaterial)) {
 								
-								int lastImportRawMaterialId = Help.getLastAutoIncrement("restaurant_project", "import_rm_detail");
+								int lastImportRawMaterialId = Help.getLastAutoIncrement("restaurant_project", "import_rm");
+								
 								importRawMaterial.setId(lastImportRawMaterialId);
 	
 								if (insertIntoImportRawMaterialDetail(lastImportRawMaterialId)) {
+									
 									JOptionPane.showMessageDialog(null, "Inserted successfully!");
 								}
 							}
@@ -431,6 +442,7 @@ public class ImportInsertDialog extends JDialog{
 		for(ImportDrinkDetail importDrinkDetail: importDrinkList) {
 			
 			importDrinkDetail.setImportDrinkId(lastImportDrinkId);
+			
 			if(importDrinklDao.insertIntoImportDrinkDetail(importDrinkDetail)) {
 				importDrinkDetailCount ++;
 			}

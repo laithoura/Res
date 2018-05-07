@@ -266,9 +266,8 @@ public class SalePanel extends JPanel implements ActionListener{
 				
 				@Override
 				public void CallBack(Object sender) {
-					saleList.add((Sale)sender);
+					saleList.add(0,(Sale)sender);
 					saleDataModel.updateTable();
-					//refreshTableModel();
 				}
 			});
 			saleDailog.setVisible(true);
