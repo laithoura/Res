@@ -23,6 +23,7 @@ import java.awt.Color;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.ImageIcon;
 
 public class UpdateUserDialog extends JDialog{
 	
@@ -64,7 +65,7 @@ public class UpdateUserDialog extends JDialog{
 		
 		setResizable(false);
 		setTitle("Update User Account");
-		setBounds(100, 100, 425, 278);
+		setBounds(100, 100, 425, 266);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -102,21 +103,23 @@ public class UpdateUserDialog extends JDialog{
 		cboRole.addItem("Cashier");
 		cboRole.addItem("Service");
 		cboRole.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		cboRole.setBounds(121, 136, 228, 24);
+		cboRole.setBounds(121, 136, 243, 24);
 		contentPanel.add(cboRole);
 		
 		txtPassword = new JPasswordField();
 		txtPassword.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		txtPassword.setBounds(121, 94, 228, 24);
+		txtPassword.setBounds(121, 94, 243, 24);
 		contentPanel.add(txtPassword);
 		{
 			JButton btnCancel = new JButton("Cancel");
-			btnCancel.setBounds(240, 181, 108, 32);
+			btnCancel.setIcon(new ImageIcon(UpdateUserDialog.class.getResource("/resources/Cancel_20.png")));
+			btnCancel.setBounds(264, 181, 100, 30);
 			contentPanel.add(btnCancel);
 			btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 			btnCancel.setActionCommand("Cancel");
 			{
 				JButton btnCreate = new JButton("Update");
+				btnCreate.setIcon(new ImageIcon(UpdateUserDialog.class.getResource("/resources/Edit_20.png")));
 				btnCreate.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
@@ -158,7 +161,7 @@ public class UpdateUserDialog extends JDialog{
 				btnCreate.setFont(new Font("Tahoma", Font.PLAIN, 12));
 				btnCreate.setMinimumSize(new Dimension(65, 23));
 				btnCreate.setMaximumSize(new Dimension(65, 23));
-				btnCreate.setBounds(120, 182, 108, 32);
+				btnCreate.setBounds(154, 181, 100, 30);
 				contentPanel.add(btnCreate);
 			}
 			{
@@ -166,7 +169,7 @@ public class UpdateUserDialog extends JDialog{
 				txtUsername.setFont(new Font("Tahoma", Font.PLAIN, 13));
 				txtUsername.setColumns(10);
 				txtUsername.setBackground(Color.WHITE);
-				txtUsername.setBounds(121, 53, 227, 24);
+				txtUsername.setBounds(121, 53, 243, 24);
 				contentPanel.add(txtUsername);
 			}
 			btnCancel.addActionListener(new ActionListener() {

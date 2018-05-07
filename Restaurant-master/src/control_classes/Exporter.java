@@ -19,9 +19,8 @@ public class Exporter {
 
 	        if (result == chooser.APPROVE_OPTION) { 
 	           name=chooser.getSelectedFile().toString();
-	        } else {
-	        	name="D:\\SupplierList";
 	        }
+	        
 	        FileWriter excel = new FileWriter(name+".xls");
 
 	        for(int i = 0; i < model.getColumnCount(); i++){

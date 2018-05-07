@@ -3,7 +3,6 @@ package dialog;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Toolkit;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -16,15 +15,17 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JComboBox;
 import instance_classes.*;
 import interfaces.CallBackListenter;
-import connection.*;
 import control_classes.InputControl;
 import controller.ProductDao;
 import form.LoginForm;
-
-import java.sql.*;
 import java.util.ArrayList;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
+import javax.swing.ImageIcon;
+
+
+
 public class ProdutEditDialog extends JDialog {
 	/*private Connection con = null;
 	private Statement stType = null;
@@ -60,6 +61,7 @@ public class ProdutEditDialog extends JDialog {
 	}
  	
 	public ProdutEditDialog() {
+		setResizable(false);
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -74,103 +76,104 @@ public class ProdutEditDialog extends JDialog {
 		}
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
-		
-		setBounds(100, 100, 450, 300);
+		setTitle("Update Product");
+		setBounds(100, 100, 418, 221);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
-		
-		JLabel lblEditProduct = new JLabel("Edit product");
-		lblEditProduct.setBounds(10, 11, 103, 14);
-		contentPanel.add(lblEditProduct);
 		{
 			JLabel lblName = new JLabel("Name");
-			lblName.setBounds(10, 46, 103, 14);
+			lblName.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			lblName.setBounds(30, 29, 66, 14);
 			contentPanel.add(lblName);
 		}
 		{
 			JLabel lblType = new JLabel("Type");
-			lblType.setBounds(10, 88, 103, 14);
+			lblType.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			lblType.setBounds(30, 69, 66, 14);
 			contentPanel.add(lblType);
 		}
 		{
 			JLabel lblUnitPrice = new JLabel("Unit price");
-			lblUnitPrice.setBounds(10, 124, 103, 14);
+			lblUnitPrice.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			lblUnitPrice.setBounds(30, 107, 66, 14);
 			contentPanel.add(lblUnitPrice);
 		}
 		
 		txtName = new JTextField();
-		txtName.setBounds(123, 43, 159, 20);
+		txtName.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		txtName.setBounds(93, 24, 268, 24);
 		contentPanel.add(txtName);
 		txtName.setColumns(10);
 		
 		txtUnitPrice = new JTextField();
+		txtUnitPrice.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txtUnitPrice.setColumns(10);
-		txtUnitPrice.setBounds(123, 121, 159, 20);
+		txtUnitPrice.setBounds(93, 102, 268, 24);
 		contentPanel.add(txtUnitPrice);
 		
 		cboType = new JComboBox();
+		cboType.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		cboType.addItem("Drink");
 		cboType.addItem("Food");
-		cboType.setBounds(123, 85, 159, 20);
+		cboType.setBounds(93, 64, 268, 24);
 		
 		/** Validation fields */	
 		InputControl.inputFloatingPoint(txtUnitPrice);
 		contentPanel.add(cboType);
 		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton btnUpdate = new JButton("Update");
-				btnUpdate.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
+			JButton btnUpdate = new JButton("Update");
+			btnUpdate.setIcon(new ImageIcon(ProdutEditDialog.class.getResource("/resources/Edit_20.png")));
+			btnUpdate.setBounds(151, 137, 100, 30);
+			contentPanel.add(btnUpdate);
+			btnUpdate.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					if (txtName.getText().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "Pleas input name!");
+						return;
+					} else if (txtUnitPrice.getText().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "Please input unit price!");
+						return;
+					} else {
+						int id = Integer.parseInt(txtId.getText());
+						String name = txtName.getText();
+						double unitPrice = Double.parseDouble(txtUnitPrice.getText());
+						String type = cboType.getSelectedItem().toString();
 						
-						if (txtName.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Pleas input name!");
-							return;
-						} else if (txtUnitPrice.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Please input unit price!");
-							return;
+						ProductDao productDao = new ProductDao(); 
+						
+						Product product = new Product(id,name, type, unitPrice, true);
+						
+						if (productDao.updateProduct(product)) {
+							JOptionPane.showMessageDialog(null, "Updated successfully");
+							product.setName(name);
+							product.setPrice(unitPrice);
+							product.setType(type);
+							backListenter.CallBack(product);
+						
 						} else {
-							int id = Integer.parseInt(txtId.getText());
-							String name = txtName.getText();
-							double unitPrice = Double.parseDouble(txtUnitPrice.getText());
-							String type = cboType.getSelectedItem().toString();
-							
-							ProductDao productDao = new ProductDao(); 
-							
-							Product product = new Product(id,name, type, unitPrice, true);
-							
-							if (productDao.updateProduct(product)) {
-								JOptionPane.showMessageDialog(null, "Updated successfully");
-								product.setName(name);
-								product.setPrice(unitPrice);
-								product.setType(type);
-								backListenter.CallBack(product);
-							
-							} else {
-								JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
-							}
-						}				
-					}
-				});
-				btnUpdate.setActionCommand("OK");
-				buttonPane.add(btnUpdate);
-				getRootPane().setDefaultButton(btnUpdate);
-			}
-			{
-				JButton btnCancel = new JButton("Cancel");
-				btnCancel.setActionCommand("Cancel");
-				buttonPane.add(btnCancel);
-				btnCancel.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						clearInputBox();					
-					}					
-				});
-			}
+							JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
+						}
+					}				
+				}
+			});
+			btnUpdate.setActionCommand("OK");
+			getRootPane().setDefaultButton(btnUpdate);
+		}
+		{
+			JButton btnCancel = new JButton("Cancel");
+			btnCancel.setIcon(new ImageIcon(ProdutEditDialog.class.getResource("/resources/Cancel_20.png")));
+			btnCancel.setBounds(261, 137, 100, 30);
+			contentPanel.add(btnCancel);
+			btnCancel.setActionCommand("Cancel");
+			btnCancel.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					clearInputBox();					
+				}					
+			});
 		}
 	}
 	

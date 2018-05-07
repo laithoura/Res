@@ -15,6 +15,7 @@ import javax.swing.table.TableRowSorter;
 import javax.swing.JButton;
 import java.util.ArrayList;
 
+import control_classes.Exporter;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.RawMaterialDao;
@@ -48,6 +49,7 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 	private JTextField txtSearch;
 	private RawMaterialEditDialog rawMaterialEdit;
 	private RawMaterialDao rawMaterialDao;
+	private JButton btnExport;
 	
 	/**
 	 * Create the panel.
@@ -158,31 +160,44 @@ public class RawMaterialPanel extends JPanel implements CallBackListenter, Actio
 		txtSearch.setColumns(10);
 		
 		JLabel lblSearch = new JLabel("Search: ");
+		
+		btnExport = new JButton("Export");
+		btnExport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Exporter.jtableToExcel(table);
+			}
+		});
+		btnExport.setIcon(new ImageIcon(RawMaterialPanel.class.getResource("/resources/Excel_20.png")));
+		btnExport.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		GroupLayout gl_pnlBtn = new GroupLayout(pnlBtn);
 		gl_pnlBtn.setHorizontalGroup(
 			gl_pnlBtn.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_pnlBtn.createSequentialGroup()
+				.addGroup(Alignment.LEADING, gl_pnlBtn.createSequentialGroup()
 					.addContainerGap()
 					.addComponent(lblSearch)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 138, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
 					.addComponent(btnAdd)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnEdit)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(btnDelete))
+					.addComponent(btnDelete)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnExport, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap())
 		);
 		gl_pnlBtn.setVerticalGroup(
 			gl_pnlBtn.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pnlBtn.createSequentialGroup()
 					.addGap(5)
 					.addGroup(gl_pnlBtn.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblSearch)
+						.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnDelete)
 						.addComponent(btnEdit)
 						.addComponent(btnAdd)
-						.addComponent(lblSearch)
-						.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)))
+						.addComponent(btnExport, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)))
 		);
 		pnlBtn.setLayout(gl_pnlBtn);
 		GroupLayout groupLayout = new GroupLayout(this);

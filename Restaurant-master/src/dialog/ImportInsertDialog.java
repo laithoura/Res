@@ -33,6 +33,7 @@ import control_classes.Formatter;
 import control_classes.Help;
 import control_classes.InputControl;
 import control_classes.Item;
+import control_classes.MessageShow;
 import controller.ImportDrinkDao;
 import controller.ImportRawMaterialDao;
 import form.LoginForm;
@@ -43,6 +44,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 
 
 public class ImportInsertDialog extends JDialog{
@@ -66,23 +68,10 @@ public class ImportInsertDialog extends JDialog{
 	private ImportRawMaterialDao importRawMaterialDao;
 	private CallBackListenter callBack;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			ImportInsertDialog dialog = new ImportInsertDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Create the dialog.
-	 */
+	
+	
 	public ImportInsertDialog(){
+		setResizable(false);
 		con = DbConnection.dbConnection;
 		
 		try {
@@ -102,75 +91,83 @@ public class ImportInsertDialog extends JDialog{
 		}
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
-
-		setBounds(100, 100, 535, 517);
+		setTitle("Import Drink/ Raw Material");
+		setBounds(100, 100, 582, 479);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
 		
-		JLabel lblImport = new JLabel("Import ");
-		lblImport.setBounds(10, 11, 46, 14);
-		contentPanel.add(lblImport);
-		
 		JLabel lblInvoiceNumber = new JLabel("Invoice number");
-		lblInvoiceNumber.setBounds(10, 44, 119, 14);
+		lblInvoiceNumber.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblInvoiceNumber.setBounds(30, 46, 119, 14);
 		contentPanel.add(lblInvoiceNumber);
 		
 		JLabel lblDate = new JLabel("Date");
-		lblDate.setBounds(10, 69, 46, 14);
+		lblDate.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblDate.setBounds(30, 76, 46, 14);
 		contentPanel.add(lblDate);
 		
 		JLabel lblRawMaterialdrink = new JLabel("Raw material/Drink");
-		lblRawMaterialdrink.setBounds(10, 136, 130, 14);
+		lblRawMaterialdrink.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblRawMaterialdrink.setBounds(30, 138, 130, 14);
 		contentPanel.add(lblRawMaterialdrink);
 		
 		JLabel lblQauntity = new JLabel("Qauntity");
-		lblQauntity.setBounds(10, 164, 91, 14);
+		lblQauntity.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblQauntity.setBounds(30, 169, 91, 14);
 		contentPanel.add(lblQauntity);
 		
 		JLabel label_4 = new JLabel("Import ");
-		label_4.setBounds(10, 11, 46, 14);
+		label_4.setFont(new Font("Tw Cen MT Condensed Extra Bold", Font.PLAIN, 20));
+		label_4.setBounds(30, 11, 195, 20);
 		contentPanel.add(label_4);
 		
 		JLabel lblUnitPrice = new JLabel("Unit price");
-		lblUnitPrice.setBounds(10, 189, 91, 14);
+		lblUnitPrice.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblUnitPrice.setBounds(30, 198, 91, 14);
 		contentPanel.add(lblUnitPrice);
 		
 		txtInvoiceNumber = new JTextField();
-		txtInvoiceNumber.setBounds(161, 41, 159, 20);
+		txtInvoiceNumber.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		txtInvoiceNumber.setBounds(146, 41, 194, 24);
 		contentPanel.add(txtInvoiceNumber);
 		txtInvoiceNumber.setColumns(10);
 		
 		txtQauntity = new JTextField();
+		txtQauntity.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtQauntity.setColumns(10);
-		txtQauntity.setBounds(161, 161, 159, 20);
+		txtQauntity.setBounds(146, 164, 194, 24);
 		contentPanel.add(txtQauntity);
 		
 		txtUnitPrice = new JTextField();
+		txtUnitPrice.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		txtUnitPrice.setColumns(10);
-		txtUnitPrice.setBounds(161, 189, 159, 20);
+		txtUnitPrice.setBounds(146, 193, 194, 24);
 		contentPanel.add(txtUnitPrice);
 		
 		Date nowDate = new Date();
 		dcImportDate = new JDateChooser(nowDate);
 		dcImportDate.setDateFormatString("dd/MM/yyyy");
-		dcImportDate.setBounds(161, 69, 159, 20);
+		dcImportDate.setBounds(146, 71, 194, 24);
 		contentPanel.add(dcImportDate);
 		//dcImportDate.setDate(new Date(selectedIndex, selectedIndex, selectedIndex));
 		
 		JComboBox cboProduct = new JComboBox();
-		cboProduct.setBounds(161, 133, 159, 20);
+		cboProduct.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		cboProduct.setBounds(146, 133, 194, 24);
 		contentPanel.add(cboProduct);	
 		
 		
-		JRadioButton rabtnImportRawMaterial = new JRadioButton("Import raw material");
-		rabtnImportRawMaterial.setBounds(10, 103, 149, 23);
+		JRadioButton rabtnImportRawMaterial = new JRadioButton("Raw material");
+		rabtnImportRawMaterial.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		rabtnImportRawMaterial.setBounds(146, 102, 119, 23);
 		contentPanel.add(rabtnImportRawMaterial);
 		
-		JRadioButton rabtnImportDrink = new JRadioButton("Import drink");
-		rabtnImportDrink.setBounds(161, 103, 109, 23);
+		JRadioButton rabtnImportDrink = new JRadioButton("Drink");
+		rabtnImportDrink.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		rabtnImportDrink.setBounds(268, 103, 109, 23);
 		contentPanel.add(rabtnImportDrink);
 		
 		
@@ -181,7 +178,7 @@ public class ImportInsertDialog extends JDialog{
 		rabtnImportRawMaterial.setSelected(false);
 		
 		JPanel panel = new JPanel();
-		panel.setBounds(10, 246, 499, 140);
+		panel.setBounds(28, 229, 517, 157);
 		contentPanel.add(panel);
 		panel.setLayout(new BorderLayout(0, 0));
 		
@@ -198,16 +195,19 @@ public class ImportInsertDialog extends JDialog{
 		scrollPane.setViewportView(table);
 		
 		txtTotal = new JTextField();
+		txtTotal.setHorizontalAlignment(SwingConstants.RIGHT);
 		txtTotal.setColumns(10);
-		txtTotal.setBounds(111, 411, 159, 20);
+		txtTotal.setBounds(106, 400, 159, 24);
 		txtTotal.setEditable(false);
 		contentPanel.add(txtTotal);
 		
 		JLabel lblTotlaPrice = new JLabel("Totla price: ");
-		lblTotlaPrice.setBounds(10, 414, 91, 14);
+		lblTotlaPrice.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblTotlaPrice.setBounds(28, 405, 91, 14);
 		contentPanel.add(lblTotlaPrice);
 		
 		JButton btnAdd = new JButton("Add");
+		btnAdd.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -257,13 +257,12 @@ public class ImportInsertDialog extends JDialog{
 				}	
 			}
 		});
-		
-		btnAdd.setHorizontalAlignment(SwingConstants.LEFT);
 		btnAdd.setIcon(new ImageIcon(ImportInsertDialog.class.getResource("/resources/Add_20.png")));
-		btnAdd.setBounds(389, 44, 109, 23);
+		btnAdd.setBounds(350, 191, 91, 28);
 		contentPanel.add(btnAdd);
 		
 		JButton btnRemove = new JButton("Remove");
+		btnRemove.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		btnRemove.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (table.getRowCount() > 0) {
@@ -275,77 +274,9 @@ public class ImportInsertDialog extends JDialog{
 				}
 			}
 		});
-		
-		btnRemove.setHorizontalAlignment(SwingConstants.LEFT);
 		btnRemove.setIcon(new ImageIcon(ImportInsertDialog.class.getResource("/resources/Cancel_20.png")));
-		btnRemove.setBounds(389, 78, 109, 23);
+		btnRemove.setBounds(445, 191, 101, 28);
 		contentPanel.add(btnRemove);
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton btnSave = new JButton("Save");
-				btnSave.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						
-						String invoiceNumber = txtInvoiceNumber.getText();
-						Date importDate = dcImportDate.getDate();
-						
-						int userId = DbConnection.user.getId();
-						
-						if (rabtnImportDrink.isSelected()) {
-							
-							importDrinkDao = new ImportDrinkDao();
-							
-							ImportDrink importDrink = new ImportDrink(0, importDate, invoiceNumber, userId, total, true);
-							
-							if (importDrinkDao.insertImportDrink(importDrink) ) {
-								
-								int lastImportDrinkId = Help.getLastAutoIncrement("restaurant_project", "import_drink");
-								importDrink.setId(lastImportDrinkId);
-	
-								if (insertIntoImportDrinkDetail(lastImportDrinkId)) {
-									JOptionPane.showMessageDialog(null, "Inserted successfully!");
-								}
-							}
-							
-						} else {
-							
-							importRawMaterialDao = new ImportRawMaterialDao();
-							
-							ImportRawMaterial importRawMaterial = new ImportRawMaterial(0, importDate, invoiceNumber, userId, total, true);
-							
-							if (importRawMaterialDao.insertImportRawMaterial(importRawMaterial)) {
-								
-								int lastImportRawMaterialId = Help.getLastAutoIncrement("restaurant_project", "import_rm");
-								
-								importRawMaterial.setId(lastImportRawMaterialId);
-	
-								if (insertIntoImportRawMaterialDetail(lastImportRawMaterialId)) {
-									
-									JOptionPane.showMessageDialog(null, "Inserted successfully!");
-								}
-							}
-						}
-						
-						rabtnImportDrink.setEnabled(true);
-						rabtnImportRawMaterial.setEnabled(true);
-						
-						clearTextBox();
-						model.setRowCount(0);
-					}
-				});
-				btnSave.setActionCommand("OK");
-				buttonPane.add(btnSave);
-				getRootPane().setDefaultButton(btnSave);
-			}
-			{
-				JButton btnCancel = new JButton("Cancel");
-				btnCancel.setActionCommand("Cancel");
-				buttonPane.add(btnCancel);
-			}
-		}
 		
 		rabtnImportDrink.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -402,6 +333,86 @@ public class ImportInsertDialog extends JDialog{
 		/** Validation fields */
 		InputControl.inputFloatingPoint(txtQauntity);
 		InputControl.inputFloatingPoint(txtUnitPrice);
+		
+		JLabel lblImportType = new JLabel("Import Type");
+		lblImportType.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblImportType.setBounds(30, 106, 119, 14);
+		contentPanel.add(lblImportType);
+		{
+			JButton btnSave = new JButton("Save");
+			btnSave.setIcon(new ImageIcon(ImportInsertDialog.class.getResource("/resources/Add_20.png")));
+			btnSave.setBounds(353, 397, 91, 30);
+			contentPanel.add(btnSave);
+			btnSave.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					if(table.getModel().getRowCount() == 0) {
+						MessageShow.Error("Please import before save to database.", "Import");
+						return;
+					}
+					
+					String invoiceNumber = txtInvoiceNumber.getText();
+					Date importDate = dcImportDate.getDate();
+					
+					int userId = DbConnection.user.getId();
+					
+					if (rabtnImportDrink.isSelected()) {
+						
+						importDrinkDao = new ImportDrinkDao();
+						
+						ImportDrink importDrink = new ImportDrink(0, importDate, invoiceNumber, userId, total, true);
+						
+						if (importDrinkDao.insertImportDrink(importDrink) ) {
+							
+							int lastImportDrinkId = Help.getLastAutoIncrement("restaurant_project", "import_drink");
+							importDrink.setId(lastImportDrinkId);
+	
+							if (insertIntoImportDrinkDetail(lastImportDrinkId)) {
+								JOptionPane.showMessageDialog(null, "Inserted successfully!");
+							}
+						}
+						
+					} else {
+						
+						importRawMaterialDao = new ImportRawMaterialDao();
+						
+						ImportRawMaterial importRawMaterial = new ImportRawMaterial(0, importDate, invoiceNumber, userId, total, true);
+						
+						if (importRawMaterialDao.insertImportRawMaterial(importRawMaterial)) {
+							
+							int lastImportRawMaterialId = Help.getLastAutoIncrement("restaurant_project", "import_rm");
+							
+							importRawMaterial.setId(lastImportRawMaterialId);
+	
+							if (insertIntoImportRawMaterialDetail(lastImportRawMaterialId)) {
+								
+								JOptionPane.showMessageDialog(null, "Inserted successfully!");
+							}
+						}
+					}
+					
+					rabtnImportDrink.setEnabled(true);
+					rabtnImportRawMaterial.setEnabled(true);
+					
+					clearTextBox();
+					model.setRowCount(0);
+				}
+			});
+			btnSave.setActionCommand("OK");
+			getRootPane().setDefaultButton(btnSave);
+		}
+		{
+			JButton btnCancel = new JButton("Cancel");
+			btnCancel.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					dispose();
+				}
+			});
+			btnCancel.setIcon(new ImageIcon(ImportInsertDialog.class.getResource("/resources/Cancel_20.png")));
+			btnCancel.setBounds(454, 397, 91, 30);
+			contentPanel.add(btnCancel);
+			btnCancel.setActionCommand("Cancel");
+		}
 	}
 	
 	

@@ -29,9 +29,11 @@ import controller.SaleDao;
 import data_table_model.SaleDataModel;
 import data_table_model.SaleDetailDataModel;
 import dialog.SaleProductDialog;
+import form.SearchForm;
 import instance_classes.Sale;
 import instance_classes.SaleDetail;
 import interfaces.CallBackListenter;
+import interfaces.SearchCallBackListener;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.DefaultComboBoxModel;
@@ -50,7 +52,7 @@ public class SalePanel extends JPanel implements ActionListener{
 	private JDateChooser dateChooser;
 	private JLabel labelSearch;
 	
-	private JButton buttonRefresh, buttonNew, buttonUpdate, buttonExport;
+	private JButton buttonRefresh, buttonNew, buttonExport, btnSearchBetweenDates;
 	private SaleDataModel saleDataModel;
 	private ArrayList<Sale> saleList;
 	private SaleDao saleDao = new SaleDao();
@@ -70,15 +72,10 @@ public class SalePanel extends JPanel implements ActionListener{
 		JPanel panelHeader = new JPanel();
 		add(panelHeader, BorderLayout.NORTH);
 		
-		buttonNew = new JButton("New");
+		buttonNew = new JButton("Sell");
 		buttonNew.setIcon(new ImageIcon(SalePanel.class.getResource("/resources/Add_20.png")));
 		buttonNew.setMinimumSize(new Dimension(65, 23));
 		buttonNew.setMaximumSize(new Dimension(65, 23));
-		
-		buttonUpdate = new JButton("Update");
-		buttonUpdate.setIcon(new ImageIcon(SalePanel.class.getResource("/resources/Edit_20.png")));
-		buttonUpdate.setMinimumSize(new Dimension(65, 23));
-		buttonUpdate.setMaximumSize(new Dimension(65, 23));
 		
 		buttonExport = new JButton("Export");
 		buttonExport.setIcon(new ImageIcon(SalePanel.class.getResource("/resources/Excel_20.png")));
@@ -142,18 +139,27 @@ public class SalePanel extends JPanel implements ActionListener{
 		dateChooser.setDateFormatString("dd/MM/yyyy");
 		panelSearch.add(dateChooser);	
 		
+		
+		
+		Date startDate = new Date();
+		
+		btnSearchBetweenDates = new JButton("Search Between Dates");
+		btnSearchBetweenDates.setIcon(new ImageIcon(SalePanel.class.getResource("/resources/Search_20.png")));
+		btnSearchBetweenDates.setMinimumSize(new Dimension(65, 23));
+		btnSearchBetweenDates.setMaximumSize(new Dimension(65, 23));
+		
 		GroupLayout gl_panelHeader = new GroupLayout(panelHeader);
 		gl_panelHeader.setHorizontalGroup(
 			gl_panelHeader.createParallelGroup(Alignment.TRAILING)
 				.addGroup(gl_panelHeader.createSequentialGroup()
 					.addGap(11)
-					.addComponent(panelSearch, GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
-					.addGap(120)
+					.addComponent(panelSearch, GroupLayout.PREFERRED_SIZE, 342, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED, 43, Short.MAX_VALUE)
+					.addComponent(btnSearchBetweenDates, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(buttonRefresh, GroupLayout.PREFERRED_SIZE, 107, GroupLayout.PREFERRED_SIZE)
 					.addGap(5)
 					.addComponent(buttonNew, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(buttonUpdate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(buttonExport, GroupLayout.PREFERRED_SIZE, 88, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
@@ -163,17 +169,16 @@ public class SalePanel extends JPanel implements ActionListener{
 				.addGroup(gl_panelHeader.createSequentialGroup()
 					.addGroup(gl_panelHeader.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panelHeader.createSequentialGroup()
-							.addGap(4)
-							.addComponent(panelSearch, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE))
-						.addGroup(gl_panelHeader.createSequentialGroup()
 							.addGap(16)
 							.addGroup(gl_panelHeader.createParallelGroup(Alignment.TRAILING)
 								.addGroup(gl_panelHeader.createParallelGroup(Alignment.LEADING)
 									.addComponent(buttonRefresh, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-									.addGroup(gl_panelHeader.createParallelGroup(Alignment.BASELINE)
-										.addComponent(buttonUpdate, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-										.addComponent(buttonNew, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)))
-								.addComponent(buttonExport, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))))
+									.addComponent(buttonNew, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
+									.addComponent(btnSearchBetweenDates, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
+								.addComponent(buttonExport, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(gl_panelHeader.createSequentialGroup()
+							.addGap(4)
+							.addComponent(panelSearch, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 		);
 		
@@ -243,18 +248,16 @@ public class SalePanel extends JPanel implements ActionListener{
 	}
 	private void registerEvent() {				
 		
+		this.btnSearchBetweenDates.addActionListener(this);
 		this.buttonNew.addActionListener(this);
 		this.buttonRefresh.addActionListener(this);
-		this.buttonUpdate.addActionListener(this);
 		this.buttonExport.addActionListener(this);
 		this.comboBoxSearchType.addActionListener(this);
 		
 		this.checkBoxShowSaleDetail.addActionListener(this);
 	}
 	
-	private void hideSearchControls() {	
-				
-		dateChooser.setVisible(false);
+	private void hideSearchControls() {
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -273,6 +276,23 @@ public class SalePanel extends JPanel implements ActionListener{
 			saleDailog.setVisible(true);
 			
 		}/*End New Button*/
+		else if(e.getSource() == btnSearchBetweenDates) {
+			SearchForm searchForm = new SearchForm();
+			searchForm.setSearchBackListener(new SearchCallBackListener() {
+				
+				@Override
+				public void searchBackListener(Object sender1, Object sender2) {
+					if(checkBoxShowSaleDetail.isSelected()) {
+						saleDetailList =  saleDao.searchSaleDetailsBetweenDates((Date) sender1, (Date) sender2);
+						refreshSaleTable();
+					}else {
+						saleList = saleDao.searchSaleBetweenDates((Date) sender1, (Date) sender2);
+						refreshSaleTable();
+					}
+				}
+			});
+			searchForm.setVisible(true);
+		}
 		else if(e.getSource() == buttonRefresh) {
 			
 			refreshSaleTable();

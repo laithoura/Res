@@ -24,6 +24,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
 
 
 public class RawMaterialInsertDialog extends JDialog {
@@ -35,6 +36,7 @@ public class RawMaterialInsertDialog extends JDialog {
 
 	
 	public RawMaterialInsertDialog() {
+		setResizable(false);
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -50,110 +52,105 @@ public class RawMaterialInsertDialog extends JDialog {
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
 		
+		setTitle("Insert Raw Material");
 		
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 414, 238);
+		
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
 		{
-			JLabel lblInsertRawMaterail = new JLabel("Insert raw materail");
-			lblInsertRawMaterail.setFont(new Font("Times New Roman", Font.BOLD, 13));
-			lblInsertRawMaterail.setBounds(10, 11, 187, 14);
-			contentPanel.add(lblInsertRawMaterail);
-		}
-		{
 			JLabel lblNewLabel = new JLabel("Name");
-			lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-			lblNewLabel.setBounds(10, 52, 123, 20);
+			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			lblNewLabel.setBounds(29, 22, 70, 20);
 			contentPanel.add(lblNewLabel);
 		}
 		
 		JComboBox cboType = new JComboBox( );
-		cboType.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		cboType.setBounds(143, 100, 181, 20);
+		cboType.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		cboType.setBounds(103, 70, 253, 24);
 		contentPanel.add(cboType);
 		cboType.addItem("Meat");
 		cboType.addItem("Vegatable");
 		cboType.addItem("Ingredient");
 		
 		txtName = new JTextField();
-		txtName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		txtName.setBounds(143, 52, 184, 20);
+		txtName.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		txtName.setBounds(103, 22, 253, 24);
 		contentPanel.add(txtName);
 		txtName.setColumns(10);
 		
 		
 		
 		JLabel lblType = new JLabel("Type");
-		lblType.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		lblType.setBounds(10, 100, 123, 20);
+		lblType.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblType.setBounds(29, 70, 70, 20);
 		contentPanel.add(lblType);
 		
 		
 		JLabel lblDescription = new JLabel("Description");
-		lblDescription.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		lblDescription.setBounds(10, 144, 123, 20);
+		lblDescription.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		lblDescription.setBounds(29, 114, 70, 20);
 		contentPanel.add(lblDescription);
 		
 		txtDescription = new JTextField();
-		txtDescription.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		txtDescription.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txtDescription.setColumns(10);
-		txtDescription.setBounds(143, 144, 184, 20);
+		txtDescription.setBounds(103, 114, 253, 24);
 		
 		
 		contentPanel.add(txtDescription);
 		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton btnSave = new JButton("Save");
-				btnSave.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
+			JButton btnSave = new JButton("Save");
+			btnSave.setIcon(new ImageIcon(RawMaterialInsertDialog.class.getResource("/resources/Add_20.png")));
+			btnSave.setBounds(149, 151, 100, 30);
+			contentPanel.add(btnSave);
+			btnSave.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					if (txtName.getText().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "Please input name!");
+						return;
+					} else {
+						RawMaterialDao rawMaterialDao = new RawMaterialDao();
+						String name = txtName.getText();
+						String type = cboType.getSelectedItem().toString();
+						String description = txtDescription.getText(); 
 						
-						if (txtName.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Please input name!");
-							return;
+						RawMaterial rawMaterial = new RawMaterial(0, name, type, description, true);
+						
+						if (rawMaterialDao.insertRawMaterial(rawMaterial)) {
+							
+							int lastRawMaterialId = Help.getLastAutoIncrement("restaurant_project", "raw_material");
+							rawMaterial.setId(lastRawMaterialId);
+							JOptionPane.showMessageDialog(null, "Inserted succesfully!");							
+							clearInputBox();
+							callBack.CallBack(rawMaterial);
+							
 						} else {
-							RawMaterialDao rawMaterialDao = new RawMaterialDao();
-							String name = txtName.getText();
-							String type = cboType.getSelectedItem().toString();
-							String description = txtDescription.getText(); 
-							
-							RawMaterial rawMaterial = new RawMaterial(0, name, type, description, true);
-							
-							if (rawMaterialDao.insertRawMaterial(rawMaterial)) {
-								
-								int lastRawMaterialId = Help.getLastAutoIncrement("restaurant_project", "raw_material");
-								rawMaterial.setId(lastRawMaterialId);
-								JOptionPane.showMessageDialog(null, "Inserted succesfully!");							
-								clearInputBox();
-								callBack.CallBack(rawMaterial);
-								
-							} else {
-								JOptionPane.showMessageDialog(null, "Inserted unsuccesfully!");
-							}	
-						}				
-					}
-				});
-				btnSave.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-				btnSave.setActionCommand("OK");
-				buttonPane.add(btnSave);
-				getRootPane().setDefaultButton(btnSave);
-			}
-			{
-				JButton btnCancel = new JButton("Cancel");
-				btnCancel.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						clearInputBox();					
+							JOptionPane.showMessageDialog(null, "Inserted unsuccesfully!");
+						}	
 					}				
-				});
-				btnCancel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-				btnCancel.setActionCommand("Cancel");
-				buttonPane.add(btnCancel);
-			}
+				}
+			});
+			btnSave.setFont(new Font("Tahoma", Font.PLAIN, 11));
+			btnSave.setActionCommand("OK");
+			getRootPane().setDefaultButton(btnSave);
+		}
+		{
+			JButton btnCancel = new JButton("Cancel");
+			btnCancel.setIcon(new ImageIcon(RawMaterialInsertDialog.class.getResource("/resources/Cancel_20.png")));
+			btnCancel.setBounds(256, 151, 100, 30);
+			contentPanel.add(btnCancel);
+			btnCancel.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					clearInputBox();					
+				}				
+			});
+			btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 11));
+			btnCancel.setActionCommand("Cancel");
 		}
 	}
 	

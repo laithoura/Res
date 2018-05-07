@@ -14,12 +14,12 @@ public class DbConnection {
 	/* Dynamic Connection */
 	public static Boolean createConnection (String serverIP,String databaseName, String username, String password) {
 		try {
-			
+			//Class.forName("com.mysql.jdbc.Driver");
 			dbConnection = DriverManager.getConnection(String.format("jdbc:mysql://%s:3306/%s",serverIP,databaseName),username,password);
 			return true;			
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			MessageShow.Error("Please Open server connection!", "Connection Failure");
+			MessageShow.Error("Connection is not found! "+ e.getMessage(), "Connection Failure");
 		}
 		return false;
 	}

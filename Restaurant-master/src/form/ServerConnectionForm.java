@@ -57,9 +57,7 @@ public final class ServerConnectionForm extends JFrame implements ActionListener
 	private JButton btnConnect,btnCancel;
 	private JCheckBox checkBoxRemember;
 
-	/**
-	 * Launch the application.
-	 */
+	
 	public static void main(String[] args) {
 		
 		try {
@@ -99,7 +97,6 @@ public final class ServerConnectionForm extends JFrame implements ActionListener
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
 
-		setAlwaysOnTop(true);
 		setResizable(false);
 		setBounds(100, 100, 451, 293);
 		getContentPane().setLayout(new BorderLayout());
@@ -220,6 +217,8 @@ public final class ServerConnectionForm extends JFrame implements ActionListener
 	}
 	
 	private void loadDatabaseNameToComboBox() {
+		
+		cboDatabaseName.addItem("restaurant_project");
 		Connection con = null;
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost/?useSSL=false","root","");
@@ -235,8 +234,9 @@ public final class ServerConnectionForm extends JFrame implements ActionListener
 	private void loadServerNameToComboBox() {
 		try {           
 			cboServerName.addItem("localhost");
-            cboServerName.addItem("127.0.0.1");
-            
+			cboServerName.addItem("127.0.0.1");
+			cboServerName.addItem("192.168.43.3");
+                        
             InetAddress myHost = InetAddress.getLocalHost();
 	        cboServerName.addItem(myHost.toString());             
         } catch (Exception ex) {
@@ -258,47 +258,51 @@ public final class ServerConnectionForm extends JFrame implements ActionListener
 	
 	private void lockToApplication(ServerConnection[] serverConnections) {
 		/*Test Dynamic Connection*/
-		
-		ServerConnection server = serverConnections[0];
-		Boolean connection =  DbConnection.createConnection(server.getServerName(),server.getDatabaseName(), server.getUsername(), server.getPassword());
-		if(connection) {
-			if(checkBoxRemember.isSelected()) {
-				saveServerConnection(serverConnections);
-			}
+		Boolean connection = false;
+		try {
+			ServerConnection server = serverConnections[0];
+			connection =  DbConnection.createConnection(server.getServerName(),server.getDatabaseName(), server.getUsername(), server.getPassword());
 			
-			UserDao userDao = new UserDao();
-			if(!userDao.isExistUserAccount()) {			
-				/*If user account is not exist in db => user have to create it first then login into Application*/
-				CreateUserDialog createUserDialog = new CreateUserDialog();
-				createUserDialog.setCallBackListener(new CallBackListenter() {
-					
-					@Override
-					public void CallBack(Object sender) {
-						DbConnection.user = (User) sender;
-						
-						createUserDialog.setVisible(false);
-						createUserDialog.dispose();
-
-						/*After creating New User Account => Navigate to Login Form to Login Again*/
-						if(DbConnection.user != null) {
-							dispose();
-							LoginForm loginForm = new LoginForm();
-							loginForm.setVisible(true);						
-						}else {
-							return;
-						}
-					}
-				});
-				createUserDialog.setVisible(true);								
-			}else{
-				/*If User Account is exist in DB Table => Navigate to Login Form*/
-				this.dispose();
-				LoginForm loginForm = new LoginForm();
-				loginForm.setVisible(true);		
-			}
-			
-			
+		}catch(Exception e) {
+			e.printStackTrace();
 		}
+
+			if(connection) {
+				if(checkBoxRemember.isSelected()) {
+					saveServerConnection(serverConnections);
+				}
+				
+				UserDao userDao = new UserDao();
+				if(!userDao.isExistUserAccount()) {			
+					/*If user account is not exist in db => user have to create it first then login into Application*/
+					CreateUserDialog createUserDialog = new CreateUserDialog();
+					createUserDialog.setCallBackListener(new CallBackListenter() {
+						
+						@Override
+						public void CallBack(Object sender) {
+							DbConnection.user = (User) sender;
+							
+							createUserDialog.setVisible(false);
+							createUserDialog.dispose();
+
+							/*After creating New User Account => Navigate to Login Form to Login Again*/
+							if(DbConnection.user != null) {
+								dispose();
+								LoginForm loginForm = new LoginForm();
+								loginForm.setVisible(true);						
+							}else {
+								return;
+							}
+						}
+					});
+					createUserDialog.setVisible(true);								
+				}else{
+					/*If User Account is exist in DB Table => Navigate to Login Form*/
+					this.dispose();
+					LoginForm loginForm = new LoginForm();
+					loginForm.setVisible(true);		
+				}				
+			}
 	}
 
 	@Override
@@ -307,10 +311,10 @@ public final class ServerConnectionForm extends JFrame implements ActionListener
 			if((cboServerName.getSelectedItem().toString() != "localhost" && cboServerName.getSelectedItem().toString() != "127.0.0.1") && cboServerName.getSelectedItem() != "" ) {
 				cboDatabaseName.removeAllItems();	
 				txtUsername.setText("");
+				cboDatabaseName.addItem("restaurant_project");
 			}else {
 				if(cboDatabaseName.getItemCount() ==0 ) {
 					loadDatabaseNameToComboBox();
-					System.out.println("Load");
 				}
 				txtUsername.setText("root");
 			}

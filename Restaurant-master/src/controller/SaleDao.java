@@ -207,6 +207,7 @@ public class SaleDao {
 		}
 		return saleList;
 	}
+	
 
 	public ArrayList<SaleDetail> getSaleDetailList(boolean status) {
 		ArrayList<SaleDetail> saleDetailList = new ArrayList<>();
@@ -294,5 +295,77 @@ public class SaleDao {
 			}
 		}
 		return saleDetailList;		
+	}
+
+	
+	
+	public ArrayList<SaleDetail> searchSaleDetailsBetweenDates(Date stardDate, Date endDate) {
+		
+		ArrayList<SaleDetail> saleDetailList = new ArrayList<>();
+		
+		try {								
+				
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT S.id, S.date, U.username, P.name, P.type, SD.qty, SD.unit_price, SD.amount FROM ((Sold AS S INNER JOIN Sold_Detail AS SD ON S.id = SD.sold_id) INNER JOIN Product AS P ON SD.pro_id = P.id) INNER JOIN User as U ON S.user_id = U.id WHERE S.date >= ? AND S.date <= ? AND S.status = ?");
+			prepareStatement.setDate(1, new java.sql.Date(((Date)stardDate).getTime()));
+			prepareStatement.setDate(2, new java.sql.Date(((Date)endDate).getTime()));
+			prepareStatement.setBoolean(3, true);
+			
+			resultSet = prepareStatement.executeQuery();
+			while(resultSet.next()) {
+				saleDetailList.add(new SaleDetail(resultSet.getInt(1), /*Sold ID or Invoice No*/
+										(java.util.Date)resultSet.getDate(2), /*Sold Date*/
+										resultSet.getString(3), /*Username*/
+										resultSet.getString(4), /*Product Name*/
+										resultSet.getString(5), /*Type*/
+										resultSet.getInt(6), /*Quantity*/
+										resultSet.getDouble(7), /*Unit Price*/
+										resultSet.getDouble(8) /*Amount*/
+						));
+			}
+		} catch (SQLException e) {		
+			e.printStackTrace();	
+		}finally {
+			try {
+				prepareStatement.close();
+				resultSet.close();
+			} catch (Exception e) {			
+				e.printStackTrace();
+			}
+		}
+		return saleDetailList;	
 	}	
+	
+	
+	public ArrayList<Sale> searchSaleBetweenDates(Date stardDate, Date endDate){
+		ArrayList<Sale> saleList = new ArrayList<>();
+		try {
+						
+			prepareStatement = (PreparedStatement) DbConnection.dbConnection.prepareStatement("SELECT S.id, S.date, U.id, U.username, S.total FROM Sold AS S INNER JOIN User as U ON S.user_id = U.id WHERE S.date >= ? AND S.date <= ? AND S.status = ?");						
+			prepareStatement.setDate(1, new java.sql.Date(((Date)stardDate).getTime()));
+			prepareStatement.setDate(2, new java.sql.Date(((Date)endDate).getTime()));
+			prepareStatement.setBoolean(3, true);
+			
+			resultSet = prepareStatement.executeQuery();
+			
+			while(resultSet.next()) {			
+				saleList.add(new Sale(	resultSet.getInt(1),
+						(java.util.Date)resultSet.getDate(2),
+						resultSet.getInt(3),
+						resultSet.getString(4),
+						resultSet.getDouble(5)																								
+						));
+			}
+		} catch (SQLException e) {		
+			e.printStackTrace();	
+		}finally {
+			try {
+				prepareStatement.close();
+				resultSet.close();
+			} catch (Exception e) {			
+				e.printStackTrace();
+			}
+		}
+		return saleList;
+	}
+	
 }

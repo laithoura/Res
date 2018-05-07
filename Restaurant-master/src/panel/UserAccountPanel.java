@@ -18,6 +18,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
+
+import control_classes.Exporter;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.UserDao;
@@ -44,6 +46,7 @@ public class UserAccountPanel extends JPanel implements ActionListener{
 	private UserDataModel userDataModel;
 	private JTextField txtSearch;
 	private UserDao userDao = new UserDao();
+	private JButton btnExport;
 	
 	/**
 	 * Create the panel.
@@ -157,44 +160,57 @@ public class UserAccountPanel extends JPanel implements ActionListener{
 		});
 		buttonRefresh.setIcon(new ImageIcon(UserAccountPanel.class.getResource("/resources/Refresh_20.png")));
 		buttonRefresh.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		
+		btnExport = new JButton("Export");
+		btnExport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Exporter.jtableToExcel(tableUser);
+			}
+			
+		});
+		btnExport.setIcon(new ImageIcon(UserAccountPanel.class.getResource("/resources/Excel_20.png")));
+		btnExport.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(10)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panelTable, GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(panelTable, GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE)
 						.addGroup(groupLayout.createSequentialGroup()
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 143, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(lblNewLabel)
-							.addPreferredGap(ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, 91, Short.MAX_VALUE)
 							.addComponent(buttonRefresh, GroupLayout.PREFERRED_SIZE, 95, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnSignUp)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnUpdate, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(btnDelete)))
+							.addComponent(btnDelete)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnExport, GroupLayout.PREFERRED_SIZE, 99, GroupLayout.PREFERRED_SIZE)))
 					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(11)
+					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lblNewLabel)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+							.addGap(5))
 						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 							.addComponent(btnDelete)
 							.addComponent(btnUpdate)
-							.addComponent(btnSignUp))
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-							.addComponent(buttonRefresh, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(lblNewLabel)
-								.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE))))
-					.addGap(18)
-					.addComponent(panelTable, GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+							.addComponent(btnSignUp)
+							.addComponent(btnExport, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
+						.addComponent(buttonRefresh, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE))
+					.addGap(23)
+					.addComponent(panelTable, GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		GroupLayout gl_pnlTable = new GroupLayout(panelTable);
@@ -268,7 +284,7 @@ public class UserAccountPanel extends JPanel implements ActionListener{
 	
 	private void refreshTableUser() {				
 		userList = userDao.getUserLists(true);
-		userDataModel.setUserList(userList);
+		//userDataModel.setUserList(userList);
 		userDataModel.updateTable();
 	}
 
@@ -280,13 +296,6 @@ public class UserAccountPanel extends JPanel implements ActionListener{
 			
 			refreshTableUser();
 		}else {
-			
-			/*			
-	 			AbstractTableModel table = (AbstractTableModel)tableUser.getModel();					
-				TableRowSorter<AbstractTableModel> tableRowSorter = new TableRowSorter<AbstractTableModel>(table);
-				tableUser.setRowSorter(tableRowSorter);
-				tableRowSorter.setRowFilter(RowFilter.regexFilter(search));			
-			*/
 			userList = userDao.searchUser(search, true);
 			userDataModel.setUserList(userList);
 			userDataModel.updateTable();

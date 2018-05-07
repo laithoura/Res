@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import instance_classes.*;
 import interfaces.CallBackListenter;
 import dialog.*;
+import control_classes.Exporter;
 import control_classes.MessageShow;
 import control_classes.TableSetting;
 import controller.ProductDao;
@@ -125,6 +126,16 @@ public class ProductPanel extends JPanel implements CallBackListenter, ActionLis
 		txtSearch.setColumns(10);
 		
 		JLabel lblNewLabel = new JLabel("Search :");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		
+		JButton btnExport = new JButton("Export");
+		btnExport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Exporter.jtableToExcel(table);
+			}
+		});
+		btnExport.setIcon(new ImageIcon(ProductPanel.class.getResource("/resources/Excel_20.png")));
+		btnExport.setFont(new Font("Times New Roman", Font.PLAIN, 12));
 		GroupLayout gl_pnlBtn = new GroupLayout(pnlBtn);
 		gl_pnlBtn.setHorizontalGroup(
 			gl_pnlBtn.createParallelGroup(Alignment.LEADING)
@@ -132,25 +143,29 @@ public class ProductPanel extends JPanel implements CallBackListenter, ActionLis
 					.addContainerGap()
 					.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
-					.addGap(81)
+					.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 148, GroupLayout.PREFERRED_SIZE)
+					.addGap(30)
 					.addComponent(btnAdd)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnEdit)
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnDelete)
-					.addGap(8))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnExport)
+					.addGap(68))
 		);
 		gl_pnlBtn.setVerticalGroup(
 			gl_pnlBtn.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_pnlBtn.createSequentialGroup()
 					.addGap(5)
 					.addGroup(gl_pnlBtn.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnDelete)
 						.addComponent(btnEdit)
 						.addComponent(btnAdd)
-						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-						.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)))
+						.addComponent(btnExport, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtSearch, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap(10, Short.MAX_VALUE))
 		);
 		pnlBtn.setLayout(gl_pnlBtn);
 		
@@ -169,29 +184,24 @@ public class ProductPanel extends JPanel implements CallBackListenter, ActionLis
 		lblListOfProduct.setFont(new Font("Times New Roman", Font.BOLD, 18));
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
+			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(10)
-					.addComponent(pnlTable, GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
-					.addGap(15))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(161)
-					.addComponent(lblListOfProduct, GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
-					.addGap(208))
-				.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(pnlBtn, GroupLayout.PREFERRED_SIZE, 471, Short.MAX_VALUE)
-					.addContainerGap())
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(pnlTable, GroupLayout.DEFAULT_SIZE, 649, Short.MAX_VALUE)
+						.addComponent(pnlBtn, 0, 0, Short.MAX_VALUE)
+						.addComponent(lblListOfProduct, GroupLayout.PREFERRED_SIZE, 156, GroupLayout.PREFERRED_SIZE))
+					.addGap(10))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addComponent(lblListOfProduct, GroupLayout.PREFERRED_SIZE, 26, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGap(11)
 					.addComponent(pnlBtn, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
-					.addGap(23)
-					.addComponent(pnlTable, GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
-					.addGap(11))
+					.addGap(18)
+					.addComponent(pnlTable, GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+					.addContainerGap())
 		);
 		GroupLayout gl_pnlTable = new GroupLayout(pnlTable);
 		gl_pnlTable.setHorizontalGroup(

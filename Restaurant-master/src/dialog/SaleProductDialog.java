@@ -86,7 +86,6 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 	private int selectedIndexSaleTable =-1 ;
 	
 	private int selectedIndexJList = -1;
-	private JTextArea textAreaPrint;
 	/**
 	 * Launch the application.
 	 */
@@ -108,6 +107,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 	 * Create the dialog.
 	 */
 	public SaleProductDialog() {
+		setResizable(false);
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -123,7 +123,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
 
-		setBounds(100, 100, 658, 459);
+		setBounds(100, 100, 634, 444);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.BLACK);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -257,15 +257,10 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 		lblTotal.setBounds(22, 107, 63, 14);
 		panel.add(lblTotal);
 		
-		buttonAdd = new JButton("Add to Cart");
+		buttonAdd = new JButton("Add to List");
 		buttonAdd.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		buttonAdd.setBounds(303, 104, 119, 23);
 		panel.add(buttonAdd);
-		
-		textAreaPrint = new JTextArea();
-		textAreaPrint.setText("Hello World");
-		textAreaPrint.setBounds(298, 10, 133, 75);
-		panel.add(textAreaPrint);
 		
 		JPanel panelProduct = new JPanel();
 		panelProduct.setBounds(151, 188, 456, 180);
@@ -308,7 +303,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 		saleProductList = new ArrayList<>();
 		saleProductDataModel = new SaleProductDataModel();
 		saleProductDataModel.setSaleList(saleProductList);
-		tableSaleProduct.setModel(saleProductDataModel);
+		//tableSaleProduct.setModel(saleProductDataModel);
 		
 		productList = new ArrayList<>();
 		productDao = new ProductDao();

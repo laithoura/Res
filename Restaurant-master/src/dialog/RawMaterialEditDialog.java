@@ -24,6 +24,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.ImageIcon;
 
 
 public class RawMaterialEditDialog extends JDialog {
@@ -35,18 +36,8 @@ public class RawMaterialEditDialog extends JDialog {
 	private RawMaterial rawMaterial = null;
 	private JTextField txtId; 
 	private CallBackListenter backListener;
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		try {
-			RawMaterialEditDialog dialog = new RawMaterialEditDialog();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	
+	
 	
 	public RawMaterialEditDialog(RawMaterial rawMaterial) {
 		this();
@@ -69,6 +60,7 @@ public class RawMaterialEditDialog extends JDialog {
 	 * Create the dialog.
 	 */
 	public RawMaterialEditDialog() {
+		setResizable(false);
 		
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -83,48 +75,42 @@ public class RawMaterialEditDialog extends JDialog {
 		}
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));		
-		
-		setBounds(100, 100, 450, 300);
+		setTitle("Edit Raw Material");
+		setBounds(100, 100, 414, 250);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setLocationRelativeTo(null);
 		{
-			JLabel lblNewLabel = new JLabel("Edit raw material");
-			lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 13));
-			lblNewLabel.setBounds(10, 11, 155, 14);
-			contentPanel.add(lblNewLabel);
-		}
-		{
 			JLabel lblName = new JLabel("Name");
-			lblName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-			lblName.setBounds(10, 47, 46, 14);
+			lblName.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			lblName.setBounds(27, 26, 46, 14);
 			contentPanel.add(lblName);
 		}
 		{
 			JLabel lblType = new JLabel("Type");
-			lblType.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-			lblType.setBounds(10, 87, 46, 14);
+			lblType.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			lblType.setBounds(27, 66, 46, 14);
 			contentPanel.add(lblType);
 		}
 		{
 			JLabel lblDescription = new JLabel("Description");
-			lblDescription.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-			lblDescription.setBounds(10, 133, 88, 14);
+			lblDescription.setFont(new Font("Tahoma", Font.PLAIN, 13));
+			lblDescription.setBounds(27, 107, 88, 14);
 			contentPanel.add(lblDescription);
 		}
 		
 		txtName = new JTextField();
-		txtName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		txtName.setBounds(107, 44, 167, 20);
+		txtName.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		txtName.setBounds(114, 21, 251, 24);
 		contentPanel.add(txtName);
 		txtName.setColumns(10);
 		
 		txtDescription = new JTextField();
-		txtDescription.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+		txtDescription.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		txtDescription.setColumns(10);
-		txtDescription.setBounds(108, 130, 167, 50);
+		txtDescription.setBounds(115, 107, 250, 50);
 		contentPanel.add(txtDescription);
 		
 		cboType = new JComboBox();
@@ -133,60 +119,59 @@ public class RawMaterialEditDialog extends JDialog {
 		cboType.addItem("Ingredient");
 		
 		
-		cboType.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		cboType.setBounds(107, 84, 167, 20);
+		cboType.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		cboType.setBounds(114, 61, 251, 24);
 		contentPanel.add(cboType);
 		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton btnUpdate = new JButton("Update");
-				btnUpdate.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
+			JButton btnUpdate = new JButton("Update");
+			btnUpdate.setIcon(new ImageIcon(RawMaterialEditDialog.class.getResource("/resources/Edit_20.png")));
+			btnUpdate.setBounds(156, 168, 100, 30);
+			contentPanel.add(btnUpdate);
+			btnUpdate.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+					if (txtName.getText().isEmpty()) {
+						JOptionPane.showMessageDialog(null, "Please input name!");
+						return;
+					} else {
+						int id = Integer.parseInt(txtId.getText());
+						String name = txtName.getText();
+						String type = cboType.getSelectedItem().toString();
+						String description = txtDescription.getText();
 						
-						if (txtName.getText().isEmpty()) {
-							JOptionPane.showMessageDialog(null, "Please input name!");
-							return;
+						RawMaterialDao rawMaterialDao = new RawMaterialDao();
+						
+						rawMaterial = new RawMaterial(id, name, type, description, true);
+						if (rawMaterialDao.updateRawMaterial(rawMaterial)) {
+			
+							JOptionPane.showMessageDialog(null, "Updated successfully");
+							rawMaterial.setName(name);
+							rawMaterial.setType(type);
+							rawMaterial.setDescription(description);
+							backListener.CallBack(rawMaterial);
 						} else {
-							int id = Integer.parseInt(txtId.getText());
-							String name = txtName.getText();
-							String type = cboType.getSelectedItem().toString();
-							String description = txtDescription.getText();
-							
-							RawMaterialDao rawMaterialDao = new RawMaterialDao();
-							
-							rawMaterial = new RawMaterial(id, name, type, description, true);
-							if (rawMaterialDao.updateRawMaterial(rawMaterial)) {
-				
-								JOptionPane.showMessageDialog(null, "Updated successfully");
-								rawMaterial.setName(name);
-								rawMaterial.setType(type);
-								rawMaterial.setDescription(description);
-								backListener.CallBack(rawMaterial);
-							} else {
-								JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
-							}
+							JOptionPane.showMessageDialog(null, "Updated unsuccessfully");
 						}
 					}
-				});
-				btnUpdate.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-				btnUpdate.setActionCommand("OK");
-				buttonPane.add(btnUpdate);
-				getRootPane().setDefaultButton(btnUpdate);
-			}
-			{
-				JButton btnCancel = new JButton("Cancel");
-				btnCancel.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-				btnCancel.setActionCommand("Cancel");
-				btnCancel.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						txtName.setText("");
-						txtDescription.setText("");						
-					}					
-				});
-				buttonPane.add(btnCancel);
-			}
+				}
+			});
+			btnUpdate.setFont(new Font("Tahoma", Font.PLAIN, 11));
+			btnUpdate.setActionCommand("OK");
+			getRootPane().setDefaultButton(btnUpdate);
+		}
+		{
+			JButton btnCancel = new JButton("Cancel");
+			btnCancel.setIcon(new ImageIcon(RawMaterialEditDialog.class.getResource("/resources/Cancel_20.png")));
+			btnCancel.setBounds(266, 168, 100, 30);
+			contentPanel.add(btnCancel);
+			btnCancel.setFont(new Font("Tahoma", Font.PLAIN, 11));
+			btnCancel.setActionCommand("Cancel");
+			btnCancel.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					txtName.setText("");
+					txtDescription.setText("");						
+				}					
+			});
 		}
 	}
 }

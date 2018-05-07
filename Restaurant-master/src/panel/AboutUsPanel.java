@@ -2,80 +2,89 @@ package panel;
 
 import javax.swing.JPanel;
 
-import form.LoginForm;
+import form.MainForm;
 
-import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import java.awt.Color;
+import java.awt.Font;
+import javax.swing.SwingConstants;
 
-import javax.imageio.ImageIO;
-import java.awt.RenderingHints;
 
 public class AboutUsPanel extends JPanel{
 	
+	
+	private JLabel labelImage;
+	private Dimension rectangle;
+	private int width = 600;
+	private int height = 350;
+	
 	public AboutUsPanel() {
-		
+								
 			setLayout(new BorderLayout(0, 0));
 			JPanel panel = new JPanel();
+			panel.setBackground(Color.WHITE);
 			add(panel, BorderLayout.CENTER);
-			panel.setLayout(new BorderLayout());
 			
-			JLabel lblNewLabel = new JLabel("New label");
+			labelImage = new JLabel();
+						
+			setImageIconToLabel(labelImage);
 			
-			//lblNewLabel.setIcon(new ImageIcon(getCircleImage("/profile/About_us_96.png")));
+			JLabel lblNewLabel = new JLabel("Group Members");
+			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			lblNewLabel.setFont(new Font("Tw Cen MT Condensed Extra Bold", Font.PLAIN, 30));
 			
-			panel.add(lblNewLabel,BorderLayout.CENTER);			
+			GroupLayout gl_panel = new GroupLayout(panel);
+			gl_panel.setHorizontalGroup(
+				gl_panel.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_panel.createSequentialGroup()
+						.addGap(107)
+						.addComponent(labelImage, GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+						.addGap(93))
+					.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+						.addGap(26)
+						.addComponent(lblNewLabel, GroupLayout.DEFAULT_SIZE, 402, Short.MAX_VALUE)
+						.addGap(22))
+			);
+			gl_panel.setVerticalGroup(
+				gl_panel.createParallelGroup(Alignment.LEADING)
+					.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+						.addGap(23)
+						.addComponent(lblNewLabel, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+						.addGap(35)
+						.addComponent(labelImage, GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
+						.addGap(71))
+			);
+			panel.setLayout(gl_panel);
+			
+			/*Get current size of Frame*/
+			this.addComponentListener(new ComponentAdapter() {
+						
+				public void componentResized(ComponentEvent eE) {	
+					
+					rectangle = labelImage.getSize();
+					width = rectangle.width;
+					height = rectangle.height;
+					setImageIconToLabel(labelImage);
+
+				}
+			});				
+						
 	}	
-		
-		
-	private BufferedImage getCircleImage(String imagePath) {
-		
-		BufferedImage master = null;
-		
-		try {
-			URL url = AboutUsPanel.class.getResource("/profile/jerry.JPG");
-			master = ImageIO.read(new File(url.toString()));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	    int diameter = Math.min(master.getWidth(), master.getHeight());
-	    BufferedImage mask = new BufferedImage(master.getWidth(), master.getHeight(), BufferedImage.TYPE_INT_ARGB);
-
-	    Graphics2D g2d = mask.createGraphics();
-	    applyQualityRenderingHints(g2d);
-	    g2d.fillOval(0, 0, diameter - 1, diameter - 1);
-	    g2d.dispose();
-
-	    BufferedImage masked = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
-	    g2d = masked.createGraphics();
-	    applyQualityRenderingHints(g2d);
-	    int x = (diameter - master.getWidth()) / 2;
-	    int y = (diameter - master.getHeight()) / 2;
-	    g2d.drawImage(master, x, y, null);
-	    g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.DST_IN));
-	    g2d.drawImage(mask, 0, 0, null);
-	    g2d.dispose();
-	    
-	    return masked;
-	}
 	
-	private void applyQualityRenderingHints(Graphics2D g2d) {
-
-	    g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	    g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-	    g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-	    g2d.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-	    g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-	    g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-	    g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-
+	private void setImageIconToLabel(JLabel labelImage) {
+				
+		labelImage.setIcon(null);
+		Image image = new ImageIcon("src/profile/group_java.jpg").getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);				
+		labelImage.setIcon(new ImageIcon(image));					
 	}
 }
