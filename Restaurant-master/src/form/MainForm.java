@@ -145,30 +145,6 @@ public class MainForm extends JFrame implements CallBackListenter{
 		label_5 = new JLabel(" ");
 		label_5.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		panelRightInfo.add(label_5);
-		
-		JLabel lblMinimizeIcon = new JLabel("");
-		lblMinimizeIcon.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				setState(JFrame.ICONIFIED);
-			}
-		});
-		lblMinimizeIcon.setToolTipText("Minimize");
-		lblMinimizeIcon.setIcon(new ImageIcon(MainForm.class.getResource("/Resources/Minus_32.png")));
-		lblMinimizeIcon.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panelRightInfo.add(lblMinimizeIcon);
-		
-		JLabel lblCloseIcon = new JLabel("");
-		lblCloseIcon.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				System.exit(0);
-			}
-		});
-		lblCloseIcon.setToolTipText("Close\r\n");
-		lblCloseIcon.setIcon(new ImageIcon(MainForm.class.getResource("/Resources/Close_32.png")));
-		lblCloseIcon.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		panelRightInfo.add(lblCloseIcon);
 		pHeader.setLayout(gl_pHeader);
 				
 		panelContainer = new JPanel();
@@ -188,7 +164,7 @@ public class MainForm extends JFrame implements CallBackListenter{
 		getContentPane().add(panelFooter, BorderLayout.SOUTH);
 		
 		lblCopyRight = new JLabel("SLS@19th@CopyRight2018");
-		lblCopyRight.setFont(new Font("Tahoma", Font.PLAIN, 12));
+		lblCopyRight.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblCopyRight.setForeground(mColor.getForeColor());
 		panelFooter.add(lblCopyRight);
 				

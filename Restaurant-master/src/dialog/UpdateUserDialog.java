@@ -100,8 +100,9 @@ public class UpdateUserDialog extends JDialog{
 		
 		cboRole = new JComboBox<String>();
 		cboRole.addItem("Admin");
+		cboRole.addItem("Stock Manager");
 		cboRole.addItem("Cashier");
-		cboRole.addItem("Service");
+		cboRole.addItem("Servicer");
 		cboRole.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		cboRole.setBounds(121, 136, 243, 24);
 		contentPanel.add(cboRole);

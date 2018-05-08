@@ -284,10 +284,10 @@ public class SalePanel extends JPanel implements ActionListener{
 				public void searchBackListener(Object sender1, Object sender2) {
 					if(checkBoxShowSaleDetail.isSelected()) {
 						saleDetailList =  saleDao.searchSaleDetailsBetweenDates((Date) sender1, (Date) sender2);
-						refreshSaleTable();
+						loadSaleDetailTableModel();
 					}else {
 						saleList = saleDao.searchSaleBetweenDates((Date) sender1, (Date) sender2);
-						refreshSaleTable();
+						loadSaleTableModel();
 					}
 				}
 			});

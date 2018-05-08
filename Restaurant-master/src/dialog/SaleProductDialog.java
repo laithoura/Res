@@ -123,6 +123,7 @@ public class SaleProductDialog extends JDialog implements ActionListener{
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(LoginForm.class.getResource("/resources/Flora.logo.png")));
 
+		setTitle("Sale Information");
 		setBounds(100, 100, 634, 444);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBackground(Color.BLACK);

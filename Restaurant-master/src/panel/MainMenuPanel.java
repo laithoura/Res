@@ -11,11 +11,14 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 
 import control_classes.ColorModel;
+import instance_classes.User;
 import interfaces.CallBackListenter;
 
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
+
+import connection.DbConnection;
+
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
@@ -34,6 +37,7 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 	}	
 	
 	public MainMenuPanel() {		
+		
 		setBackground(new Color(139, 69, 19));
 		setAlignmentX(0.0f);
 		setAlignmentY(0.0f);
@@ -264,7 +268,47 @@ public class MainMenuPanel extends JPanel implements MouseListener{
 		panelUserAccount.setLayout(gl_panelUserAccount);
 		
 		registerEvent();
+		
+		checkUserRole();
 
+	}
+
+	private void checkUserRole() {
+		User user = DbConnection.user;
+		if(user == null) return;
+		
+		if(user.getRole().toLowerCase().equals("stock manager")) {
+			
+			/*Can open Product , Raw Material and Import Parts*/
+			
+			lblSale.setEnabled(false);
+			lblTable.setEnabled(false);
+			lblBooking.setEnabled(false);
+			lblAboutUs.setEnabled(false);
+			lblUserAccount.setEnabled(false);
+			
+		}else if(user.getRole().toLowerCase().equals("cashier")) {
+			
+			lblTable.setEnabled(false);
+			lblBooking.setEnabled(false);			
+			lblImport.setEnabled(false);
+			lblProduct.setEnabled(false);
+			lblRawMaterial.setEnabled(false);
+			lblAboutUs.setEnabled(false);
+			lblUserAccount.setEnabled(false);
+			
+		}else if(user.getRole().toLowerCase().equals("servicer")) {
+			
+			/*Can view booking and tables*/
+			
+			lblSale.setEnabled(false);
+			lblImport.setEnabled(false);
+			lblProduct.setEnabled(false);
+			lblRawMaterial.setEnabled(false);
+			lblAboutUs.setEnabled(false);
+			lblUserAccount.setEnabled(false);
+		}
+		
 	}
 
 	private void registerEvent() {

@@ -337,7 +337,8 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 			if(radioButtonNormal.isSelected()) {
 				/*Get Available Normal table*/
 				tableList = tableDao.getFilterTableType("Normal", true);
-				refreshTableModel();		
+				refreshTableModel();
+				labelBookingItem.setText("Booking Table : ");
 			}					
 		}else if(e.getSource() == radioButtonAll) {
 			
@@ -345,6 +346,7 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 				/*Get all Available table*/
 				tableList = tableDao.getTableLists(true, true);			
 				refreshTableModel();
+				labelBookingItem.setText("Booking Table : ");
 			}			
 		}
 	}	
@@ -352,6 +354,9 @@ public class InsertBookingDialog extends JDialog implements ActionListener{
 	private void resetControls() {
 		textBoxCustomerName.setText("");
 		textBoxCustomerPhone.setText("");
+		
+		
+		labelBookingItem.setText("Booking Table : ");
 		
 		Date date = new Date();
 		datePickerCheckInDate.setDate(date);
